@@ -11,14 +11,12 @@
 		margin: 0 0 0.5em 0;
 	}
 
-	figure {
-		margin: 0 0 1em 0;
-	}
-
-	img {
-		width: 100%;
-		max-width: 400px;
-		margin: 0 0 1em 0;
+	button {
+		position: relative;
+		top: 50%;
+		left: 25%;
+		width: 50%;
+		color: darkred;
 	}
 
 	p {
@@ -32,15 +30,26 @@
 	}
 </style>
 
+<script>
+	function handleCreateClick() {
+		location.href='about'
+	}
+
+	function handleJoinClick() {
+		location.href='about'
+	}
+</script>
+
 <svelte:head>
 	<title>Sapper project template</title>
 </svelte:head>
 
-<h1>Great success!</h1>
+<h1>Welcome to House of Cards!</h1>
 
-<figure>
-	<img alt='Borat' src='great-success.png'>
-	<figcaption>HIGH FIVE!</figcaption>
-</figure>
+<button id="createButton" on:click={handleCreateClick}>
+	Create Room
+</button>
 
-<p><strong>Try editing this file (src/routes/index.svelte) to test live reloading.</strong></p>
+<button id="joinButton" on:click={handleJoinClick}>
+	Join Game
+</button>
