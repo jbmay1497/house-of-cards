@@ -1,10 +1,6 @@
 <style>
-	h1, figure, p {
-		text-align: center;
-		margin: 0 auto;
-	}
-
 	h1 {
+		text-align: center;
 		font-size: 2.8em;
 		text-transform: uppercase;
 		font-weight: 700;
@@ -19,10 +15,6 @@
 		color: darkred;
 	}
 
-	p {
-		margin: 1em auto;
-	}
-
 	@media (min-width: 480px) {
 		h1 {
 			font-size: 4em;
@@ -32,11 +24,11 @@
 
 <script>
 	function handleCreateClick() {
-		location.href='about'
+		location.href='create'
 	}
 
 	function handleJoinClick() {
-		location.href='about'
+		location.href='enter'
 	}
 </script>
 
