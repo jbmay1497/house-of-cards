@@ -23,12 +23,16 @@
 </style>
 
 <script>
+    //only need this if socket connection needs to be open on home page - not likely
+
+    import {goto} from "@sapper/app";
+
 	function handleCreateClick() {
-		location.href='create'
+		goto("create")
 	}
 
 	function handleJoinClick() {
-		location.href='enter'
+		goto("enter")
 	}
 </script>
 

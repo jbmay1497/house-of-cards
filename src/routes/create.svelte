@@ -3,9 +3,17 @@
 </svelte:head>
 
 <script>
+    import {goto} from "@sapper/app"
+    import { createRoom } from  "./networking";
+
+    let username = "";
+
+    let enterRoom = room_id => {
+        goto("gameroom");//gameroom/room_id
+        };
 
     function clickHandler() {
-        location.href='gameroom';
+        goto('gameroom');
 
         // $.post("/v1/session", {
         //     "username": $('#username').val(),
@@ -23,8 +31,8 @@
 
 
 <h1>Create</h1>
-<form on:submit|preventDefault={clickHandler}>
-    Name: <label><input type="text" name="name"></label><br>
+<form on:submit|preventDefault={() => createRoom(username, enterRoom)}>
+    Name: <label><input type="text" name="name" bind:value = {username}></label><br>
     <input type="submit" value="Submit">
 </form>
 
