@@ -3,22 +3,11 @@
 </svelte:head>
 
 <script>
+    import {goto} from "@sapper/app";
 
     function clickHandler() {
-        location.href='gameroom';
-
-        // $.post("/v1/session", {
-        //     "username": $('#username').val(),
-        //     "password": $('#password').val()
-        // })
-        //         .done(function() {
-        //             window.location = "/profile.html?username=" + $('#username').val();
-        //         })
-        //         .fail(function() {
-        //             document.getElementById('errorMsg').innerHTML="Incorrect username or password";
-        //         });
+        goto('gameroom');
     }
-
 </script>
 
 
