@@ -64,8 +64,8 @@
         <a href="#">Solitaire</a>
     </div>
 
-<!--    <figure>-->
-<!--        <img alt='Borat' src='./static/images/2_of_clubs.png'>-->
-<!--    </figure>-->
-<!--    <img src = '../../static/ace_of_spades2.png' alt="face down card"/>-->
+    <figure>
+        <img alt='Borat' src='images/2_of_clubs.png'>
+    </figure>
+    <img src = 'images/ace_of_spades2.png' alt="face down card"/>
 </div>

@@ -4,7 +4,7 @@
 
 <script>
     import {goto} from "@sapper/app"
-     import {joinRoom } from "./networking";
+    import {joinRoom } from "./networking";
 
     let room_id = "";
     //will be used when session is set up
