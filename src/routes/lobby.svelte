@@ -1,5 +1,5 @@
 <svelte:head>
-    <title>Gameroom</title>
+    <title>Lobby</title>
 </svelte:head>
 
 <style>
@@ -42,16 +42,14 @@
 
     /* Change the background color of the dropdown button when the dropdown content is shown */
     .dropdown:hover .dropbtn {background-color: #3e8e41;}
+
+    img {
+        width: 20%;
+    }
 </style>
 
 <script>
-    // function jumpto(x){
-    //     if (document.form1.jumpmenu.value != "null") {
-    //         document.location.href = x
-    //     }
-    // }
 
-    //let src = "../../static/images/face_down.jpg";
 </script>
 
 <h1>Game Room</h1>
@@ -66,6 +64,7 @@
 
     <figure>
         <img alt='Borat' src='images/2_of_clubs.png'>
+        <img src = 'images/ace_of_spades2.png' alt="face down card"/>
     </figure>
-    <img src = 'images/ace_of_spades2.png' alt="face down card"/>
+
 </div>
