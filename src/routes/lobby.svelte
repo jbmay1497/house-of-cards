@@ -6,7 +6,7 @@
     .dropbtn {
         background-color: #4CAF50;
         color: white;
-        padding: 16px;
+        padding: 1vw;
         font-size: 16px;
         border: none;
     }
@@ -21,7 +21,7 @@
     .dropdown-content {
         display: none;
         background-color: #f1f1f1;
-        min-width: 160px;
+        max-width: 120px;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         z-index: 1;
     }
@@ -58,13 +58,12 @@
     <button class="dropbtn">Existing Games</button>
     <div class="dropdown-content">
         <a href="game/oldmaid">Old Maid</a>
-        <a href="#">War</a>
-        <a href="#">Solitaire</a>
+        <a href="game">War</a>
+        <a href="game">Solitaire</a>
     </div>
 
-    <figure>
-        <img alt='Borat' src='images/2_of_clubs.png'>
-        <img src = 'images/ace_of_spades2.png' alt="face down card"/>
-    </figure>
-
 </div>
+
+<figure>
+    <img src = 'images/face_down.jpg' alt="face down card"/>
+</figure>
