@@ -4,7 +4,7 @@
 
 <script>
     import {goto} from "@sapper/app"
-     import {joinRoom } from "./networking";
+    import {joinRoom } from "./networking";
 
     let room_id = "";
     //will be used when session is set up
@@ -12,7 +12,7 @@
 
     let enterRoom = (joined, room_id) => {
         if (joined){
-            goto("gameroom");//gameroom/room_id
+            goto("lobby");
         }else{
             document.getElementById('error-container').innerHTML = `Room code "${room_id}" does not exist! try another code`;
         }

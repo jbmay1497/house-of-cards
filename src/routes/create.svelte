@@ -9,7 +9,7 @@
     let username = "";
 
     let enterRoom = room_id => {
-        goto("gameroom");//gameroom/room_id
+        goto("lobby");
     };
 </script>
 
