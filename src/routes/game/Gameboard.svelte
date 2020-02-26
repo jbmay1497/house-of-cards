@@ -1,4 +1,7 @@
 <script>
+    import Table from './Table.svelte';
+    import Hand from './Hand.svelte';
+    
     export let format = true;
 </script>
 
@@ -6,7 +9,7 @@
 <h1>Game board</h1>
 
 {#if format}
-    <h2>Table style</h2>
+    <Table/>
 {:else}
-    <h2>Hand style</h2>
+    <Hand/>
 {/if}
