@@ -57,9 +57,9 @@
 <div class="dropdown">
     <button class="dropbtn">Existing Games</button>
     <div class="dropdown-content">
-        <a href="#">Old Maid</a>
-        <a href="#">War</a>
-        <a href="#">Solitaire</a>
+        <a href="/">Old Maid</a>
+        <a href="/">War</a>
+        <a href="/">Solitaire</a>
     </div>
 
     <figure>
