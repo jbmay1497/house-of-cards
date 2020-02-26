@@ -61,7 +61,6 @@
         <a href="game">War</a>
         <a href="game">Solitaire</a>
     </div>
-
 </div>
 
 <figure>

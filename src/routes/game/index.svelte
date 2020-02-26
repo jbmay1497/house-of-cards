@@ -1,7 +1,7 @@
 <script>
-	import Switch from './Switch.svelte';
-	import Gameboard from './Gameboard.svelte';
-	import Chat from './Chat.svelte';
+	import Switch from './_Switch.svelte';
+	import Gameboard from './_Gameboard.svelte';
+	import Chat from '../../components/Chat.svelte';
 
 	let format = true;
 
