@@ -6,16 +6,17 @@
 
 	h1 {
 		text-align: center;
-		font-size: 2.8em;
-		text-transform: uppercase;
-		font-weight: 700;
-		margin: 0 0 0.5em 0;
-		padding: 4vw;
+		font-size: 100px;
+		font-weight: 500;
+		margin: .5em;
+		padding: .4vw;
 		color: white;
-		font-family: cursive;
+		font-family: fantasy;
 	}
 
 	button {
+		margin: 1.5vw;
+		padding: 2vw;
 		position: relative;
 		top: 50%;
 		left: 25%;
@@ -49,7 +50,9 @@
 </svelte:head>
 
 <body>
-	<h1>Welcome to House of Cards!</h1>
+	<br>
+	<h1>H &nbsp;O &nbsp;U &nbsp;S &nbsp;E</h1>
+	<h1>o f&nbsp;&nbsp;&nbsp; C &nbsp;A &nbsp;R &nbsp;D &nbsp;S</h1>
 
 	<button id="createButton" on:click={handleCreateClick}>
 		Create Room
