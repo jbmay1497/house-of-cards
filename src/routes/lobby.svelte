@@ -3,6 +3,21 @@
 </svelte:head>
 
 <style>
+    body {
+        height: 100%;
+        background: linear-gradient(to right, seagreen, black);
+    }
+
+    .container{
+        padding: 2px;
+        text-align: center;
+    }
+
+    h1 {
+        padding: 1vw;
+        color: white;
+    }
+
     .dropbtn {
         background-color: #4CAF50;
         color: white;
@@ -14,6 +29,13 @@
     /* The container <div> - needed to position the dropdown content */
     .dropdown {
         position: relative;
+        right: 20%;
+        display: inline-block;
+    }
+
+    .custom {
+        position: relative;
+        left: 20%;
         display: inline-block;
     }
 
@@ -44,7 +66,9 @@
     .dropdown:hover .dropbtn {background-color: #3e8e41;}
 
     img {
-        width: 20%;
+        width: 15%;
+        position: relative;
+        padding: 1em;
     }
 </style>
 
@@ -52,17 +76,23 @@
 
 </script>
 
-<h1>Game Room</h1>
+<body class="container">
+    <h1>LOBBY</h1>
 
-<div class="dropdown">
-    <button class="dropbtn">Existing Games</button>
-    <div class="dropdown-content">
-        <a href="game/oldmaid">Old Maid</a>
-        <a href="game">War</a>
-        <a href="game">Solitaire</a>
+    <div class="dropdown">
+        <button class="dropbtn">Existing Games</button>
+        <div class="dropdown-content">
+            <a href="game/oldmaid">Old Maid</a>
+            <a href="game">War</a>
+            <a href="game">Solitaire</a>
+        </div>
     </div>
-</div>
 
-<figure>
-    <img src = 'images/face_down.jpg' alt="face down card"/>
-</figure>
+    <div class="custom">
+        <button class="dropbtn">Custom Game</button>
+    </div>
+
+    <figure>
+        <img src = 'images/face_down.jpg' alt="face down card"/>
+    </figure>
+</body>

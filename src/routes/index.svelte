@@ -1,10 +1,18 @@
 <style>
+	body {
+		height: 100%;
+		background: linear-gradient(to right, black, seagreen, black);
+	}
+
 	h1 {
 		text-align: center;
 		font-size: 2.8em;
 		text-transform: uppercase;
 		font-weight: 700;
 		margin: 0 0 0.5em 0;
+		padding: 4vw;
+		color: white;
+		font-family: cursive;
 	}
 
 	button {
@@ -37,15 +45,20 @@
 </script>
 
 <svelte:head>
-	<title>Sapper project template</title>
+	<title>House of Cards: Main Page</title>
 </svelte:head>
 
-<h1>Welcome to House of Cards!</h1>
+<body>
+	<h1>Welcome to House of Cards!</h1>
 
-<button id="createButton" on:click={handleCreateClick}>
-	Create Room
-</button>
+	<button id="createButton" on:click={handleCreateClick}>
+		Create Room
+	</button>
 
-<button id="joinButton" on:click={handleJoinClick}>
-	Join Game
-</button>
+	<button id="joinButton" on:click={handleJoinClick}>
+		Join Game
+	</button>
+</body>
+
+
+
