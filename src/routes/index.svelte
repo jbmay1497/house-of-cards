@@ -7,7 +7,7 @@
 	h1 {
 		text-align: center;
 		font-size: 100px;
-		font-weight: 500;
+		font-weight: 600;
 		margin: .5em;
 		padding: .4vw;
 		color: white;
