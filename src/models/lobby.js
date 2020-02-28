@@ -7,7 +7,7 @@ let Lobby = new Schema(
     {
         _id: String,
         usernames: [String],
-        owner: String,
+        host: String,
         count: {type: Number, default: 1}
     },
     {_id: false}

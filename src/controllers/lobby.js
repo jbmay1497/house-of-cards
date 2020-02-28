@@ -5,7 +5,7 @@ export const lobby_funcs = app => ({
         let lobby = {
             _id: lobby_id,
             usernames: [username],
-            owner: username,
+            host: username,
             count: 1
         };
         let lobby_data = new app.models.Lobby(lobby);
