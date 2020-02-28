@@ -72,4 +72,5 @@
     on:click={() => dispatch('toggle')}
     bind:checked={format} />
   <span class="slider round" />
+  <p>{#if format}Table{:else}Hand{/if}</p>
 </label>

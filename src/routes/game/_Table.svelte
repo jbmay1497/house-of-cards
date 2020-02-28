@@ -54,7 +54,6 @@
     }
 </style>
 
-<h2>Table style</h2>
 <div class="grid-container">
     <div class="player player-1">Player 1</div>
     <div class="player player-2">Player 2</div>

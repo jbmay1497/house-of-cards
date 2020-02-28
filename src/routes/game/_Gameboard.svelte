@@ -7,8 +7,16 @@
 
 <!-- Consider grid templating for card layout -->
 
-{#if format}
-    <Table/>
-{:else}
-    <Hand/>
-{/if}
+<style>
+    .game-area {
+        padding: 5%;
+    }
+</style>
+
+<div class="game-area">
+    {#if format}
+        <Table/>
+    {:else}
+        <Hand/>
+    {/if}
+</div>

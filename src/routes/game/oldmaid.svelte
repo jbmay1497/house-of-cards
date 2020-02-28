@@ -1,7 +1,7 @@
 <!-- Hardcode layout for old maid just for demo -->
 <script>
 	import Gameboard from './_Gameboard.svelte';
-	import Chat from '../../components/Chat.svelte';
+	import Chat from '../../components/chatbox/Chat.svelte';
 
 	let format = true;
 

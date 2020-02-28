@@ -1,7 +1,7 @@
 <script>
 	import Switch from './_Switch.svelte';
 	import Gameboard from './_Gameboard.svelte';
-	import Chat from '../../components/Chat.svelte';
+	import Chat from '../../components/chatbox/Chat.svelte';
 
 	let format = true;
 
@@ -15,7 +15,6 @@
 		display: grid;
 		grid-template-columns: auto 200px;
 	}
-	
 </style>
 
 <svelte:head>
