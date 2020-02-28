@@ -4,9 +4,12 @@
 
 <style>
     img {
-        width: 15%;
         position: relative;
         padding: 1em;
+    }
+
+    div {
+        text-align: center;
     }
 </style>
 
@@ -38,7 +41,7 @@
 </script>
 
 <body class="container">
-    <figure>
+    <div>
         <img src = 'images/face_down.jpg' alt="face down card"/>
-    </figure>
+    </div>
 </body>

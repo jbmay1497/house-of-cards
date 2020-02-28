@@ -1,3 +1,7 @@
+<svelte:head>
+    <title>lobby</title>
+</svelte:head>
+
 <script context="module">
   //these keep track of new users who join
   //allows us to update the lobbys for other users in the lobby
@@ -188,10 +192,6 @@
   }
 </style>
 
-<svelte:head>
-  <title>lobby</title>
-</svelte:head>
-
 <body>
   <div class:hidden={joined}>
     <Modal on:join={Joined} {lobby_id}  />
@@ -229,7 +229,6 @@
             alt="face down card" />
         </figure>
       </div>
-
     </div>
 
     <div>

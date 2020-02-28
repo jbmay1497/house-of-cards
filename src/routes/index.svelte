@@ -1,4 +1,7 @@
 <style>
+	.hidden {
+		display: none;
+	}
 
     *{
     box-sizing:border-box;
@@ -68,11 +71,17 @@
 <script>
 	//only need this if socket connection needs to be open on home page - not likely
 	import {goto} from "@sapper/app";
+	import ModalCreateRoom from '../components/ModalCreateRoom.svelte';
+	import ModalJoinRoom from '../components/ModalJoinRoom.svelte';
+
+	let createRoom = true;
+	let joinRoom = true;
+
 	function handleCreateClick() {
-		goto("create")
+		createRoom = false;
 	}
 	function handleJoinClick() {
-		goto("enter")
+		joinRoom = false;
 	}
 </script>
 
@@ -85,8 +94,19 @@
 	<h1>H O U S E</h1>
 	<h1>O F &nbsp; C A R D S</h1>
 
-    <p><a class ="routes" href = "create"> Create Game </a></p>
-    <a class ="routes" href = "enter"> Join Game </a>
+	<div class:hidden ={createRoom}>
+		<ModalCreateRoom/>
+	</div>
+
+	<div class:hidden ={joinRoom}>
+		<ModalJoinRoom/>
+	</div>
+
+	<div class:hidden ={!(createRoom && joinRoom)}>
+		<p><a class ="routes" on:click={handleCreateClick}> Create Game </a></p>
+		<a class ="routes" on:click={handleJoinClick}> Join Game </a>
+	</div>
+
     <!--<button id="createButton" on:click={handleCreateClick}>
         Create Room
     </button>
