@@ -1,14 +1,18 @@
 <style>
-	h1 {
-		text-align: center;
-		font-size: 100px;
-		font-weight: 600;
-		margin: .5em;
-		padding: .4vw;
-		color: white;
-		font-family: fantasy;
-	}
+
+    h1 {
+        font-family: 'Roboto',serif ;
+        text-align: center;
+        font-size: 100px;
+        font-weight: 100;
+        margin: .5em;
+        padding: .4vw;
+        color: white;
+
+    }
 	button {
+	    font-weight: 400;
+	    font-family: 'Roboto',serif ;
 		margin: 1.5vw;
 		padding: 2vw;
 		position: relative;
@@ -49,8 +53,8 @@
 
 <body>
 	<br>
-	<h1>H &nbsp;O &nbsp;U &nbsp;S &nbsp;E</h1>
-	<h1>o f&nbsp;&nbsp;&nbsp; C &nbsp;A &nbsp;R &nbsp;D &nbsp;S</h1>
+	<h1>H O U S E</h1>
+	<h1>O F       C A R D S</h1>
 
 	<button id="createButton" on:click={handleCreateClick}>
 		Create Room

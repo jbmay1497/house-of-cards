@@ -5,6 +5,8 @@
 </script>
 
 <style>
+
+
 	div {
 		position: absolute;
 		top: 0;
@@ -19,7 +21,9 @@
 		margin: 0 auto;
 	}
 </style>
-
+<svelte:head>
+<link href="https://fonts.googleapis.com/css?family=Roboto:100,400&display=swap" rel="stylesheet">
+</svelte:head>
 <div>
 	<Nav {segment}/>
 

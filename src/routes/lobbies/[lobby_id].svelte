@@ -90,25 +90,35 @@
     display: none;
   }
 
-  h1 {
+
+
+   h1 {
+   font-family: 'Roboto', serif;
     padding: 1vw;
     color: white;
     font-size: 60px;
-    font-family: fantasy;
+    font-weight: 100;
   }
+
+  div{
+  font-family: 'Roboto', serif;
+  font-weight: 100;
+  color: white;
+  }
+
 
   p {
     margin: 2vw 0vw 1vw 0vw;
     color: white;
-    font-family: fantasy;
   }
 
   .dropbtn {
-    background-color: #4caf50;
+    background-color: black;
     color: white;
     padding: 2vw;
     font-size: 20px;
-    font-family: fantasy;
+    font-family: 'Roboto', serif;
+    font-weight: 100;
     border: none;
     border-radius: 20px;
   }
@@ -156,7 +166,7 @@
 
   /* Change the background color of the dropdown button when the dropdown content is shown */
   .dropdown:hover .dropbtn {
-    background-color: #3e8e41;
+    background-color: darkgrey;
   }
 
   img {

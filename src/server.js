@@ -60,10 +60,10 @@ try {
 	mongoose.set("useFindAndModify", false); // New deprecation warnings
 	mongoose.set("useCreateIndex", true); // New deprecation warnings
 	mongoose.set("useUnifiedTopology", true);
-	mongoose.connect("mongodb://192.168.99.100:32768/chiubl", {
+	mongoose.connect("mongodb://localhost:32769/jbmay1497", {
 		useNewUrlParser: true, // New deprecation warnings
 	});
-	console.log(`MongoDB connected: mongodb://192.168.99.100:32768/chiubl`); //change to config file
+	console.log(`MongoDB connected: mongodb://localhost:32769/jbmay1497`); //change to config file
 } catch (err) {
 	console.log(err);
 	process.exit(-1);
