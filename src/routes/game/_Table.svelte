@@ -47,7 +47,7 @@
 
     .grid-container {
         display: grid;
-        grid-template-rows: 150px 100px 150px 100px 150px;
+        grid-template-rows: 150px 70px 150px 70px 150px;
         grid-template-columns: 175px 100px 175px 100px 175px;
         grid-template-areas: 
             "player1 . player2 . player3"
