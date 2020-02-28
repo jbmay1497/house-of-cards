@@ -6,7 +6,6 @@
 </script>
 
 <!-- Consider grid templating for card layout -->
-<h1>Game board</h1>
 
 {#if format}
     <Table/>
