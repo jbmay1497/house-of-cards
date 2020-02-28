@@ -205,7 +205,7 @@
                 <div>Welcome {username}!</div>
                 <div> lobby Code: {lobby_id}</div>
                 <div>Players:</div>
-                <Players {usernames}/>
+                <Players {usernames}/git >
             </form>
         </div>
     </div>
