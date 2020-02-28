@@ -164,5 +164,5 @@ http.listen(PORT, () => {
 
 //move somewhere else later
 let generateLobbyCode = () =>{
-	return Math.random().toString(36).replace('0.', '')
+	return Math.random().toString(36).replace('0.', '').substr(0,5);
 };
