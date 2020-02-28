@@ -1,4 +1,7 @@
+"use strict";
+
 import * as sapper from '@sapper/server';
+//import {setupDB} from "./database";
 
 let express = require("express"),
 	app = express(),
@@ -6,17 +9,23 @@ let express = require("express"),
 	sirv = require('sirv'),
 	http = require("http").Server(app),
  	session = require("express-session"),
+	mongoose = require("mongoose"),
 	logger = require("morgan");
+
 
 
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === 'development';
 
+//turn into function once db is set up
 //setup express pipeline
 
-//app.use(express.static(path.join(__dirname, "../static")));
+
+
 app.use(sirv('static', { dev }));
 app.use(logger("dev"));
+app.use(express.urlencoded());
+app.use(express.json());
 
 /*****************************************************************************************************/
 
@@ -35,11 +44,45 @@ let expSession = session({
 app.use(expSession);
 
 app.use(sapper.middleware({
-	session: (req, res) => ({
-		username: req.session.username ? req.session.username : "",
-		gameroom: req.session.gameroom ? req.session.gameroom : ""
-	})
+	session: (req, res) => {
+		return {
+			username: req.session.username,
+			lobby_id: req.session.lobby_id
+		};
+	}
 }));
+
+/*****************************************************************************************************/
+
+//set up db
+try {
+	// console.log("Connecting to MongoDB");
+	mongoose.set("useFindAndModify", false); // New deprecation warnings
+	mongoose.set("useCreateIndex", true); // New deprecation warnings
+	mongoose.set("useUnifiedTopology", true);
+	mongoose.connect("mongodb://localhost:32769/jbmay1497", {
+		useNewUrlParser: true, // New deprecation warnings
+	});
+	console.log(`MongoDB connected: mongodb://localhost:32769/jbmay1497`); //change to config file
+} catch (err) {
+	console.log(err);
+	process.exit(-1);
+}
+
+import lobby from "./models/lobby"
+
+app.models = {
+	Lobby: lobby
+};
+
+/*****************************************************************************************************/
+
+//import data controllers and routes
+import {lobby_funcs } from "./controllers/lobby";
+let lobby_controller = lobby_funcs(app);
+app.controllers = {
+	Lobby: lobby_controller
+};
 
 /*****************************************************************************************************/
 
@@ -48,10 +91,6 @@ let sharedsession = require("express-socket.io-session");
 let io = require('socket.io')(http);
 io.use(sharedsession(expSession));
 
-
-//will change to db updates later, but for now just want to get room generation working
-let gameRooms = {};
-export default gameRooms
 //adding websocket support
 io.on("connection", socket =>
 {
@@ -63,38 +102,47 @@ io.on("connection", socket =>
 		console.log("a user connected")
 	}
 
-	socket.on('createRoom', (username, fn) => {
-		//need to update session, and include this user as owner of room
+	socket.on('createLobby', (username, fn) => {
 		socket.handshake.session.reload(async ()=>{
-			let room_id = generateRoomCode();
-			socket.join(`${room_id}`);
-			console.log(`${username} joined room ${room_id}`);
+
+			const cur_username = socket.handshake.session.username;
+			const cur_lobby_id = socket.handshake.session.lobby_id;
+			if (cur_username || cur_lobby_id) return;
+			let lobby_id = generateLobbyCode();
+			//this to call controller function - kind of like redux
+			let lobby_data = await app.controllers.Lobby.createLobby(lobby_id, username);
+			if (lobby_data.error) return;
+			socket.join(`${lobby_id}`);
+			console.log(`${username} joined lobby ${lobby_id}`);
 			socket.handshake.session.username = username;
-			socket.handshake.session.gameroom = room_id;
+			socket.handshake.session.lobby_id = lobby_id;
 			socket.handshake.session.save();
-			gameRooms[room_id] = {};
-			gameRooms[room_id].usernames = [username];
-			gameRooms[room_id].count = 1;
-			gameRooms[room_id].room_id = room_id;
-			fn(room_id);
+			fn(lobby_id);
 		});
 	});
 
-	socket.on('joinRoom', (room_id, fn) => {
-		if (room_id in gameRooms){
-			socket.join(`${room_id}`);
-			fn(true, room_id);
-			//let num_users = io.nsps['/'].adapter.rooms[`${room_id}`].length;
-		}else{
-			fn(false, room_id)
-		}
+	//don't think we need, as preload requires a fetch
+	socket.on("getLobby", async (lobby_id, fn) => {
+		let lobby_data =  await app.controllers.Lobby.getLobby(lobby_id);
+		fn(lobby_data)
 	});
 
-	socket.on('test', msg => {
-		socket.emit('test', msg)
+	socket.on('joinLobby', async (lobby_id, username, fn) => {
+		socket.handshake.session.reload(async () =>{
+			let lobby = await app.controllers.Lobby.joinLobby(lobby_id, username);
+			if (!lobby.error){
+				socket.join(`${lobby_id}`);
+				io.to(`${lobby_id}`).emit("userJoined",
+				{count: lobby.count,
+				usernames: lobby.usernames});
+				socket.handshake.session.username = username;
+				socket.handshake.session.lobby_id = lobby_id;
+				socket.handshake.session.save();
+			}
+			fn(lobby);
+		});
 	});
 
-	//idt we need
 	socket.on('disconnect', () =>{
 		console.log('A user disconnected');
 	});
@@ -108,6 +156,6 @@ http.listen(PORT, () => {
 });
 
 //move somewhere else later
-let generateRoomCode = () =>{
+let generateLobbyCode = () =>{
 	return Math.random().toString(36).replace('0.', '')
-}
+};

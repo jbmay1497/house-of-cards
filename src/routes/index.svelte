@@ -22,6 +22,14 @@
 	}
 </style>
 
+<script context="module">
+    export async function preload(page, session) {
+        if (session.username && session.lobby_id){
+            this.redirect(302,`lobbies/${session.lobby_id}`)
+        }
+    }
+</script>
+
 <script>
     //only need this if socket connection needs to be open on home page - not likely
 
