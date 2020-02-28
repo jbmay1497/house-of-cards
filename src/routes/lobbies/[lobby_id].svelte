@@ -182,7 +182,7 @@
 
     <h1>Game Lobby</h1>
     <div class:hidden ={!joined}>
-    <div class="dropdown">
+        <div class="dropdown">
             <button class="dropbtn">Existing Games</button>
             <div class="dropdown-content">
                 <a href="game/oldmaid">Old Maid</a>
