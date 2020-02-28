@@ -51,7 +51,6 @@
 </script>
 
 <script>
-
      import Modal from '../../components/Modal.svelte';
 
      //allows us to retrieve the lobbies from the module context
@@ -93,11 +92,6 @@
 <style>
     .hidden{
     display: none;
-    }
-
-    body {
-        height: 100%;
-        background: linear-gradient(to right, black, seagreen, black);
     }
 
     .container{
@@ -172,6 +166,7 @@
         width: 15%;
         position: relative;
         padding: 1em;
+        border-radius: 25px;
     }
 </style>
 

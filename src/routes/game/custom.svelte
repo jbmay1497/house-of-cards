@@ -3,11 +3,6 @@
 </svelte:head>
 
 <style>
-    body {
-        height: 100%;
-        background: linear-gradient(to right, black, seagreen, black);
-    }
-
     img {
         width: 15%;
         position: relative;
