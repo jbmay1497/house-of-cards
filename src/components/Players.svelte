@@ -1,6 +1,6 @@
 <style>
  .playerPanel{
-    margin: 0.25rem;
+   margin: 0.25rem;
    min-width: 15em;
    border: 1px solid #dedede;
  }
@@ -11,6 +11,7 @@
     margin-inline-start: 0px;
     margin-inline-end: 0px;
     padding-left: 1rem;
+    color: white;
   }
 
   .playerList{
@@ -19,7 +20,7 @@
   }
 
   .playerItem{
-    color: grey;
+    color: white;
     padding-right: 1rem;
     padding-left: 20px;
   }
@@ -27,7 +28,8 @@
 </style>
 
 <script>
-export let usernames
+export let usernames;
+export let count;
 </script>
 
 <div class = "playerPanel">
