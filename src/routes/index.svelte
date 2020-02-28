@@ -1,26 +1,55 @@
 <style>
 
+    *{
+    box-sizing:border-box;
+    }
     h1 {
         font-family: 'Roboto',serif ;
         text-align: center;
-        font-size: 100px;
         font-weight: 100;
+        font-size: 100px;
         margin: .5em;
         padding: .4vw;
         color: white;
 
     }
 	button {
-	    font-weight: 400;
 	    font-family: 'Roboto',serif ;
-		margin: 1.5vw;
+	    font-weight: 400;
+        font-size: 15px;
+		margin: 1.5vw auto;
 		padding: 2vw;
 		position: relative;
 		top: 50%;
-		left: 25%;
 		width: 50%;
 		color: darkred;
+		display: flex;
+		justify-content: center
 	}
+
+	a{
+	font-family: 'Roboto',serif ;
+	font-weight: 100;
+	font-size: 100px;
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+    position: relative;
+    width: fit-content;
+    margin:0 auto;
+	}
+
+	.routes:hover::after {
+        position: absolute;
+        content: '';
+        width: calc(100% - 1em);
+        height: 2px;
+        margin-bottom:1%;
+        background-color: black;
+        display: block;
+        bottom: -1px;
+    }
+
 	@media (min-width: 480px) {
 		h1 {
 			font-size: 4em;
@@ -56,11 +85,15 @@
 	<h1>H O U S E</h1>
 	<h1>O F &nbsp; C A R D S</h1>
 
-	<button id="createButton" on:click={handleCreateClick}>
-		Create Room
-	</button>
+    <p><a class ="routes" href = "create"> Create Game </a></p>
+    <a class ="routes" href = "enter"> Join Game </a>
+    <!--<button id="createButton" on:click={handleCreateClick}>
+        Create Room
+    </button>
 
-	<button id="joinButton" on:click={handleJoinClick}>
-		Join Game
-	</button>
+    <button id="joinButton" on:click={handleJoinClick}>
+        Join Game
+    </button>-->
+
+
 </body>
