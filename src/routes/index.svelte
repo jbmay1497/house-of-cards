@@ -1,7 +1,7 @@
 <style>
 	body {
 		height: 100%;
-		background: linear-gradient(to right, black 0%, seagreen 20%, seagreen 80%, black 100%);
+		background: linear-gradient(to right, darkgreen 0%, seagreen 20%, seagreen 80%, darkgreen 100%);
 	}
 	h1 {
 		text-align: center;
