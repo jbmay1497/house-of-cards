@@ -90,8 +90,6 @@
     display: none;
   }
 
-
-
    h1 {
    font-family: 'Roboto', serif;
     padding: 1vw;
@@ -196,10 +194,10 @@
 
 <body>
   <div class:hidden={joined}>
-    <Modal {lobby_id} on:join={Joined} />
+    <Modal on:join={Joined} {lobby_id}  />
   </div>
 
-  <div class="grid-container">
+  <div class = "{!joined ? 'hidden' : 'grid-container'}" >
     <div class="player-info">
       <Players {usernames} />
     </div>
@@ -209,7 +207,7 @@
       <div>Welcome {username}!</div>
       <div>lobby Code: {lobby_id}</div>
 
-      <div class:hidden={!joined}>
+      <div >
         <div class="dropdown">
           <button class="dropbtn">Existing Games</button>
           <div class="dropdown-content">
