@@ -56,7 +56,6 @@
 
     //allows the modal to dispatch a joined event to the lobby component
     import { createEventDispatcher } from 'svelte';
-    console.log($session);
     const dispatch = createEventDispatcher();
 
     export let lobby_id;
