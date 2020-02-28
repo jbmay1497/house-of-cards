@@ -1,5 +1,5 @@
+<!-- Hardcode layout for old maid just for demo -->
 <script>
-	import Switch from './_Switch.svelte';
 	import Gameboard from './_Gameboard.svelte';
 	import Chat from '../../components/Chat.svelte';
 
@@ -22,11 +22,9 @@
 	<title>Playing</title>
 </svelte:head>
 
-<Switch on:toggle={() => toggle()} {format}/>
-
 <div class="grid-container">
 	<div class="grid-item">
-		<Gameboard format={format}/>
+		<!-- Add in hardcoded layout for the gameboard here -->
 	</div>
 	<div class="grid-item">
 		<Chat/>
