@@ -104,7 +104,7 @@
 	</div>
 
 	<div class:hidden ={!(createRoom && joinRoom)}>
-		<p><a class ="routes" on:click={handleCreateClick}> Create Game </a></p>
-		<a class ="routes" on:click={handleJoinClick}> Join Game </a>
+		<p><a href="/" class ="routes" on:click={handleCreateClick}> Create Game </a></p>
+		<a href="/" class ="routes" on:click={handleJoinClick}> Join Game </a>
 	</div>
 </body>
