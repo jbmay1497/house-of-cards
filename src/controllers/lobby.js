@@ -8,12 +8,9 @@ export const lobby_funcs = app => ({
             owner: username,
             count: 1
         };
-        console.log(lobby);
         let lobby_data = new app.models.Lobby(lobby);
-        console.log(lobby_data);
         try {
             await lobby_data.save();
-            console.log(lobby_data);
             return lobby_data;
         }catch(err){
             return {error: "Lobby could not be created. Please try again"};

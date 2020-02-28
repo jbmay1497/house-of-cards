@@ -17,7 +17,6 @@
         };
 
         session.set(s_new);
-         console.log("got to enterLobby");
         goto(`lobbies/${lobby_id}`);
         };
 </script>

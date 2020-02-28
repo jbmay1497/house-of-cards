@@ -1,7 +1,6 @@
 "use strict";
 
 import Lobby from "../../../models/lobby"
-import {lobby_funcs} from "../../../controllers/lobby";
 
 export async function get(req, res, next){
 
