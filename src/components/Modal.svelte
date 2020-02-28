@@ -11,11 +11,12 @@
         transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
     }
     .modal-content {
+
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background-color: white;
+        background-color: black;
         padding: .5rem 1.5rem;
         width: 24rem;
         border-radius: 0.5rem;
@@ -23,15 +24,23 @@
         text-align: center;
     }
 
+    h1{
+    font-family: "Roboto", serif;
+    font-weight: 100;
+    }
+
     button:hover {
-        background-color: darkblue;
+        background-color: darkgrey;
     }
 
     button {
+      font-family: "Roboto", serif;
+     font-weight: 100;
       max-width: 200px;
       min-width: 150px;
       max-height: 2em;
-      background: #6495ed;
+      background: white;
+      color: black;
       border: none;
       border-radius: 5px;
       line-height: 2em;
