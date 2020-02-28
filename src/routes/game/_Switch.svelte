@@ -9,8 +9,8 @@
   .switch {
     position: relative;
     display: inline-block;
-    width: 60px;
-    height: 34px;
+    width: 54px;
+    height: 30px;
   }
 
   .switch input {
@@ -34,8 +34,8 @@
   .slider:before {
     position: absolute;
     content: "";
-    height: 26px;
-    width: 26px;
+    height: 22px;
+    width: 22px;
     left: 4px;
     bottom: 4px;
     background-color: white;
@@ -52,9 +52,9 @@
   }
 
   input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
+    -webkit-transform: translateX(24px);
+    -ms-transform: translateX(24px);
+    transform: translateX(24px);
   }
 
   .slider.round {
@@ -63,6 +63,12 @@
 
   .slider.round:before {
     border-radius: 50%;
+  }
+
+  .format {
+    font-family: 'Roboto';
+    font-weight: 100;
+    color: white;
   }
 </style>
 
@@ -73,3 +79,4 @@
     bind:checked={format} />
   <span class="slider round" />
 </label>
+<span class="format">{#if format}Table{:else}Hand{/if} Mode</span>

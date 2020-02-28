@@ -3,24 +3,56 @@
 		display: none;
 	}
 
-	h1 {
-		text-align: center;
-		font-size: 100px;
-		font-weight: 600;
-		margin: .5em;
-		padding: .4vw;
-		color: white;
-		font-family: fantasy;
-	}
+    *{
+    box-sizing:border-box;
+    }
+    h1 {
+        font-family: 'Roboto',serif ;
+        text-align: center;
+        font-weight: 100;
+        font-size: 100px;
+        margin: .5em;
+        padding: .4vw;
+        color: white;
+
+    }
 	button {
-		margin: 1.5vw;
+	    font-family: 'Roboto',serif ;
+	    font-weight: 400;
+        font-size: 15px;
+		margin: 1.5vw auto;
 		padding: 2vw;
 		position: relative;
 		top: 50%;
-		left: 25%;
 		width: 50%;
 		color: darkred;
+		display: flex;
+		justify-content: center
 	}
+
+	a{
+	font-family: 'Roboto',serif ;
+	font-weight: 100;
+	font-size: 100px;
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+    position: relative;
+    width: fit-content;
+    margin:0 auto;
+	}
+
+	.routes:hover::after {
+        position: absolute;
+        content: '';
+        width: calc(100% - 1em);
+        height: 2px;
+        margin-bottom:1%;
+        background-color: black;
+        display: block;
+        bottom: -1px;
+    }
+
 	@media (min-width: 480px) {
 		h1 {
 			font-size: 4em;
@@ -59,8 +91,8 @@
 
 <body>
 	<br>
-	<h1>H &nbsp;O &nbsp;U &nbsp;S &nbsp;E</h1>
-	<h1>o f&nbsp;&nbsp;&nbsp; C &nbsp;A &nbsp;R &nbsp;D &nbsp;S</h1>
+	<h1>H O U S E</h1>
+	<h1>O F &nbsp; C A R D S</h1>
 
 	<div class:hidden ={createRoom}>
 		<ModalCreateRoom/>
@@ -71,12 +103,17 @@
 	</div>
 
 	<div class:hidden ={!(createRoom && joinRoom)}>
-		<button id="createButton" on:click={handleCreateClick}>
-			Create Room
-		</button>
-
-		<button id="joinButton" on:click={handleJoinClick}>
-			Join Game
-		</button>
+		<p><a class ="routes" on:click={handleCreateClick}> Create Game </a></p>
+		<a class ="routes" on:click={handleJoinClick}> Join Game </a>
 	</div>
+
+    <!--<button id="createButton" on:click={handleCreateClick}>
+        Create Room
+    </button>
+
+    <button id="joinButton" on:click={handleJoinClick}>
+        Join Game
+    </button>-->
+
+
 </body>

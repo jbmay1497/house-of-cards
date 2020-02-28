@@ -2,10 +2,14 @@
     .board {
         grid-area: game;
         background-color: antiquewhite;
+        text-align: center;
+        padding: 100px 0px;
     }
 
     .player {
         background-color: burlywood;
+        text-align: center;
+        padding: 50px 0px;
     }
 
     .player-1{
@@ -43,8 +47,8 @@
 
     .grid-container {
         display: grid;
-        grid-template-rows: 100px 150px 100px 150px 100px;
-        grid-template-columns: 100px 150px 100px 150px 100px;
+        grid-template-rows: 150px 70px 150px 70px 150px;
+        grid-template-columns: 175px 100px 175px 100px 175px;
         grid-template-areas: 
             "player1 . player2 . player3"
             ". game game game ."
@@ -54,7 +58,6 @@
     }
 </style>
 
-<h2>Table style</h2>
 <div class="grid-container">
     <div class="player player-1">Player 1</div>
     <div class="player player-2">Player 2</div>

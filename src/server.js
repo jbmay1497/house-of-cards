@@ -60,10 +60,10 @@ try {
 	mongoose.set("useFindAndModify", false); // New deprecation warnings
 	mongoose.set("useCreateIndex", true); // New deprecation warnings
 	mongoose.set("useUnifiedTopology", true);
-	mongoose.connect("mongodb://localhost:32769/hocc", {
+	mongoose.connect("mongodb://localhost:32769/jbmay1497", {
 		useNewUrlParser: true, // New deprecation warnings
 	});
-	console.log(`MongoDB connected: mongodb://localhost:32769/hocc`); //change to config file
+	console.log(`MongoDB connected: mongodb://localhost:32769/jbmay1497`); //change to config file
 } catch (err) {
 	console.log(err);
 	process.exit(-1);
@@ -141,6 +141,13 @@ io.on("connection", socket =>
 			}
 			fn(lobby);
 		});
+	});
+
+	socket.on('sendMessage', async message =>{
+		//should probably pass username and lobby id from chat to error check
+		let username = socket.handshake.session.username;
+		let lobby_id = socket.handshake.session.lobby_id;
+		io.to(`${lobby_id}`).emit("messageReceived", `${username}: ${message}`)
 	});
 
 	socket.on('disconnect', () =>{

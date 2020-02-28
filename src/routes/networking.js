@@ -1,6 +1,7 @@
 import io from "socket.io-client";
 const socket = io();
 import {updateLobby} from "./lobbies/[lobby_id].svelte";
+import {updateMessages} from "../components/chatbox/Chat.svelte";
 
 //called by client.svelte to set up client socket
 //sets up event listeners on the client side sent from the server
@@ -34,6 +35,13 @@ export const getLobby = (lobby_id, test) =>
 
 };
 
+export const sendMessage = message =>
+{
+
+    socket.emit("sendMessage", message)
+
+};
+
 socket.on("userJoined", updateLobby);
 
-
+socket.on("messageReceived", updateMessages);

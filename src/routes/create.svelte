@@ -2,6 +2,18 @@
     <title>Create Lobby</title>
 </svelte:head>
 
+<style>
+    h1{
+     font-family: 'Roboto',serif ;
+      font-weight: 100;
+      color:white;
+    }
+    div{
+        font-family: 'Roboto',serif ;
+        font-weight: 100;
+        color: white;
+    }
+</style>
 <script>
     import { stores } from '@sapper/app';
      const { session } = stores();
@@ -24,7 +36,7 @@
 
 <h1>Create</h1>
 <form on:submit|preventDefault={() => createLobby(username, enterLobby)}>
-    Name: <label><input type="text" name="name" bind:value = {username}></label><br>
+    <div>Name: <input type="text" name="name" bind:value = {username}></div>
     <input type="submit" value="Submit">
 </form>
 
