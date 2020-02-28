@@ -5,7 +5,7 @@
 <style>
     body {
         height: 100%;
-        background: linear-gradient(to right, seagreen, black);
+        background: linear-gradient(to right, black, seagreen, black);
     }
 
     .container{
@@ -16,36 +16,47 @@
     h1 {
         padding: 1vw;
         color: white;
+        font-size: 60px;
+        font-family: fantasy;
+    }
+
+    p {
+        margin: 2vw 0vw 1vw 0vw;
+        color: white;
+        font-family: fantasy;
     }
 
     .dropbtn {
         background-color: #4CAF50;
         color: white;
-        padding: 1vw;
-        font-size: 16px;
+        padding: 2vw;
+        font-size: 20px;
+        font-family: fantasy;
         border: none;
+        border-radius: 20px;
     }
 
     /* The container <div> - needed to position the dropdown content */
     .dropdown {
         position: relative;
-        right: 20%;
+        right: 15%;
         display: inline-block;
     }
 
     .custom {
         position: relative;
-        left: 20%;
+        left: 15%;
         display: inline-block;
     }
 
     /* Dropdown Content (Hidden by Default) */
     .dropdown-content {
+        position: absolute;
         display: none;
         background-color: #f1f1f1;
         max-width: 120px;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1;
+        z-index: 99;
     }
 
     /* Links inside the dropdown */
@@ -73,7 +84,11 @@
 </style>
 
 <script>
+    import {goto} from "@sapper/app"
 
+    function handleCardClick() {
+        goto("game/custom")
+    }
 </script>
 
 <body class="container">
@@ -92,7 +107,10 @@
         <button class="dropbtn">Custom Game</button>
     </div>
 
+    <p>
+        Or click below to play with a virtual card deck!
+    </p>
     <figure>
-        <img src = 'images/face_down.jpg' alt="face down card"/>
+        <img on:click={handleCardClick} src = 'images/face_down.jpg' alt="face down card"/>
     </figure>
 </body>
