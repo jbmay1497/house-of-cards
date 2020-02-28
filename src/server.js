@@ -143,6 +143,13 @@ io.on("connection", socket =>
 		});
 	});
 
+	socket.on('sendMessage', async message =>{
+		//should probably pass username and lobby id from chat to error check
+		let username = socket.handshake.session.username;
+		let lobby_id = socket.handshake.session.lobby_id;
+		io.to(`${lobby_id}`).emit("messageReceived", `${username}: ${message}`)
+	});
+
 	socket.on('disconnect', () =>{
 		console.log('A user disconnected');
 	});
