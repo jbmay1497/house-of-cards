@@ -47,6 +47,7 @@
 <script>
   import Modal from "../../components/Modal.svelte";
   import Players from "../../components/Players.svelte";
+  import Chat from "../../components/chatbox/Chat.svelte";
 
   //allows us to retrieve the lobbies from the module context
 
@@ -167,14 +168,14 @@
 
   .grid-container {
     display: grid;
-    grid-template-columns: 200px auto;
+    grid-template-columns: 200px auto 200px;
   }
 
   .main-stuff {
     text-align: center;
   }
 
-  .room-info {
+  .player-info {
     display: block;
   }
 </style>
@@ -189,8 +190,7 @@
   </div>
 
   <div class="grid-container">
-    <div class="room-info">
-      <div>Players:</div>
+    <div class="player-info">
       <Players {usernames} />
     </div>
 
@@ -198,7 +198,7 @@
       <h1>Game Lobby</h1>
       <div>Welcome {username}!</div>
       <div>lobby Code: {lobby_id}</div>
-      
+
       <div class:hidden={!joined}>
         <div class="dropdown">
           <button class="dropbtn">Existing Games</button>
@@ -222,6 +222,10 @@
         </figure>
       </div>
 
+    </div>
+
+    <div>
+        <Chat />
     </div>
   </div>
 
