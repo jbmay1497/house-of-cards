@@ -181,39 +181,41 @@
     </div>
 
     <h1>Game Lobby</h1>
-
+    <div class:hidden ={!joined}>
     <div class="dropdown">
-        <button class="dropbtn">Existing Games</button>
-        <div class="dropdown-content">
-            <a href="game/oldmaid">Old Maid</a>
-            <a href="game">War</a>
-            <a href="game">Solitaire</a>
+            <button class="dropbtn">Existing Games</button>
+            <div class="dropdown-content">
+                <a href="game/oldmaid">Old Maid</a>
+                <a href="game">War</a>
+                <a href="game">Solitaire</a>
+            </div>
+        </div>
+
+        <div class="custom">
+            <button class="dropbtn">Custom Game</button>
+        </div>
+
+        <p>
+            Or click below to play with a virtual card deck!
+        </p>
+        <figure>
+            <img on:click={handleCardClick} src = 'images/face_down.jpg' alt="face down card"/>
+        </figure>
+
+        <div>
+            <form>
+                <div>Welcome {username}!</div>
+                <div> lobby Code: {lobby_id}</div>
+                <div>Players:</div>
+                <ul>
+                    {#each usernames as username, i}
+                        <li>
+                            {i+1} : {username}
+                        </li>
+                    {/each}
+                </ul>
+            </form>
         </div>
     </div>
 
-    <div class="custom">
-        <button class="dropbtn">Custom Game</button>
-    </div>
-
-    <p>
-        Or click below to play with a virtual card deck!
-    </p>
-    <figure>
-        <img on:click={handleCardClick} src = 'images/face_down.jpg' alt="face down card"/>
-    </figure>
-
-    <div class:hidden ={!joined}>
-        <form>
-            <div>Welcome {username}!</div>
-            <div> lobby Code: {lobby_id}</div>
-            <div>Players:</div>
-            <ul>
-                {#each usernames as username, i}
-                    <li>
-                        {i+1} : {username}
-                    </li>
-                {/each}
-            </ul>
-        </form>
-    </div>
 </body>
