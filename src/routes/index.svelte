@@ -3,9 +3,10 @@
 		display: none;
 	}
 
-    *{
+    * {
     box-sizing:border-box;
     }
+
     h1 {
         font-family: 'Roboto',serif ;
         text-align: center;
@@ -14,8 +15,8 @@
         margin: .5em;
         padding: .4vw;
         color: white;
-
     }
+
 	button {
 	    font-family: 'Roboto',serif ;
 	    font-weight: 400;
@@ -30,7 +31,7 @@
 		justify-content: center
 	}
 
-	a{
+	a {
 	font-family: 'Roboto',serif ;
 	font-weight: 100;
 	font-size: 100px;
@@ -106,14 +107,4 @@
 		<p><a class ="routes" on:click={handleCreateClick}> Create Game </a></p>
 		<a class ="routes" on:click={handleJoinClick}> Join Game </a>
 	</div>
-
-    <!--<button id="createButton" on:click={handleCreateClick}>
-        Create Room
-    </button>
-
-    <button id="joinButton" on:click={handleJoinClick}>
-        Join Game
-    </button>-->
-
-
 </body>

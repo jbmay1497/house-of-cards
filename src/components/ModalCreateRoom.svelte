@@ -11,7 +11,6 @@
         transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
     }
     .modal-content {
-
         position: absolute;
         top: 50%;
         left: 50%;
@@ -52,7 +51,10 @@
         display: block;
         margin : 0.5em auto;
         width: 75%;
+    }
 
+    h1 {
+        color: white;
     }
 </style>
 

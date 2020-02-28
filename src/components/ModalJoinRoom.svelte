@@ -52,7 +52,14 @@
         display: block;
         margin : 0.5em auto;
         width: 75%;
+    }
 
+    h1 {
+        color: white;
+    }
+
+    label {
+        color: white;
     }
 </style>
 
