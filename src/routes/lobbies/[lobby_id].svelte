@@ -204,8 +204,8 @@
 
     <div class="main-stuff">
       <h1>Game Lobby</h1>
-      <div>Welcome {username}!</div>
-      <div>lobby Code: {lobby_id}</div>
+      <div>Welcome, {username}!</div>
+      <div>Lobby Code: {lobby_id}</div>
 
       <div >
         <div class="dropdown">
