@@ -54,7 +54,7 @@
 <body>
 	<br>
 	<h1>H O U S E</h1>
-	<h1>O F       C A R D S</h1>
+	<h1>O F &nbsp; C A R D S</h1>
 
 	<button id="createButton" on:click={handleCreateClick}>
 		Create Room
