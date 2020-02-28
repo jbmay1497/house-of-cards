@@ -57,10 +57,6 @@
     h1 {
         color: white;
     }
-
-    label {
-        color: white;
-    }
 </style>
 
 <script>
