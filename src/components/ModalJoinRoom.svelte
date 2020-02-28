@@ -32,6 +32,11 @@
     button:hover {
         background-color: darkgrey;
     }
+    div{
+       font-family: "Roboto", serif;
+       font-weight:100;
+       color:white;
+       }
 
     button {
         font-family: "Roboto", serif;
@@ -92,9 +97,13 @@
     <div class="modal-content">
         <h1>Join a Room</h1>
         <form on:submit|preventDefault={() => joinLobby(lobby_id, username, enterLobby)}>
-            Code: <label><input type="text" name="code" bind:value = {lobby_id}></label><br>
-            Name: <label><input type="text" name="name" bind:value = {username}></label><br>
+        <div>
+        Code: <input type="text" name="code" bind:value = {lobby_id}><br>
+        Name: <input type="text" name="name" bind:value = {username}><br>
+        </div>
+
             <button on:click ={returnToIndex}>Go Back</button>
+
             <button type="submit">Join</button>
         </form>
     </div>
