@@ -9,7 +9,7 @@
 
 <style>
     .game-area {
-        padding: 5%;
+        padding: 0px 5%;
     }
 </style>
 
