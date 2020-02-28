@@ -48,37 +48,40 @@
 </style>
 
 <script>
-    //This modal is to allow users to join a room by entering the gameroom url
+    //This modal is to allow users to join a lobby by entering the lobby url
     import {goto} from "@sapper/app"
     import { stores } from '@sapper/app';
-    import {joinRoom } from "../routes/networking";
+    import {joinLobby } from "../routes/networking";
     const { session } = stores();
 
-    //allows the modal to dispatch a joined event to the gameroom component
+    //allows the modal to dispatch a joined event to the lobby component
     import { createEventDispatcher } from 'svelte';
-
+    console.log($session);
     const dispatch = createEventDispatcher();
 
-    export let room_id;
+    export let lobby_id;
     let username;
 
-    //sets session with room_id and username, and informs the gameroom
+    //sets session with lobby_id and username, and informs the lobby
     //that a new user joined
-    let enterRoom = joined => {
-            if (joined){
-                let s_new = {
-                    username: username,
-                    gameroom: room_id
-                };
-                session.set(s_new);
-                dispatch('join', {
-                	joined: true,
-                	username: username
-                });
+    let enterLobby = lobby => {
+         if (!lobby.error){
+            let s_new = {
+                username: username,
+                lobby_id: lobby_id
+            };
+            session.set(s_new);
+            dispatch('join', {
+                joined: true,
+                username: username
+            });
 
-            }
+          }else{
+             document.getElementById('error-container').innerHTML = lobby.error;
+             username = "";
+          }
 
-        };
+     };
 
     let returnToIndex = ()=>{
         goto("");
@@ -89,8 +92,9 @@
  <div class="modal-content">
 
 <h1>Enter Username</h1>
+<div id = "error-container"></div>
 <input type="text" name="username" bind:value = {username}>
 <button on:click ={returnToIndex}>Go Back</button>
-<button disabled = {!username} on:click={() => joinRoom(username, room_id, enterRoom)}>Enter</button>
+<button disabled = {!username} on:click={() => joinLobby(lobby_id, username, enterLobby)}>Enter</button>
 </div>
 </div>

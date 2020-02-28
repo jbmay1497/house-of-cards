@@ -1,20 +1,28 @@
 <svelte:head>
-	<title>Join room</title>
+	<title>Join Lobby</title>
 </svelte:head>
 
 <script>
     import {goto} from "@sapper/app"
-    import {joinRoom } from "./networking";
+    import {joinLobby } from "./networking";
+    import { stores } from '@sapper/app';
+    const { session } = stores();
 
-    let room_id = "";
-    //will be used when session is set up
+    let lobby_id = "";
     let username = "";
 
-    let enterRoom = (joined, room_id) => {
-        if (joined){
-            goto("lobby");
+    let enterLobby = lobby => {
+        if (!lobby.error){
+
+            let s_new = {
+                username: username,
+                lobby_id: lobby_id
+             };
+            session.set(s_new);
+            goto(`lobbies/${lobby_id}`);
         }else{
-            document.getElementById('error-container').innerHTML = `Room code "${room_id}" does not exist! try another code`;
+            document.getElementById('error-container').innerHTML = lobby.error;
+            username = "";
         }
 
     };
@@ -22,8 +30,8 @@
 
 <h1>Enter</h1>
 <div id = "error-container"></div>
-<form on:submit|preventDefault={() => joinRoom(room_id, enterRoom)}>
-	Code: <label><input type="text" name="code" bind:value = {room_id}></label><br>
+<form on:submit|preventDefault={() => joinLobby(lobby_id, username, enterLobby)}>
+	Code: <label><input type="text" name="code" bind:value = {lobby_id}></label><br>
 	Name: <label><input type="text" name="name" bind:value = {username}></label><br>
 	<input type="submit" value="Submit">
 </form>
