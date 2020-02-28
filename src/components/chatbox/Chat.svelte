@@ -1,24 +1,28 @@
 <script>
-  import Comment from "./_Comment.svelte";
+  import CommentBox from "./_CommentBox.svelte";
 </script>
 
 <style>
   .container {
     display: block;
-    min-height: 60%;
+    position: absolute;
+    height: 30em;
     flex-grow: 1;
     background-color: beige;
-    padding: 10px;
+    margin-right: 1em;
   }
   .input {
-    bottom: 5px;
+    position: absolute;
+    padding: 10px;
+    bottom: 0px;
+    border-top: 3px solid gray;
   }
 </style>
 
 <div class="container">
-  <Comment />
+  <CommentBox />
   <div class="input">
-      <input type="text" />
-      <button>>></button>
+    <input type="text" />
+    <button>>></button>
   </div>
 </div>

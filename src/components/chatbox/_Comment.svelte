@@ -1,1 +1,5 @@
-<p>Chat messages here somewhere</p>
+<script>
+    export let message;
+</script>
+
+<li>{message}</li>

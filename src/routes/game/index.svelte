@@ -13,7 +13,7 @@
 <style>
 	.grid-container {
 		display: grid;
-		grid-template-columns: auto 200px;
+		grid-template-columns: auto 250px;
 	}
 </style>
 
