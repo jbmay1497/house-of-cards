@@ -79,8 +79,8 @@
 
      //handles joined event from the modal
      const Joined = event => {
-        joined = event.detail.joined;
-        username = event.detail.username;
+         joined = event.detail.joined;
+         username = event.detail.username;
      }
 
      import {goto} from "@sapper/app"
@@ -180,7 +180,7 @@
         <Modal {lobby_id} on:join = {Joined}/>
     </div>
 
-    <h1>LOBBY</h1>
+    <h1>Game Lobby</h1>
 
     <div class="dropdown">
         <button class="dropbtn">Existing Games</button>
@@ -203,7 +203,6 @@
     </figure>
 
     <div class:hidden ={!joined}>
-        <h1>Game Lobby</h1>
         <form>
             <div>Welcome {username}!</div>
             <div> lobby Code: {lobby_id}</div>
