@@ -1,6 +1,6 @@
 <script>
-    import Table from './_Table.svelte';
-    import Hand from './_Hand.svelte';
+    import Table from './Table.svelte';
+    import Hand from './Hand.svelte';
     
     export let format = true;
 </script>

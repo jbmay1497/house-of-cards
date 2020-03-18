@@ -23,7 +23,7 @@
 
 <div class="grid-container">
     <div class="grid-item">
-        Other players? Draw and discard piles?
+        
     </div>
     <div class="grid-item hand">
         <img class="card" src="images/2_of_clubs.png" alt="2 of clubs" />
