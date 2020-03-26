@@ -1,19 +1,6 @@
-<svelte:head>
-    <title>Custom</title>
-</svelte:head>
-
-<style>
-    img {
-        position: relative;
-        padding: 1em;
-    }
-
-    div {
-        text-align: center;
-    }
-</style>
-
 <script>
+    import Draggable from "./_Drag.svelte";
+
     let shuffleCards = (includeJokers = false) => {
         /* Return an array of 52 cards (if jokers is false, 54 otherwise) */
         let cards = [];
@@ -38,10 +25,92 @@
         }
         return deck;
     };
+
+    let objects = [
+        {
+            rect: {
+                x: 520,
+                y: 130,
+                w: 0,
+                h: 0
+            },
+            draggable: true
+        },
+        {
+            rect: {
+                x: 520,
+                y: 130,
+                w: 0,
+                h: 0
+            },
+            draggable: true
+        },
+        {
+            rect: {
+                x: 520,
+                y: 130,
+                w: 0,
+                h: 0
+            },
+            draggable: true,
+        },
+        {
+            rect: {
+                x: 520,
+                y: 130,
+                w: 0,
+                h: 0
+            },
+            draggable: true
+        },
+        {
+            rect: {
+                x: 520,
+                y: 130,
+                w: 0,
+                h: 0
+            },
+            draggable: true
+        },
+        {
+            rect: {
+                x: 520,
+                y: 130,
+                w: 0,
+                h: 0
+            },
+            draggable: true
+        },
+        {
+            rect: {
+                x: 520,
+                y: 130,
+                w: 0,
+                h: 0
+            },
+            draggable: true
+        },
+        {
+            rect: {
+                x: 520,
+                y: 130,
+                w: 0,
+                h: 0
+            },
+            draggable: true
+        },
+        {
+            rect: {
+                x: 520,
+                y: 130,
+                w: 0,
+                h: 0
+            },
+            draggable: true
+        }
+    ];
 </script>
 
-<body class="container">
-    <div>
-        <img src = 'images/face_down.jpg' alt="face down card"/>
-    </div>
-</body>
+{#each objects as obj}
+    <Draggable {...obj}>{obj.text}</Draggable>
+{/each}
