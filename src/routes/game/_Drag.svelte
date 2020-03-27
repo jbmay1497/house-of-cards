@@ -228,7 +228,6 @@
 <div bind:this={el} class="rect" style="{style}" on:mousedown={event => handleMouseDown(event)}>
     <img draggable="false" src = 'images/face_down.jpg' alt="face down card"/>
 </div>
-
 <style>
     img {
         position: relative;
