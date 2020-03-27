@@ -1,5 +1,5 @@
 <script>
-    import Draggable from "./_Drag.svelte";
+    import Draggable from "../../components/Drag.svelte";
 
     let shuffleCards = (includeJokers = false) => {
         /* Return an array of 52 cards (if jokers is false, 54 otherwise) */
@@ -29,8 +29,8 @@
     let objects = [
         {
             rect: {
-                x: 520,
-                y: 130,
+                x: 560,
+                y: 200,
                 w: 0,
                 h: 0
             },
@@ -38,8 +38,8 @@
         },
         {
             rect: {
-                x: 520,
-                y: 130,
+                x: 560,
+                y: 200,
                 w: 0,
                 h: 0
             },
@@ -47,8 +47,8 @@
         },
         {
             rect: {
-                x: 520,
-                y: 130,
+                x: 560,
+                y: 200,
                 w: 0,
                 h: 0
             },
@@ -56,8 +56,8 @@
         },
         {
             rect: {
-                x: 520,
-                y: 130,
+                x: 560,
+                y: 200,
                 w: 0,
                 h: 0
             },
@@ -65,8 +65,8 @@
         },
         {
             rect: {
-                x: 520,
-                y: 130,
+                x: 560,
+                y: 200,
                 w: 0,
                 h: 0
             },
@@ -74,8 +74,8 @@
         },
         {
             rect: {
-                x: 520,
-                y: 130,
+                x: 560,
+                y: 200,
                 w: 0,
                 h: 0
             },
@@ -83,8 +83,8 @@
         },
         {
             rect: {
-                x: 520,
-                y: 130,
+                x: 560,
+                y: 200,
                 w: 0,
                 h: 0
             },
@@ -92,8 +92,8 @@
         },
         {
             rect: {
-                x: 520,
-                y: 130,
+                x: 560,
+                y: 200,
                 w: 0,
                 h: 0
             },
@@ -101,8 +101,8 @@
         },
         {
             rect: {
-                x: 520,
-                y: 130,
+                x: 560,
+                y: 200,
                 w: 0,
                 h: 0
             },

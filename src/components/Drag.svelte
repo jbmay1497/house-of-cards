@@ -5,7 +5,7 @@
 <script>
     import { onDestroy, onMount } from "svelte";
 
-    export let rect = { x: 0, y: 0, w: 10, h: 10 };
+    export let rect = { x: 0, y: 0, w: 100, h: 100 };
     export let draggable = true;
     export let borderWidth = 0;
     export let snap = 1;
@@ -231,8 +231,8 @@
 <style>
     img {
         position: relative;
-        border-radius: 10px;
-
+        border-radius: 5px;
+        height: 10vw;
     }
 
     div {
