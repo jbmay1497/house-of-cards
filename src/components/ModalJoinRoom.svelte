@@ -66,12 +66,23 @@
 
 <script>
     import {goto} from "@sapper/app"
-    import {joinLobby } from "../routes/networking";
+    import {getContext} from 'svelte';
+    const sendMessage = getContext('sendMessage');
+    //import {sendMessage } from "../routes/networking";
     import { stores } from '@sapper/app';
     const { session } = stores();
 
     let lobby_id = "";
     let username = "";
+
+    let joinLobby = () =>{
+            sendMessage({
+                action: "joinLobby",
+                username: username,
+                lobby_id: lobby_id,
+                enterLobby: enterLobby
+            })
+        };
 
     let enterLobby = lobby => {
         if (!lobby.error){
@@ -96,7 +107,7 @@
 <div class="modal">
     <div class="modal-content">
         <h1>Join a Room</h1>
-        <form on:submit|preventDefault={() => joinLobby(lobby_id, username, enterLobby)}>
+        <form on:submit|preventDefault={joinLobby}>
         <div>
         Code: <input type="text" name="code" bind:value = {lobby_id}><br>
         Name: <input type="text" name="name" bind:value = {username}><br>

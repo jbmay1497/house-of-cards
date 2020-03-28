@@ -24,20 +24,26 @@
     padding-right: 1rem;
     padding-left: 20px;
   }
+  .host {
+  font-weight: bold;
+  }
 
 </style>
 
 <script>
 export let usernames;
-export let count;
+export let host;
 </script>
 
 <div class = "playerPanel">
     <div class = "playerHeader">Players:</div>
     <div class = "playerList">
         {#each usernames as username, i}
-            <li class = playerItem>
+            <li class:host = "{i == 0}" class = playerItem>
                 {i+1} : {username}
+                {#if i == 0}
+                 (Host)
+                {/if}
             </li>
         {/each}
     </div>

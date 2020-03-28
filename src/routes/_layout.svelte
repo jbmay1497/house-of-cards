@@ -1,7 +1,24 @@
 <script>
 	import Nav from '../components/Nav.svelte';
-
 	export let segment;
+	import { sendMessage } from "./networking";
+	import {setContext} from 'svelte';
+	setContext('sendMessage', sendMessage);
+	/*
+    import io from "socket.io-client";
+    let socket = io();
+
+
+	const connect = () =>{
+        socket.on('connect', () => {
+            console.log('Connected to server!');
+        });
+    };
+
+	connect();
+
+	setContext('socket', socket);*/
+
 </script>
 
 <style>
@@ -31,4 +48,3 @@
 		<slot></slot>
 	</main>
 </div>
-

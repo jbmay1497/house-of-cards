@@ -60,7 +60,9 @@
     //This modal is to allow users to join a lobby by entering the lobby url
     import {goto} from "@sapper/app"
     import { stores } from '@sapper/app';
-    import {joinLobby } from "../routes/networking";
+    import {getContext} from 'svelte';
+    const sendMessage = getContext('sendMessage');
+    //import {sendMessage } from "../routes/networking";
     const { session } = stores();
 
     //allows the modal to dispatch a joined event to the lobby component
@@ -69,6 +71,16 @@
 
     export let lobby_id;
     let username;
+
+     let joinLobby = () =>{
+        sendMessage({
+            action: "joinLobby",
+            username: username,
+            lobby_id: lobby_id,
+            enterLobby: enterLobby
+        })
+     };
+
 
     //sets session with lobby_id and username, and informs the lobby
     //that a new user joined
@@ -103,6 +115,6 @@
 <div id = "error-container"></div>
 <input type="text" name="username" bind:value = {username}>
 <button on:click ={returnToIndex}>Go Back</button>
-<button disabled = {!username} on:click={() => joinLobby(lobby_id, username, enterLobby)}>Enter</button>
+<button disabled = {!username} on:click={joinLobby}>Enter</button>
 </div>
 </div>

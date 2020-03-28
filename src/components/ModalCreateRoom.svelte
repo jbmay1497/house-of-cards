@@ -68,9 +68,19 @@
     import { stores } from '@sapper/app';
     const { session } = stores();
     import {goto} from "@sapper/app"
-    import { createLobby } from  "../routes/networking";
+    import {getContext} from 'svelte';
+    const sendMessage = getContext('sendMessage');
+    // import { getContext } from  "../routes/networking";
 
     let username = "";
+
+    let createLobby = () =>{
+        sendMessage({
+            action: "createLobby",
+            username: username,
+            enterLobby: enterLobby
+        })
+    };
 
     let enterLobby = lobby_id => {
         let s_new = {
@@ -85,12 +95,13 @@
     let returnToIndex = ()=>{
         goto("");
     }
+
 </script>
 
 <div class="modal">
     <div class="modal-content">
-        <h1>Create a Room</h1>
-        <form on:submit|preventDefault={() => createLobby(username, enterLobby)}>
+        <h1>Create a Lobby</h1>
+        <form on:submit|preventDefault={createLobby}>
            <div>
             Name: <input type="text" name="name" bind:value = {username}><br>
             </div>

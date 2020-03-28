@@ -3,24 +3,12 @@
 </svelte:head>
 
 <script context="module">
-  //these keep track of new users who join
-  //allows us to update the lobbys for other users in the lobby
-  //when a new user joins, without having to fetch from the db.
-  //They must be stores so they can be reactive within the component
-  import { writable } from "svelte/store";
-  const new_count = writable(0);
-  const new_usernames = writable([]);
-
-  //called when a new user enters the lobby
-  export function updateLobby(data) {
-    console.log(`Updating lobby`);
-    new_count.set(data.count);
-    new_usernames.set(data.usernames);
-  }
+    //import {new_usernames} from "./stores.js";
 
   export async function preload({ params }, session) {
     //checks if the user enters the lobbies through the /enter route,
     //or through the lobbys url
+    console.log("preload called");
     let joined = !!(session.lobby_id && session.username);
 
     //checks if user is in a different lobby, then redirects them there
@@ -49,9 +37,15 @@
 </script>
 
 <script>
+  import { goto } from "@sapper/app";
   import Modal from "../../components/Modal.svelte";
   import Players from "../../components/Players.svelte";
-  import Chat from "../../components/chatbox/Chat.svelte";
+  import Chat from "../../components/Chat.svelte";
+  import {getContext} from 'svelte';
+  const sendMessage = getContext('sendMessage');
+  import {new_usernames} from "./stores.js";
+  import { stores } from '@sapper/app';
+  const { session } = stores();
 
   //allows us to retrieve the lobbies from the module context
 
@@ -59,22 +53,13 @@
 
   let lobby_id = lobby._id;
   let usernames = lobby.usernames;
-  let count = lobby.count;
   let joined = lobby.joined;
   let username = lobby.username;
+  let host = lobby.host;
 
-  //set initial values for new_count and new_usernames,
+  //set initial values for new_playerCount and new_usernames,
   //so they are not set to default values
-  $new_count = count;
   $new_usernames = usernames;
-
-  //updates count and usernames whenever new_count and new_username changes
-  $: if ($new_count !== count) {
-    count = $new_count;
-  }
-  $: if ($new_usernames.length !== usernames.length) {
-    usernames = $new_usernames;
-  }
 
   //handles joined event from the modal
   const Joined = event => {
@@ -82,10 +67,44 @@
     username = event.detail.username;
   };
 
-  import { goto } from "@sapper/app";
-
   function handleCardClick() {
     goto("game/custom");
+  }
+
+  function copyCode (){
+      const copyText = document.createElement('textarea');
+      copyText.value = lobby_id;
+      copyText.setAttribute('readonly', '');
+      copyText.style.position = 'absolute';
+      copyText.style.left = '-9999px';
+      document.body.appendChild(copyText);
+      copyText.select();
+      document.execCommand('copy');
+
+      let tooltip = document.getElementById("myTooltip");
+      tooltip.innerHTML = "Copied: " + lobby_id;
+
+      document.body.removeChild(copyText);
+  }
+
+  function leaveLobby(){
+      sendMessage({
+        action: "leaveLobby",
+        username: username,
+        lobby_id: lobby_id,
+        exitLobby: exitLobby
+      });
+  }
+
+  function exitLobby(lobby){
+      if (!lobby || !lobby.error){
+          let s_new = {
+              username: '',
+              lobby_id: ''
+          };
+          session.set(s_new);
+          goto(`/`);
+      }//do we need an else?
   }
 </script>
 
@@ -190,6 +209,72 @@
   .player-info {
     display: block;
   }
+
+  #copyBtn {
+      font-family: "Roboto", serif;
+      font-weight: 100;
+      max-height: 2em;
+      background: black;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      line-height: 2em;
+      font-size: 0.8em;
+  }
+
+  .tooltip {
+    position: relative;
+    display: inline-block;
+  }
+
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 140px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    top: 150%;
+    left: 50%;
+    margin-left: -75px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .tooltip .tooltiptext::after {
+    content: " ";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #555 transparent;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .leaveBtn {
+          font-family: "Roboto", serif;
+          font-weight: 100;
+          min-width: 15em;
+          max-height: 2em;
+          background: black;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          line-height: 2em;
+          font-size: 0.8em;
+           margin: 0.25rem;
+      }
+
+
 </style>
 
 <body>
@@ -199,13 +284,21 @@
 
   <div class = "{!joined ? 'hidden' : 'grid-container'}" >
     <div class="player-info">
-      <Players {usernames} />
+      <Players usernames = {$new_usernames} {host} />
+      <button class = "leaveBtn" on:click = {leaveLobby}>Leave Lobby</button>
     </div>
 
     <div class="main-stuff">
       <h1>Game Lobby</h1>
       <div>Welcome, {username}!</div>
-      <div>Lobby Code: {lobby_id}</div>
+      <div> Lobby Code: </div>
+      <div>{lobby_id}
+          <div class = "tooltip">
+              <button id = 'copyBtn' on:click ={copyCode}>
+                    <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+              Copy Code</button>
+           </div>
+      </div>
 
       <div >
         <div class="dropdown">
