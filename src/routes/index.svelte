@@ -105,14 +105,14 @@
 	<h1>O F &nbsp; C A R D S</h1>
 
 	<div class:hidden ={createRoom}>
-		<ModalCreateRoom/>
+		<ModalCreateRoom bind:hidden = {createRoom}/>
 	</div>
 
 	<div class:hidden ={joinRoom}>
-		<ModalJoinRoom/>
+		<ModalJoinRoom bind:hidden = {joinRoom}/>
 	</div>
 
-	<div class:hidden ={!(createRoom && joinRoom)}>
+	<div class:hidden ='{!(createRoom && joinRoom)}'>
 		<p><a href="/" class ="routes" on:click={handleCreateClick}> Create Game </a></p>
 		<a href="/" class ="routes" on:click={handleJoinClick}> Join Game </a>
 	</div>

@@ -125,7 +125,6 @@ io.on("connection", socket =>
 			socket.handshake.session.save();
 			fn(lobby_id);
 		});
-		console.log(socket);
 	});
 
 	//don't think we need, as preload requires a fetch

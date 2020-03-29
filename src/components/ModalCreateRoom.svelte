@@ -73,13 +73,19 @@
     // import { getContext } from  "../routes/networking";
 
     let username = "";
+    export let hidden = false;
 
     let createLobby = () =>{
-        sendMessage({
-            action: "createLobby",
-            username: username,
-            enterLobby: enterLobby
-        })
+        if (!username){
+          document.getElementById('error-containerCreateRoom').innerHTML = "username cannot be blank";
+        }else{
+           sendMessage({
+               action: "createLobby",
+               username: username,
+               enterLobby: enterLobby
+           })
+        }
+
     };
 
     let enterLobby = lobby_id => {
@@ -93,7 +99,9 @@
     };
 
     let returnToIndex = ()=>{
-        goto("");
+        hidden = true;
+        username = "";
+        document.getElementById('error-containerCreateRoom').innerHTML = "";
     }
 
 </script>
@@ -101,12 +109,11 @@
 <div class="modal">
     <div class="modal-content">
         <h1>Create a Lobby</h1>
-        <form on:submit|preventDefault={createLobby}>
+        <div id = 'error-containerCreateRoom'></div>
            <div>
             Name: <input type="text" name="name" bind:value = {username}><br>
             </div>
             <button on:click ={returnToIndex}>Go Back</button>
-            <button type="submit">Create</button>
-        </form>
+            <button on:click = {createLobby}>Create</button>
     </div>
 </div>
