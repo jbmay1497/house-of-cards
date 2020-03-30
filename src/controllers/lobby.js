@@ -6,7 +6,7 @@ export const lobby_funcs = app => ({
             _id: lobby_id,
             usernames: [username],
             host: username,
-            count: 1
+            playerCount: 1
         };
         let lobby_data = new app.models.Lobby(lobby);
         try {
@@ -30,13 +30,52 @@ export const lobby_funcs = app => ({
         if (!lobby){
             return {error: "Lobby does not exist. Please enter a different code"};
         }
-        if (lobby.usernames.includes(username)){
+        else if (lobby.playerCount >= 6){
+            return {error: `Max number of players already in room`}
+        }
+        else if (lobby.usernames.includes(username)){
             return {error: `The username ${username} is taken. Please enter another name`};
         }
-        lobby.usernames.push(username);
-        lobby.count ++;
-        await lobby.save();
-        return lobby;
+        else{
+            lobby.usernames.push(username);
+            lobby.playerCount ++;
+            await lobby.save();
+            return lobby;
+        }
+    },
+
+    leaveLobby: async(lobby_id, username)=>{
+        let lobby = await app.models.Lobby.findById(lobby_id);
+        if (!lobby){
+            return {error: "Lobby does not exist. Leave attempt failed"};
+        }
+        if (username !== lobby.host){
+            lobby.usernames = lobby.usernames.filter(cur_username => username !== cur_username);
+            lobby.playerCount --;
+            await lobby.save();
+            return lobby;
+        }
+        else{
+            if (lobby.playerCount > 1){
+                lobby.usernames.shift();
+                console.log(lobby.usernames);
+                lobby.host = lobby.usernames[0];
+                lobby.playerCount --;
+                await lobby.save();
+                return lobby;
+            }
+            else{
+                app.models.Lobby.findByIdAndDelete(lobby._id, async function(err, deleted_lobby){
+                    if (err){
+                        return { error: `Lobby could not be deleted` };
+                    }
+                    return null;
+                })
+
+
+            }
+        }
+
     }
 });
 

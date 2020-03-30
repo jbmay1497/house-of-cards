@@ -8,7 +8,8 @@ let Lobby = new Schema(
         _id: String,
         usernames: [String],
         host: String,
-        count: {type: Number, default: 1}
+        playerCount: {type: Number, default: 1},
+
     },
     {_id: false}
 );

@@ -1,56 +1,3 @@
-<script context="module">
-  import { writable } from "svelte/store";
-  import { get } from "svelte/store";
-  const new_messages = writable([]);
-
-  export function updateMessages(new_message) {
-    new_messages.set([...get(new_messages), new_message]);
-    console.log(`new messages is: ${get(new_messages)}`);
-  }
-</script>
-
-<script>
-  import { sendMessage } from "../../routes/networking";
-  import { beforeUpdate, afterUpdate } from "svelte";
-
-  let message = "";
-  let messages = [];
-  let opened = false;
-  let hidden = true;
-
-  let openMessage = "Expand Chat Window";
-  let closeMessage = "Minimize Chat Window";
-  let chatMessage = opened ? closeMessage : openMessage;
-
-  let toggleChatWindow = () => {
-    opened = !opened;
-    hidden = !hidden;
-    chatMessage = opened ? closeMessage : openMessage;
-  };
-
-  let ul;
-  let autoscroll;
-
-  let enterMessage = m => {
-    sendMessage(m);
-    message = "";
-  };
-
-  beforeUpdate(() => {
-    autoscroll = ul && ul.offsetHeight + ul.scrollTop > ul.scrollHeight - 20;
-  });
-
-  afterUpdate(() => {
-    if (autoscroll) ul.scrollTo(0, ul.scrollHeight);
-  });
-
-  $new_messages = messages;
-
-  $: if ($new_messages !== messages) {
-    messages = $new_messages;
-  }
-</script>
-
 <style>
   * {
     box-sizing: border-box;
@@ -145,6 +92,72 @@
   }
 </style>
 
+<script context="module">
+  import { writable } from "svelte/store";
+  import { get } from "svelte/store";
+  const new_messages = writable([]);
+
+  export function updateMessages(new_message) {
+    new_messages.set([...get(new_messages), new_message]);
+    console.log(`new messages is: ${get(new_messages)}`);
+  }
+</script>
+
+<script>
+
+  import {getContext} from 'svelte';
+  const sendMessage = getContext('sendMessage');
+  import { beforeUpdate, afterUpdate } from "svelte";
+
+  let message = "";
+
+  let sendChatMessage = e =>{
+      if (message){
+          if (!e.key || e.key === 'Enter'){
+              sendMessage({
+                  action: "sendChatMessage",
+                  message: message
+                });
+                message = "";
+                let messageBox = document.getElementById('newMessage');
+                messageBox.focus();
+          }
+
+      }
+
+  };
+
+  let opened = false;
+  let hidden = true;
+
+  let openMessage = "Expand Chat Window";
+  let closeMessage = "Minimize Chat Window";
+  let chatMessage = opened ? closeMessage : openMessage;
+
+  let toggleChatWindow = () => {
+    opened = !opened;
+    hidden = !hidden;
+    chatMessage = opened ? closeMessage : openMessage;
+    let messageBox = document.getElementById('newMessage');
+    if (opened){
+        messageBox.focus();
+    }
+  };
+
+  let ul;
+  let autoscroll;
+
+  beforeUpdate(() => {
+    autoscroll = ul && ul.offsetHeight + ul.scrollTop > ul.scrollHeight - 20;
+  });
+
+  afterUpdate(() => {
+    if (autoscroll) ul.scrollTo(0, ul.scrollHeight);
+  });
+
+</script>
+
+
 <div class:opened class="chatbubble">
   <div class="unexpanded" on:click={toggleChatWindow}>
     <div class="title">{chatMessage}</div>
@@ -152,19 +165,23 @@
   <div class="expanded chat-window ">
     <div class:hidden class="chats">
       <ul class="messages" bind:this={ul}>
-        {#each messages as message}
+        {#each $new_messages as message}
           <li>{message}</li>
         {/each}
       </ul>
       <div class="input">
         <div class="form-group">
+        <!-- warn-disable a11y_autofocus -->
           <input
             type="text"
             autocomplete="off"
             bind:value={message}
             id="newMessage"
-            placeholder="Enter Message" />
-          <button on:click={() => enterMessage(message)}>Send</button>
+            placeholder="Enter Message"
+            on:keypress = {sendChatMessage}
+           />
+            <!--maybe make the button disbaled if no message-->
+          <button on:click={sendChatMessage}>Send</button>
         </div>
 
       </div>

@@ -66,12 +66,29 @@
 
 <script>
     import {goto} from "@sapper/app"
-    import {joinLobby } from "../routes/networking";
+    import {getContext} from 'svelte';
+    const sendMessage = getContext('sendMessage');
+    //import {sendMessage } from "../routes/networking";
     import { stores } from '@sapper/app';
     const { session } = stores();
 
     let lobby_id = "";
     let username = "";
+    export let hidden = false;
+
+    let joinLobby = () =>{
+        if (!username){
+          document.getElementById('error-containerJoinRoom').innerHTML = "username cannot be blank";
+        }else{
+             sendMessage({
+                action: "joinLobby",
+                username: username,
+                lobby_id: lobby_id,
+                enterLobby: enterLobby
+            })
+        }
+
+        };
 
     let enterLobby = lobby => {
         if (!lobby.error){
@@ -83,28 +100,28 @@
             session.set(s_new);
             goto(`lobbies/${lobby_id}`);
         }else{
-            document.getElementById('error-container').innerHTML = lobby.error;
+            document.getElementById('error-containerJoinRoom').innerHTML = lobby.error;
             username = "";
         }
     };
 
     let returnToIndex = ()=>{
-        goto("");
+       hidden = true;
+       username = "";
+       lobby_id = "";
+       document.getElementById('error-containerJoinRoom').innerHTML = "";
     }
 </script>
 
 <div class="modal">
     <div class="modal-content">
         <h1>Join a Room</h1>
-        <form on:submit|preventDefault={() => joinLobby(lobby_id, username, enterLobby)}>
+        <div id = 'error-containerJoinRoom'></div>
         <div>
         Code: <input type="text" name="code" bind:value = {lobby_id}><br>
         Name: <input type="text" name="name" bind:value = {username}><br>
         </div>
-
             <button on:click ={returnToIndex}>Go Back</button>
-
-            <button type="submit">Join</button>
-        </form>
+            <button on:click ={joinLobby}>Join</button>
     </div>
 </div>

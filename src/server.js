@@ -8,7 +8,7 @@ let express = require("express"),
 	path =require("path"),
 	sirv = require('sirv'),
 	http = require("http").Server(app),
- 	session = require("express-session"),
+	session = require("express-session"),
 	mongoose = require("mongoose"),
 	logger = require("morgan");
 
@@ -94,9 +94,15 @@ io.use(sharedsession(expSession));
 //adding websocket support
 io.on("connection", socket =>
 {
-	if (socket.handshake.session && socket.handshake.session.username) {
-		const username = socket.handshake.session.username;
-		console.log(`Reconnecting: ${username}`);
+	if (socket.handshake.session && socket.handshake.session.username && socket.handshake.session.lobby_id) {
+		socket.handshake.session.reload(async () =>{
+			const username = socket.handshake.session.username;
+			const lobby_id = socket.handshake.session.lobby_id;
+			console.log(`Reconnecting: ${username}`);
+			socket.join(`${lobby_id}`);
+			socket.handshake.session.save();
+		});
+
 	}
 	else{
 		console.log("a user connected")
@@ -133,17 +139,37 @@ io.on("connection", socket =>
 			if (!lobby.error){
 				socket.join(`${lobby_id}`);
 				io.to(`${lobby_id}`).emit("userJoined",
-				{count: lobby.count,
-				usernames: lobby.usernames});
+					{playerCount: lobby.playerCount,
+						usernames: lobby.usernames});
 				socket.handshake.session.username = username;
 				socket.handshake.session.lobby_id = lobby_id;
 				socket.handshake.session.save();
 			}
 			fn(lobby);
 		});
+
 	});
 
-	socket.on('sendMessage', async message =>{
+	socket.on('leaveLobby', async (lobby_id, username, fn) =>{
+		socket.handshake.session.reload(async () =>{
+			let lobby = await app.controllers.Lobby.leaveLobby(lobby_id, username);
+			if (!lobby || !lobby.error){
+				socket.leave(`${lobby_id}`);
+				//change to userLeft
+				if (lobby){
+					io.to(`${lobby_id}`).emit("userLeft",
+						{playerCount: lobby.playerCount,
+							usernames: lobby.usernames});
+				}
+				socket.handshake.session.username = "";
+				socket.handshake.session.lobby_id = "";
+				socket.handshake.session.save();
+			}
+			fn(lobby);
+		});
+	});
+
+	socket.on('sendChatMessage', async message =>{
 		//should probably pass username and lobby id from chat to error check
 		let username = socket.handshake.session.username;
 		let lobby_id = socket.handshake.session.lobby_id;
@@ -151,7 +177,11 @@ io.on("connection", socket =>
 	});
 
 	socket.on('disconnect', () =>{
-		console.log('A user disconnected');
+		console.log(`${socket.handshake.session.username} disconnected`);
+		if (socket.handshake.session.lobby_id){
+			socket.leave(`${socket.handshake.session.lobby_id}`);
+		}
+
 	});
 });
 

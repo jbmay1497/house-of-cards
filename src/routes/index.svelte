@@ -46,12 +46,18 @@
 	.routes:hover::after {
         position: absolute;
         content: '';
-        width: calc(100% - 1em);
         height: 2px;
         margin-bottom:1%;
         background-color: black;
         display: block;
         bottom: -1px;
+        animation: grow .75s;
+        animation-fill-mode: forwards;
+    }
+
+    @keyframes grow {
+     from {width: 0%;}
+     to {width: calc(100% - 1em);}
     }
 
 	@media (min-width: 480px) {
@@ -70,10 +76,11 @@
 </script>
 
 <script>
-	//only need this if socket connection needs to be open on home page - not likely
 	import {goto} from "@sapper/app";
 	import ModalCreateRoom from '../components/ModalCreateRoom.svelte';
 	import ModalJoinRoom from '../components/ModalJoinRoom.svelte';
+	//import {getContext} from 'svelte';
+    //const socket = getContext('socket');
 
 	let createRoom = true;
 	let joinRoom = true;
@@ -84,6 +91,8 @@
 	function handleJoinClick() {
 		joinRoom = false;
 	}
+
+	//console.log(socket);
 </script>
 
 <svelte:head>
@@ -96,14 +105,14 @@
 	<h1>O F &nbsp; C A R D S</h1>
 
 	<div class:hidden ={createRoom}>
-		<ModalCreateRoom/>
+		<ModalCreateRoom bind:hidden = {createRoom}/>
 	</div>
 
 	<div class:hidden ={joinRoom}>
-		<ModalJoinRoom/>
+		<ModalJoinRoom bind:hidden = {joinRoom}/>
 	</div>
 
-	<div class:hidden ={!(createRoom && joinRoom)}>
+	<div class:hidden ='{!(createRoom && joinRoom)}'>
 		<p><a href="/" class ="routes" on:click={handleCreateClick}> Create Game </a></p>
 		<a href="/" class ="routes" on:click={handleJoinClick}> Join Game </a>
 	</div>
