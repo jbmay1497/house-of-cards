@@ -223,10 +223,20 @@
         document.addEventListener("mousemove", handleMouseMove);
         document.addEventListener("mouseup", handleMouseUp);
     });
+
+    let pic;
+    let up = false;
+    function handleClick() {
+        if(up) {
+            pic = "images/2_of_clubs.png";
+        } else {
+            pic = "images/face_down.jpg";
+        }
+    }
 </script>
 
-<div bind:this={el} class="rect" style="{style}" on:mousedown={event => handleMouseDown(event)}>
-    <img draggable="false" src = 'images/face_down.jpg' alt="face down card"/>
+<div bind:this={el} class="rect" style="{style}" on:mousedown={event => handleMouseDown(event)} on:click={handleClick}>
+    <img draggable="false" src="images/face_down.jpg" alt="face down card"/>
 </div>
 <style>
     img {
