@@ -95,7 +95,7 @@
         };
 
         session.set(s_new);
-        goto(`lobbies/${lobby_id}`);
+        goto(`/lobbies/${lobby_id}`);
     };
 
     let returnToIndex = ()=>{

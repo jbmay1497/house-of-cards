@@ -7,10 +7,7 @@
 
     export let rect = { x: 0, y: 0, w: 100, h: 100 };
     export let draggable = true;
-    export let borderWidth = 0;
     export let snap = 1;
-    export let minWidth = 0;
-    export let minHeight = 0;
     let borders = [];
     let el;
 
@@ -21,112 +18,16 @@
 
     const states = {
         STATIC: 0,
-        DRAG: 2,
-        RESIZE_L: 3,
-        RESIZE_R: 4,
-        RESIZE_T: 5,
-        RESIZE_B: 6,
-        RESIZE_TL: 7,
-        RESIZE_TR: 8,
-        RESIZE_BL: 9,
-        RESIZE_BR: 10
+        DRAG: 2
     };
 
     let state = states.STATIC;
     let temp = {};
 
-    const generateBorders = () => {
-        let rect = el.getBoundingClientRect();
-        let bwo = borderWidth / 2;
-        borders = [];
-        borders.push({
-            x: bwo,
-            y: -bwo,
-            w: rect.w - borderWidth,
-            h: borderWidth,
-            cursor: "ns-resize",
-            mousedownState: states.RESIZE_T
-        });
-        borders.push({
-            x: -bwo,
-            y: bwo,
-            w: borderWidth,
-            h: rect.h - borderWidth,
-            cursor: "ew-resize",
-            mousedownState: states.RESIZE_L
-        });
-        borders.push({
-            x: bwo,
-            y: rect.h - bwo,
-            w: rect.w - borderWidth,
-            h: borderWidth,
-            cursor: "ns-resize",
-            mousedownState: states.RESIZE_B
-        });
-        borders.push({
-            x: rect.w - bwo,
-            y: bwo,
-            w: borderWidth,
-            h: rect.h - borderWidth,
-            cursor: "ew-resize",
-            mousedownState: states.RESIZE_R
-        });
-        borders.push({
-            x: -bwo,
-            y: -bwo,
-            w: borderWidth,
-            h: borderWidth,
-            cursor: "nw-resize",
-            mousedownState: states.RESIZE_TL
-        });
-        borders.push({
-            x: rect.w - bwo,
-            y: -bwo,
-            w: borderWidth,
-            h: borderWidth,
-            cursor: "ne-resize",
-            mousedownState: states.RESIZE_TR
-        });
-        borders.push({
-            x: -bwo,
-            y: rect.h - bwo,
-            w: borderWidth,
-            h: borderWidth,
-            cursor: "sw-resize",
-            mousedownState: states.RESIZE_BL
-        });
-        borders.push({
-            x: rect.w - bwo,
-            y: rect.h - bwo,
-            w: borderWidth,
-            h: borderWidth,
-            cursor: "se-resize",
-            mousedownState: states.RESIZE_BR
-        });
-        borders.forEach(b => {
-            let transform = `translate(${b.x}px, ${b.y}px)`;
-            let style = "";
-            style += `transform: ${transform}; `;
-            style += `width: ${b.w}px; `;
-            style += `height: ${b.h}px; `;
-            style += `cursor: ${b.cursor};`;
-            b.style = style;
-        });
-        return borders;
-    };
-
     const setState = newState => {
         state = newState;
         switch (state) {
             case states.DRAG:
-            case states.RESIZE_L:
-            case states.RESIZE_R:
-            case states.RESIZE_T:
-            case states.RESIZE_B:
-            case states.RESIZE_TL:
-            case states.RESIZE_TR:
-            case states.RESIZE_BL:
-            case states.RESIZE_BR:
                 document.addEventListener("mousemove", handleMouseMove);
                 document.addEventListener("mouseup", handleMouseUp);
                 temp.sx = rect.x;
@@ -164,47 +65,9 @@
                 rect.x = temp.sx + xOffset;
                 rect.y = temp.sy + yOffset;
                 break;
-            case states.RESIZE_L:
-                rect.x = Math.min(temp.sx + xOffset, temp.sx + temp.sw - minWidth);
-                rect.w = Math.max(temp.sw - xOffset, minWidth);
-                break;
-            case states.RESIZE_R:
-                rect.w = Math.max(temp.sw + xOffset, minWidth);
-                break;
-            case states.RESIZE_T:
-                rect.y = Math.min(temp.sy + yOffset, temp.sy + temp.sh - minHeight);
-                rect.h = Math.max(temp.sh - yOffset, minHeight);
-                break;
-            case states.RESIZE_B:
-                rect.h = Math.max(temp.sh + yOffset, minHeight);
-                break;
-            case states.RESIZE_TL:
-                rect.x = Math.min(temp.sx + xOffset, temp.sx + temp.sw - minWidth);
-                rect.w = Math.max(temp.sw - xOffset, minWidth);
-                rect.y = Math.min(temp.sy + yOffset, temp.sy + temp.sh - minHeight);
-                rect.h = Math.max(temp.sh - yOffset, minHeight);
-                break;
-            case states.RESIZE_TR:
-                rect.w = Math.max(temp.sw + xOffset, minWidth);
-                rect.y = Math.min(temp.sy + yOffset, temp.sy + temp.sh - minHeight);
-                rect.h = Math.max(temp.sh - yOffset, minHeight);
-                break;
-            case states.RESIZE_BL:
-                rect.x = Math.min(temp.sx + xOffset, temp.sx + temp.sw - minWidth);
-                rect.w = Math.max(temp.sw - xOffset, minWidth);
-                rect.h = Math.max(temp.sh + yOffset, minHeight);
-                break;
-            case states.RESIZE_BR:
-                rect.w = Math.max(temp.sw + xOffset, minWidth);
-                rect.h = Math.max(temp.sh + yOffset, minHeight);
-                break;
             default:
                 break;
         }
-
-        rect.w = Math.max(rect.w, minWidth)
-        rect.h = Math.max(rect.h, minHeight)
-        generateBorders();
     };
     const handleMouseUp = event => {
         setState(states.STATIC);
@@ -224,19 +87,29 @@
         document.addEventListener("mouseup", handleMouseUp);
     });
 
-    let pic;
+    export let pic = "images/face_down.jpg";
     let up = false;
-    function handleClick() {
-        if(up) {
+    let handleClick = (value, suit) => {
+        console.log("hi");
+        if(!up) {
             pic = "images/2_of_clubs.png";
+            up = true;
         } else {
             pic = "images/face_down.jpg";
+            up = false;
         }
-    }
+    };
+
+    // export let Card = ({ card }) => {
+    //     const source = card.up
+    //             ? `images/${card.value}_of_${card.suit}.png`
+    //             : "images/face_down.jpg";
+    //     const id = `${card.suit}:${card.value}`;
+    // }
 </script>
 
-<div bind:this={el} class="rect" style="{style}" on:mousedown={event => handleMouseDown(event)} on:click={handleClick}>
-    <img draggable="false" src="images/face_down.jpg" alt="face down card"/>
+<div bind:this={el} class="rect" style="{style}" on:mousedown={event => handleMouseDown(event)}>
+    <img on:click={handleClick('2','hearts')} draggable="false" src={pic} alt="face down card"/>
 </div>
 <style>
     img {
