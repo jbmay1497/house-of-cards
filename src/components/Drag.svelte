@@ -3,18 +3,14 @@
 </svelte:head>
 
 <script>
-    import { onDestroy, onMount } from "svelte";
-
     export let rect = { x: 0, y: 0, w: 100, h: 100 };
-    export let draggable = true;
-    export let snap = 1;
     let borders = [];
     let el;
+    let oldX;
+    let oldY;
 
     $: transform = `translate(${rect.x}px, ${rect.y}px)`;
-    $: style = `transform: ${transform}; width: ${rect.w}px; height: ${
-            rect.h
-    }px; cursor`;
+    $: style = `transform: ${transform}; width: ${rect.w}px; height: ${rect.h}px; cursor`;
 
     const states = {
         STATIC: 0,
@@ -46,19 +42,18 @@
                 break;
         }
     };
+
     const handleMouseDown = event => {
-        if (draggable) setState(states.DRAG);
+        oldX = rect.x;
+        oldY = rect.y;
+        setState(states.DRAG);
     };
+
     const handleMouseMove = event => {
         let xOffset = event.clientX - temp.cx;
         let yOffset = event.clientY - temp.cy;
-        if (snap > 0) {
-            xOffset = Math.round(xOffset / snap) * snap;
-            yOffset = Math.round(yOffset / snap) * snap;
-        }
         temp.ox = xOffset;
         temp.oy = yOffset;
-
 
         switch (state) {
             case states.DRAG:
@@ -73,44 +68,27 @@
         setState(states.STATIC);
     };
 
-    const resizeRight = () => {};
-
-    let _keyDown = [];
-
-    onDestroy(() => {
-        document.removeEventListener("mousemove", handleMouseMove);
-        document.removeEventListener("mouseup", handleMouseUp);
-    });
-
-    onMount(() => {
-        document.addEventListener("mousemove", handleMouseMove);
-        document.addEventListener("mouseup", handleMouseUp);
-    });
+    export let value;
+    export let suit;
+    export let id;
 
     export let pic = "images/face_down.jpg";
     let up = false;
-    let handleClick = (value, suit) => {
-        console.log("hi");
-        if(!up) {
-            pic = "images/2_of_clubs.png";
-            up = true;
-        } else {
+    let handleClick = () => {
+        if (oldX === rect.x && oldY === rect.y && up) {
             pic = "images/face_down.jpg";
             up = false;
+        } else if (oldX === rect.x && oldY === rect.y && !up) {
+            pic = `images/${value}_of_${suit}.png`;
+            up = true;
         }
     };
-
-    // export let Card = ({ card }) => {
-    //     const source = card.up
-    //             ? `images/${card.value}_of_${card.suit}.png`
-    //             : "images/face_down.jpg";
-    //     const id = `${card.suit}:${card.value}`;
-    // }
 </script>
 
 <div bind:this={el} class="rect" style="{style}" on:mousedown={event => handleMouseDown(event)}>
-    <img on:click={handleClick('2','hearts')} draggable="false" src={pic} alt="face down card"/>
+    <img on:click={handleClick} draggable="false" src={pic} alt="card"/>
 </div>
+
 <style>
     img {
         position: relative;

@@ -13,7 +13,8 @@
         });
         // Add in jokers here
         if (includeJokers) {
-            /*...*/
+            cards.push({ suit: 'black', value: 'joker'});
+            cards.push({ suit: 'red', value: 'joker'});
         }
         // Now shuffle
         let deck = [];
@@ -26,91 +27,17 @@
         return deck;
     };
 
-    let objects = [
-        {
-            rect: {
-                x: 560,
-                y: 200,
-                w: 0,
-                h: 0
-            },
-            draggable: true
-        },
-        {
-            rect: {
-                x: 560,
-                y: 200,
-                w: 0,
-                h: 0
-            },
-            draggable: true
-        },
-        {
-            rect: {
-                x: 560,
-                y: 200,
-                w: 0,
-                h: 0
-            },
-            draggable: true,
-        },
-        {
-            rect: {
-                x: 560,
-                y: 200,
-                w: 0,
-                h: 0
-            },
-            draggable: true
-        },
-        {
-            rect: {
-                x: 560,
-                y: 200,
-                w: 0,
-                h: 0
-            },
-            draggable: true
-        },
-        {
-            rect: {
-                x: 560,
-                y: 200,
-                w: 0,
-                h: 0
-            },
-            draggable: true
-        },
-        {
-            rect: {
-                x: 560,
-                y: 200,
-                w: 0,
-                h: 0
-            },
-            draggable: true
-        },
-        {
-            rect: {
-                x: 560,
-                y: 200,
-                w: 0,
-                h: 0
-            },
-            draggable: true
-        },
-        {
-            rect: {
-                x: 560,
-                y: 200,
-                w: 0,
-                h: 0
-            },
-            draggable: true
-        }
-    ];
+    let finalDeck = [];
+    let shuffledDeck = shuffleCards();
+
+    for (let i = 0; i < 52; i++) {
+        finalDeck.push({rect: {x: 560, y: 200, w: 0, h: 0},
+            value: shuffledDeck[i].value,
+            suit: shuffledDeck[i].suit,
+            id: `${shuffledDeck[i].suit}:${shuffledDeck[i].value}` });
+    }
 </script>
 
-{#each objects as obj}
+{#each finalDeck as obj}
     <Draggable {...obj}>{obj.text}</Draggable>
 {/each}
