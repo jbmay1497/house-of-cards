@@ -1,6 +1,7 @@
 <script>
 import Board from "./_Board.svelte";
-import {INITIAL_BOARD} from "./chess"
+import {INITIAL_BOARD} from "./chess";
+import Chat from "../../../components/Chat.svelte";
 
 let rows = [0, 1, 2, 3, 4, 5, 6, 7];
 let cols = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -19,4 +20,7 @@ const rotateBoard = ()=>{
         {cols}
         {rotateBoard}
          />
+    <div class="grid-item">
+        <Chat />
+    </div>
 </div>

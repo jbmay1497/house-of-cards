@@ -305,8 +305,8 @@
           <button class="dropbtn">Existing Games</button>
           <div class="dropdown-content">
             <a href="game/oldmaid">Old Maid</a>
-            <a href="game">War</a>
-            <a href="game">Solitaire</a>
+            <a href="game/chess">Chess</a>
+            <a href="game/solitare">Solitaire</a>
           </div>
         </div>
 

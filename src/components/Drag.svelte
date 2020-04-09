@@ -70,10 +70,10 @@
 
     export let value;
     export let suit;
-    export let id;
-
+    export const id = 'down:none';
+    export let up = false;
     export let pic = "images/face_down.jpg";
-    let up = false;
+
     let handleClick = () => {
         if (oldX === rect.x && oldY === rect.y && up) {
             pic = "images/face_down.jpg";
