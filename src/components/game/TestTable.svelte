@@ -1,22 +1,32 @@
 <script>
+  import Player from './Player.svelte';
   export let diameter;
+  $: radius = diameter/2;
+
 </script>
 
 <style>
   .table {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
     background: #ddd;
     border-radius: 40%;
   }
-  .deg0 {
-    color: blue;
+  .players{
+    margin: auto;
   }
 </style>
 
 <div class="table" style="width:{diameter}px; height:{diameter}px;">
-  <div class="deg0">Player</div>
+  <div class="players" style="transform: translate({radius}px,{radius}px);">
+    <Player seat={0} rad={radius}/>
+    <Player seat={1} rad={radius}/>
+    <Player seat={2} rad={radius}/>
+    <Player seat={3} rad={radius}/>
+    <Player seat={4} rad={radius}/>
+    <Player seat={5} rad={radius}/>
+    <Player seat={6} rad={radius}/>
+    <Player seat={7} rad={radius}/>
+  </div>
 </div>
 <a
   href="https://css-tricks.com/snippets/sass/placing-items-circle/">

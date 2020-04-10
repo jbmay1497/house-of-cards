@@ -20,7 +20,7 @@
 
 <div class="game-area" bind:clientWidth={width}>
     {#if format}
-        <TestTable diameter={width*0.9}/>
+        <TestTable diameter={width*0.9} playerNum={3}/>
     {:else}
         <Hand/>
     {/if}
