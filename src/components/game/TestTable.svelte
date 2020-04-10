@@ -1,7 +1,7 @@
 <script>
   import Player from './Player.svelte';
   export let diameter;
-  $: radius = diameter/2;
+  $: radius = (diameter/2)*0.9;
 
 </script>
 
