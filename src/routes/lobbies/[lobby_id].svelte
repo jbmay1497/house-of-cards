@@ -79,7 +79,7 @@
   };
 
   function handleCardClick() {
-    goto("games/custom");
+    goto("game/custom");
   }
 
   function copyCode (){
