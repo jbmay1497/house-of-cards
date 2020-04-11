@@ -9,6 +9,7 @@
         opacity: 1;
         transform: scale(1.0);
         transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+        z-index: 999;
     }
     .modal-content {
         position: absolute;
@@ -23,11 +24,11 @@
         text-align: center;
     }
 
-   div{
-   font-family: "Roboto", serif;
-   font-weight:100;
-   color:white;
-   }
+    div{
+        font-family: "Roboto", serif;
+        font-weight:100;
+        color:white;
+    }
 
     h1{
         font-family: "Roboto", serif;
@@ -65,54 +66,30 @@
 </style>
 
 <script>
-    import { stores } from '@sapper/app';
-    const { session } = stores();
     import {goto} from "@sapper/app"
-    import {getContext} from 'svelte';
-    const sendMessage = getContext('sendMessage');
-    // import { getContext } from  "../routes/networking";
 
-    let username = "";
     export let hidden = false;
-
-    let createLobby = () =>{
-        if (!username){
-          document.getElementById('error-containerCreateRoom').innerHTML = "username cannot be blank";
-        }else{
-           sendMessage({
-               action: "createLobby",
-               username: username,
-               enterLobby: enterLobby
-           })
-        }
-
-    };
-
-    let enterLobby = lobby_id => {
-        let s_new = {
-            username: username,
-            lobby_id: lobby_id
-        };
-
-        session.set(s_new);
-        goto(`/lobbies/${lobby_id}`);
-    };
 
     let returnToIndex = ()=>{
         hidden = true;
-        username = "";
-        document.getElementById('error-containerCreateRoom').innerHTML = "";
-    }
+    };
+
+    let createGame = ()=> {
+        goto("game/custom");
+    };
 </script>
 
 <div class="modal">
     <div class="modal-content">
-        <h1>Create a Lobby</h1>
-        <div id = 'error-containerCreateRoom'></div>
+        <h1>Custom Game</h1>
+        <div id = 'error-containerDealCards'></div>
+        <div id = 'error-containerDecks'></div>
         <div>
-            Name: <input type="text" name="name" bind:value = {username}><br>
+            Deal cards: <input type="text" name="num"> or evenly distribute<br>
+            Include jokers?<br>
+            Number of decks:<input type="text" name="num"><br><br>
         </div>
         <button on:click ={returnToIndex}>Go Back</button>
-        <button on:click = {createLobby}>Create</button>
+        <button on:click ={createGame}>Create</button>
     </div>
 </div>

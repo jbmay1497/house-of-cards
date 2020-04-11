@@ -17,20 +17,6 @@
         color: white;
     }
 
-	button {
-	    font-family: 'Roboto',serif ;
-	    font-weight: 400;
-        font-size: 15px;
-		margin: 1.5vw auto;
-		padding: 2vw;
-		position: relative;
-		top: 50%;
-		width: 50%;
-		color: darkred;
-		display: flex;
-		justify-content: center
-	}
-
 	a {
 	font-family: 'Roboto',serif ;
 	font-weight: 100;

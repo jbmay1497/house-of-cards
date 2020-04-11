@@ -24,7 +24,7 @@ const dev = NODE_ENV === 'development';
 
 app.use(sirv('static', { dev }));
 app.use(logger("dev"));
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 /*****************************************************************************************************/
