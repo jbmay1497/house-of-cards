@@ -1,7 +1,11 @@
 import io from "socket.io-client";
 const socket = io();
 import {updateLobby} from "./lobbies/stores.js";
+import {enterChessGame} from "./lobbies/[lobby_id].svelte";
+import {updateBoard} from "./game/chess/[chess_id].svelte";
+
 import {updateMessages} from "../components/Chat.svelte";
+
 
 //const dispatch = createEventDispatcher();
 //called by client.svelte to set up client socket
@@ -14,6 +18,8 @@ export const connect = () =>{
         socket.on("userLeft", updateLobby);
         //console.log(socket);
         socket.on("messageReceived", updateMessages);
+        socket.on('enterChessGame', enterChessGame);
+        socket.on('updatedBoard', updateBoard)//something);
 
     });
 };
@@ -40,6 +46,11 @@ export const sendMessage = message =>{
         case "sendChatMessage":
             socket.emit(action, message.message);
             break;
+        case "createChess":
+            socket.emit(action, message.game_id, message.host, message.usernames);
+        case "makeMove":
+            socket.emit(action, message.game_id, message.from, message.to)
     }
 
 };
+
