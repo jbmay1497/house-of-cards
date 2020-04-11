@@ -1,26 +1,49 @@
 <script>
     import Cell from "./_Cell.svelte"
+    import {getContext} from 'svelte';
+    const sendMessage = getContext('sendMessage');
     export let board;
     export let rows;
     export let cols;
+    export let game_id;
 
      const ROW_LABELS = ['8', '7', '6', '5', '4', '3', '2', '1'];
      const COL_LABELS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
       let col = -1;
       let row = -1;
+      let from;
+      let to;
 
       //need to beef up later
       function clickCell(r, c) {
-          console.log("got here");
+
           if (row === r && col === c) {
               row = -1;
               col = -1;
-          } else if (board[r][c] !== ' ') {
+              from = null;
+          } else if (board[r][c] !== ' ' && !from) {
               row = r;
               col = c;
+              from = [row, col]
 
+          }else{
+              to = [r, c];
+              makeMove(from, to);
+              from = null;
+              to = null;
+              row = -1;
+              col = -1;
           }
+      }
+      function makeMove(from, to){
+          sendMessage({
+          action:"makeMove",
+          game_id:game_id,
+          from:from,
+          to:to
+          })
+
       }
 </script>
 
