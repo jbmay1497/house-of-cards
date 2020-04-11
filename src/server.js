@@ -115,7 +115,26 @@ io.on("connection", socket =>
 		console.log("a user connected")
 	}
 
-	socket.on('createChess', (game_id, host, usernames) =>{
+	socket.on('createGame', (game_id, gametype, host, usernames) =>{
+		socket.handshake.session.reload(async ()=>{
+
+			const cur_game = socket.handshake.session.game;
+			if (cur_game) return;
+			//this to call controller function - kind of like redux
+			let game_data;
+			switch(gametype){
+				case "chess":
+					game_data = await app.controllers.Chess.createChess(game_id, host, usernames);
+			}
+			if (game_data && game_data.error) return;
+			console.log(`${host} started ${gametype} game ${game_id}`);
+			socket.handshake.session.game = gametype;
+			await socket.handshake.session.save();
+			io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('enterGame', gametype);
+		});
+	});
+
+	/*socket.on('createChess', (game_id, host, usernames) =>{
 		socket.handshake.session.reload(async ()=>{
 
 			const cur_game = socket.handshake.session.game;
@@ -128,7 +147,7 @@ io.on("connection", socket =>
 			await socket.handshake.session.save();
 			io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('enterChessGame');
 		});
-	});
+	});*/
 
 	socket.on('makeMove', async (game_id, from, to)=>{
 		if (game_id !== socket.handshake.session.lobby_id){

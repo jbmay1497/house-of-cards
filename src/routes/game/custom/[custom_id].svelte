@@ -32,7 +32,7 @@
 </style>
 
 <script>
-    import Draggable from "../../components/Drag.svelte";
+    import Draggable from "../../../components/Drag.svelte";
 
     let finalDeck = [];
 

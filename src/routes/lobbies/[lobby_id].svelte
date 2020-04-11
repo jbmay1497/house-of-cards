@@ -4,16 +4,21 @@
 
 <script context="module">
     import { get } from 'svelte/store';
-    export function enterChessGame(){
+    export function enterGame(gametype){
+
+
         const { session } = stores();
         let session_data = (get(session));
+        console.log(gametype);
+        console.log(session_data);
         let s_new = {
               username: session_data.username,
               lobby_id: session_data.lobby_id,
-              game: "chess"
+              game: gametype
           };
           session.set(s_new);
-        goto(`game/chess/${session.lobby_id}`);
+         session_data= get(session);
+        goto(`game/${gametype}/${session_data.lobby_id}`);
     }
 
      export async function preload({ params }, session) {
@@ -95,8 +100,16 @@
   }
 
   function createGame(gametype){
-      if (gametype === 'oldmaid'){
-          goto("game/oldmaid")
+      sendMessage({
+          action: "createGame",
+          gametype: gametype,
+          game_id: lobby_id,
+          host: host,
+          usernames: $new_usernames
+        });
+      // goto(`game/${gametype}/${lobby_id}`);
+      /*if (gametype === 'oldmaid'){
+
       }else if (gametype === 'chess'){
           sendMessage({
             action: "createChess",
@@ -106,8 +119,9 @@
           });
           goto(`game/chess/${lobby_id}`)
       }else if(gametype === "custom"){
-          goto("game/custom")
+          goto(`game/custom/${lobby_id}`)
       }
+      */
   }
 
   function leaveLobby(){
