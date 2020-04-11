@@ -78,10 +78,6 @@
     username = event.detail.username;
   };
 
-  function handleCardClick() {
-    goto("game/custom");
-  }
-
   function copyCode (){
       const copyText = document.createElement('textarea');
       copyText.value = lobby_id;
@@ -100,7 +96,7 @@
 
   function createGame(gametype){
       if (gametype === 'oldmaid'){
-          goto("games/oldmaid")
+          goto("game/oldmaid")
       }else if (gametype === 'chess'){
           sendMessage({
             action: "createChess",
@@ -109,6 +105,8 @@
             usernames: $new_usernames
           });
           goto(`game/chess/${lobby_id}`)
+      }else if(gametype === "custom"){
+          goto("game/custom")
       }
   }
 
@@ -344,7 +342,7 @@
         <p>Or click below to play with a virtual card deck!</p>
         <figure>
           <img
-            on:click={handleCardClick}
+            on:click = {()=> createGame("custom")}
             src="images/face_down.jpg"
             alt="face down card" />
         </figure>
