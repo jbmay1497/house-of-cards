@@ -77,6 +77,8 @@
 
 <script>
     import {goto} from "@sapper/app"
+    import {getContext} from 'svelte';
+    const sendMessage = getContext('sendMessage');
 
     export let hidden = false;
 
@@ -84,8 +86,14 @@
         hidden = true;
     };
 
-    let createGame = ()=> {
-        goto("game/custom");
+    let createGame = (gametype)=> {
+        sendMessage({
+            action: "createGame",
+            gametype: gametype,
+            game_id: lobby_id,
+            host: host,
+            usernames: $new_usernames
+        });
     };
 </script>
 
@@ -114,6 +122,6 @@
         </div>
         <br>
         <button on:click ={returnToIndex}>Go Back</button>
-        <button on:click ={createGame}>Create</button>
+        <button on:click = {()=> createGame("custom")}>Create</button>
     </div>
 </div>

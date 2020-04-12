@@ -2,151 +2,6 @@
     <title>lobby</title>
 </svelte:head>
 
-<script context="module">
-    import { get } from 'svelte/store';
-    export function enterGame(gametype){
-
-
-        const { session } = stores();
-        let session_data = (get(session));
-        console.log(gametype);
-        console.log(session_data);
-        let s_new = {
-              username: session_data.username,
-              lobby_id: session_data.lobby_id,
-              game: gametype
-          };
-          session.set(s_new);
-         session_data= get(session);
-        goto(`game/${gametype}/${session_data.lobby_id}`);
-    }
-
-     export async function preload({ params }, session) {
-    //checks if the user enters the lobbies through the /enter route,
-    //or through the lobbys url
-    console.log("preload called");
-    let joined = !!(session.lobby_id && session.username);
-
-    //checks if user is in a different lobby, then redirects them there
-    if (session.lobby_id && session.lobby_id !== params.lobby_id) {
-      return this.redirect(302, `lobbies/${session.lobby_id}`);
-    }
-
-    //fetching lobbies data
-    const res = await this.fetch(`api/lobby/${params.lobby_id}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-
-    const data = await res.json();
-    if (res.status === 200) {
-      data.joined = joined;
-      data.username = joined ? session.username : "";
-      return { lobby: data };
-    } else {
-      this.redirect(302, ``);
-    }
-  }
-</script>
-
-<script>
-  import { goto } from "@sapper/app";
-  import Modal from "../../components/Modal.svelte";
-  import Players from "../../components/Players.svelte";
-  import Chat from "../../components/Chat.svelte";
-  import {getContext} from 'svelte';
-  const sendMessage = getContext('sendMessage');
-  import {new_usernames} from "./stores.js";
-  import { stores } from '@sapper/app';
-  const { session } = stores();
-
-  //allows us to retrieve the lobbies from the module context
-
-  export let lobby;
-
-  let lobby_id = lobby._id;
-  let usernames = lobby.usernames;
-  let joined = lobby.joined;
-  let username = lobby.username;
-  let host = lobby.host;
-
-  //set initial values for new_usernames,
-  //so they are not set to default values
-  $new_usernames = usernames;
-
-  //handles joined event from the modal
-  const Joined = event => {
-    joined = event.detail.joined;
-    username = event.detail.username;
-  };
-
-  function copyCode (){
-      const copyText = document.createElement('textarea');
-      copyText.value = lobby_id;
-      copyText.setAttribute('readonly', '');
-      copyText.style.position = 'absolute';
-      copyText.style.left = '-9999px';
-      document.body.appendChild(copyText);
-      copyText.select();
-      document.execCommand('copy');
-
-      let tooltip = document.getElementById("myTooltip");
-      tooltip.innerHTML = "Copied: " + lobby_id;
-
-      document.body.removeChild(copyText);
-  }
-
-  function createGame(gametype){
-      sendMessage({
-          action: "createGame",
-          gametype: gametype,
-          game_id: lobby_id,
-          host: host,
-          usernames: $new_usernames
-        });
-      // goto(`game/${gametype}/${lobby_id}`);
-      /*if (gametype === 'oldmaid'){
-
-      }else if (gametype === 'chess'){
-          sendMessage({
-            action: "createChess",
-            game_id: lobby_id,
-            host: host,
-            usernames: $new_usernames
-          });
-          goto(`game/chess/${lobby_id}`)
-      }else if(gametype === "custom"){
-          goto(`game/custom/${lobby_id}`)
-      }
-      */
-  }
-
-  function leaveLobby(){
-      sendMessage({
-        action: "leaveLobby",
-        username: username,
-        lobby_id: lobby_id,
-        exitLobby: exitLobby
-      });
-  }
-
-  function exitLobby(lobby){
-      if (!lobby || !lobby.error){
-          let s_new = {
-              username: '',
-              lobby_id: ''
-          };
-          session.set(s_new);
-          goto(`/`);
-      }//do we need an else?
-  }
-
-
-</script>
-
 <style>
   .hidden {
     display: none;
@@ -317,7 +172,23 @@
 </style>
 
 <script context="module">
-    //import {new_usernames} from "./stores.js";
+  import { get } from 'svelte/store';
+  export function enterGame(gametype){
+
+
+    const { session } = stores();
+    let session_data = (get(session));
+    console.log(gametype);
+    console.log(session_data);
+    let s_new = {
+      username: session_data.username,
+      lobby_id: session_data.lobby_id,
+      game: gametype
+    };
+    session.set(s_new);
+    session_data= get(session);
+    goto(`game/${gametype}/${session_data.lobby_id}`);
+  }
 
   export async function preload({ params }, session) {
     //checks if the user enters the lobbies through the /enter route,
@@ -382,44 +253,65 @@
     username = event.detail.username;
   };
 
-  function handleCardClick() {
-    goto("game/custom");
+  function copyCode (){
+    const copyText = document.createElement('textarea');
+    copyText.value = lobby_id;
+    copyText.setAttribute('readonly', '');
+    copyText.style.position = 'absolute';
+    copyText.style.left = '-9999px';
+    document.body.appendChild(copyText);
+    copyText.select();
+    document.execCommand('copy');
+
+    let tooltip = document.getElementById("myTooltip");
+    tooltip.innerHTML = "Copied: " + lobby_id;
+
+    document.body.removeChild(copyText);
   }
 
-  function copyCode (){
-      const copyText = document.createElement('textarea');
-      copyText.value = lobby_id;
-      copyText.setAttribute('readonly', '');
-      copyText.style.position = 'absolute';
-      copyText.style.left = '-9999px';
-      document.body.appendChild(copyText);
-      copyText.select();
-      document.execCommand('copy');
+  function createGame(gametype){
+    sendMessage({
+      action: "createGame",
+      gametype: gametype,
+      game_id: lobby_id,
+      host: host,
+      usernames: $new_usernames
+    });
+    // goto(`game/${gametype}/${lobby_id}`);
+    /*if (gametype === 'oldmaid'){
 
-      let tooltip = document.getElementById("myTooltip");
-      tooltip.innerHTML = "Copied: " + lobby_id;
-
-      document.body.removeChild(copyText);
+    }else if (gametype === 'chess'){
+        sendMessage({
+          action: "createChess",
+          game_id: lobby_id,
+          host: host,
+          usernames: $new_usernames
+        });
+        goto(`game/chess/${lobby_id}`)
+    }else if(gametype === "custom"){
+        goto(`game/custom/${lobby_id}`)
+    }
+    */
   }
 
   function leaveLobby(){
-      sendMessage({
-        action: "leaveLobby",
-        username: username,
-        lobby_id: lobby_id,
-        exitLobby: exitLobby
-      });
+    sendMessage({
+      action: "leaveLobby",
+      username: username,
+      lobby_id: lobby_id,
+      exitLobby: exitLobby
+    });
   }
 
   function exitLobby(lobby){
-      if (!lobby || !lobby.error){
-          let s_new = {
-              username: '',
-              lobby_id: ''
-          };
-          session.set(s_new);
-          goto(`/`);
-      }//do we need an else?
+    if (!lobby || !lobby.error){
+      let s_new = {
+        username: '',
+        lobby_id: ''
+      };
+      session.set(s_new);
+      goto(`/`);
+    }//do we need an else?
   }
 
   let custom = true;
