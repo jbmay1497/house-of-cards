@@ -17,7 +17,6 @@
 
   div{
     font-family: 'Roboto', serif;
-    font-weight: 100;
     color: white;
   }
 
@@ -41,13 +40,13 @@
   /* The container <div> - needed to position the dropdown content */
   .dropdown {
     position: relative;
-    right: 15%;
+    right: 9%;
     display: inline-block;
   }
 
   .custom {
     position: relative;
-    left: 15%;
+    left: 10%;
     display: inline-block;
   }
 
@@ -295,10 +294,9 @@
 
     <div class="main-stuff">
       <h1>Game Lobby</h1>
-      <div>Welcome, {username}!</div>
-      <div> Lobby Code: </div>
-      <div>{lobby_id}
-          <div class = "tooltip">
+      <div>Welcome, <b>{username}</b>!</div>
+      <div>Lobby Code: <b>{lobby_id}</b>&nbsp;
+        <div class = "tooltip">
               <button id = 'copyBtn' on:click ={copyCode}>
                     <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
               Copy Code</button>
@@ -307,7 +305,8 @@
 
       <div >
         <div class="dropdown">
-          <button class="dropbtn">Existing Games</button>
+          <br>
+          <button class="dropbtn">Play Existing Games</button>
           <div class="dropdown-content">
             <a href="game/oldmaid">Old Maid</a>
             <a href="game/chess">Chess</a>
@@ -316,7 +315,7 @@
         </div>
 
         <div class="custom">
-          <button class="dropbtn" on:click={handleClick}>Custom Game</button>
+          <button class="dropbtn" on:click={handleClick}>Create Custom Game</button>
         </div>
         <div class:hidden ={custom}>
            <ModalCustom bind:hidden = {custom}/>
