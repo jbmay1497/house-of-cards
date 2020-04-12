@@ -348,7 +348,7 @@
           <button class="dropbtn">Play Existing Games</button>
           <div class="dropdown-content">
             <div class = "game-type" on:click = {()=> createGame("oldmaid")}>Old Maid</div>
-            <a  class = "game-type" href="game">Solitaire</a>
+            <a  class = "game-type" href="game/solitare">Solitaire</a>
             <div class = "game-type" on:click = {()=> createGame("chess")}>Chess</div>
           </div>
         </div>
