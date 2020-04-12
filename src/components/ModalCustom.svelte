@@ -54,14 +54,24 @@
         margin-right: 5px;
     }
 
-    input{
+    input {
         display: block;
         margin : 0.5em auto;
-        width: 75%;
+        width: 50%;
+        position: relative;
+        float: left;
+    }
+
+    label {
+        float: left;
     }
 
     h1 {
         color: white;
+    }
+
+    .dealCards, .jokers, .numOfDecks {
+        display: inline-block;
     }
 </style>
 
@@ -85,10 +95,24 @@
         <div id = 'error-containerDealCards'></div>
         <div id = 'error-containerDecks'></div>
         <div>
-            Deal cards: <input type="text" name="num"> or evenly distribute<br>
-            Include jokers?<br>
-            Number of decks:<input type="text" name="num"><br><br>
+            <div class="dealCards">
+                <label for="num">Deal cards: </label>
+                <input type="text" name="numCards" id="num">
+                OR
+                <input type="checkbox" name="evenDistributed" id="even">
+                <label for="even">evenly distributed</label>
+            </div>
+            <br>
+            <div class="jokers">
+                <label for="joker">Include jokers? </label>
+                <input type="checkbox" name="includeJokers" id="joker">
+            </div>
+            <div class="numOfDecks">
+                <label for="decks">Number of decks: </label>
+                <input type="text" name="numDecks" id="decks"><br>
+            </div>
         </div>
+        <br>
         <button on:click ={returnToIndex}>Go Back</button>
         <button on:click ={createGame}>Create</button>
     </div>
