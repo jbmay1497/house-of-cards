@@ -47,13 +47,18 @@
 
     let finalDeck = [];
 
+    let xSize = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    xSize = xSize / 2.2;
+    let ySize = window.innerHeight|| document.documentElement.clientHeight|| document.body.clientHeight;
+    ySize = ySize / 6;
+
     let initialSetup = (includeJokers = false) =>{
         let index = 0;
         ["spades", "clubs", "hearts", "diamonds"].forEach(suit => {
             ["king", "queen", "jack", 10, 9, 8, 7, 6, 5, 4, 3, 2, "ace"].forEach(
                 value => {
                     finalDeck.push(
-                        {rect: {x: 580, y: 160, w: 0, h: 0},
+                        {rect: {x: xSize, y: ySize, w: 0, h: 0},
                         value: value,
                         suit: suit,
                         id: `${suit}:${value}`,
@@ -78,7 +83,7 @@
         while ($card_pos.length > 0) {
             // Find a random number between 0 and cards.length - 1
             const index = Math.floor(Math.random() * $card_pos.length);
-            $card_pos[index].rect = {x: 580, y: 160, w: 0, h: 0};
+            $card_pos[index].rect = {x: xSize, y: ySize, w: 0, h: 0};
             $card_pos[index].up = false;
             $card_pos[index].pic = "images/face_down.jpg";
             $card_pos[index].index = new_index++;
@@ -103,7 +108,6 @@
         game_id: custom_id,
         deck: finalDeck
         })
-
     };
 
     initialSetup();
