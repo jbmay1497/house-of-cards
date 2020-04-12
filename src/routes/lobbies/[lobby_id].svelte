@@ -2,13 +2,158 @@
     <title>lobby</title>
 </svelte:head>
 
+<script context="module">
+    import { get } from 'svelte/store';
+    export function enterGame(gametype){
+
+
+        const { session } = stores();
+        let session_data = (get(session));
+        console.log(gametype);
+        console.log(session_data);
+        let s_new = {
+              username: session_data.username,
+              lobby_id: session_data.lobby_id,
+              game: gametype
+          };
+          session.set(s_new);
+         session_data= get(session);
+        goto(`game/${gametype}/${session_data.lobby_id}`);
+    }
+
+     export async function preload({ params }, session) {
+    //checks if the user enters the lobbies through the /enter route,
+    //or through the lobbys url
+    console.log("preload called");
+    let joined = !!(session.lobby_id && session.username);
+
+    //checks if user is in a different lobby, then redirects them there
+    if (session.lobby_id && session.lobby_id !== params.lobby_id) {
+      return this.redirect(302, `lobbies/${session.lobby_id}`);
+    }
+
+    //fetching lobbies data
+    const res = await this.fetch(`api/lobby/${params.lobby_id}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const data = await res.json();
+    if (res.status === 200) {
+      data.joined = joined;
+      data.username = joined ? session.username : "";
+      return { lobby: data };
+    } else {
+      this.redirect(302, ``);
+    }
+  }
+</script>
+
+<script>
+  import { goto } from "@sapper/app";
+  import Modal from "../../components/Modal.svelte";
+  import Players from "../../components/Players.svelte";
+  import Chat from "../../components/Chat.svelte";
+  import {getContext} from 'svelte';
+  const sendMessage = getContext('sendMessage');
+  import {new_usernames} from "./stores.js";
+  import { stores } from '@sapper/app';
+  const { session } = stores();
+
+  //allows us to retrieve the lobbies from the module context
+
+  export let lobby;
+
+  let lobby_id = lobby._id;
+  let usernames = lobby.usernames;
+  let joined = lobby.joined;
+  let username = lobby.username;
+  let host = lobby.host;
+
+  //set initial values for new_usernames,
+  //so they are not set to default values
+  $new_usernames = usernames;
+
+  //handles joined event from the modal
+  const Joined = event => {
+    joined = event.detail.joined;
+    username = event.detail.username;
+  };
+
+  function copyCode (){
+      const copyText = document.createElement('textarea');
+      copyText.value = lobby_id;
+      copyText.setAttribute('readonly', '');
+      copyText.style.position = 'absolute';
+      copyText.style.left = '-9999px';
+      document.body.appendChild(copyText);
+      copyText.select();
+      document.execCommand('copy');
+
+      let tooltip = document.getElementById("myTooltip");
+      tooltip.innerHTML = "Copied: " + lobby_id;
+
+      document.body.removeChild(copyText);
+  }
+
+  function createGame(gametype){
+      sendMessage({
+          action: "createGame",
+          gametype: gametype,
+          game_id: lobby_id,
+          host: host,
+          usernames: $new_usernames
+        });
+      // goto(`game/${gametype}/${lobby_id}`);
+      /*if (gametype === 'oldmaid'){
+
+      }else if (gametype === 'chess'){
+          sendMessage({
+            action: "createChess",
+            game_id: lobby_id,
+            host: host,
+            usernames: $new_usernames
+          });
+          goto(`game/chess/${lobby_id}`)
+      }else if(gametype === "custom"){
+          goto(`game/custom/${lobby_id}`)
+      }
+      */
+  }
+
+  function leaveLobby(){
+      sendMessage({
+        action: "leaveLobby",
+        username: username,
+        lobby_id: lobby_id,
+        exitLobby: exitLobby
+      });
+  }
+
+  function exitLobby(lobby){
+      if (!lobby || !lobby.error){
+          let s_new = {
+              username: '',
+              lobby_id: ''
+          };
+          session.set(s_new);
+          goto(`/`);
+      }//do we need an else?
+  }
+
+
+</script>
+
 <style>
   .hidden {
     display: none;
   }
 
-  h1 {
-    font-family: 'Roboto', serif;
+   h1 {
+   font-family: 'Roboto', serif;
     padding: 1vw;
     color: white;
     font-size: 60px;
@@ -16,8 +161,9 @@
   }
 
   div{
-    font-family: 'Roboto', serif;
-    color: white;
+  font-family: 'Roboto', serif;
+  font-weight: 100;
+  color: white;
   }
 
 
@@ -61,7 +207,7 @@
   }
 
   /* Links inside the dropdown */
-  .dropdown-content a {
+  .dropdown-content .game-type {
     color: black;
     padding: 12px 16px;
     text-decoration: none;
@@ -69,7 +215,7 @@
   }
 
   /* Change color of dropdown links on hover */
-  .dropdown-content a:hover {
+  .dropdown-content .game-type:hover {
     background-color: #ddd;
   }
 
@@ -104,15 +250,15 @@
   }
 
   #copyBtn {
-    font-family: "Roboto", serif;
-    font-weight: 100;
-    max-height: 2em;
-    background: black;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    line-height: 2em;
-    font-size: 0.8em;
+      font-family: "Roboto", serif;
+      font-weight: 100;
+      max-height: 2em;
+      background: black;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      line-height: 2em;
+      font-size: 0.8em;
   }
 
   .tooltip {
@@ -154,18 +300,20 @@
   }
 
   .leaveBtn {
-    font-family: "Roboto", serif;
-    font-weight: 100;
-    min-width: 15em;
-    max-height: 2em;
-    background: black;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    line-height: 2em;
-    font-size: 0.8em;
-    margin: 0.25rem;
-  }
+          font-family: "Roboto", serif;
+          font-weight: 100;
+          min-width: 15em;
+          max-height: 2em;
+          background: black;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          line-height: 2em;
+          font-size: 0.8em;
+           margin: 0.25rem;
+      }
+
+
 </style>
 
 <script context="module">
@@ -308,9 +456,9 @@
           <br>
           <button class="dropbtn">Play Existing Games</button>
           <div class="dropdown-content">
-            <a href="game/oldmaid">Old Maid</a>
-            <a href="game/chess">Chess</a>
-            <a href="game/solitare">Solitaire</a>
+            <div class = "game-type" on:click = {()=> createGame("oldmaid")}>Old Maid</div>
+            <a  class = "game-type" href="game">Solitaire</a>
+            <div class = "game-type" on:click = {()=> createGame("chess")}>Chess</div>
           </div>
         </div>
 
@@ -324,7 +472,7 @@
         <p>Or click below to play with a virtual card deck!</p>
         <figure>
           <img
-            on:click={handleCardClick}
+            on:click = {()=> createGame("custom")}
             src="images/face_down.jpg"
             alt="face down card" />
         </figure>

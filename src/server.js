@@ -3,6 +3,7 @@
 import * as sapper from '@sapper/server';
 //import {setupDB} from "./database";
 
+require('dotenv').config({path: "src/config.env"});
 let express = require("express"),
 	app = express(),
 	path =require("path"),
@@ -47,7 +48,8 @@ app.use(sapper.middleware({
 	session: (req, res) => {
 		return {
 			username: req.session.username,
-			lobby_id: req.session.lobby_id
+			lobby_id: req.session.lobby_id,
+			game:req.session.game
 		};
 	}
 }));
@@ -60,28 +62,33 @@ try {
 	mongoose.set("useFindAndModify", false); // New deprecation warnings
 	mongoose.set("useCreateIndex", true); // New deprecation warnings
 	mongoose.set("useUnifiedTopology", true);
-	mongoose.connect("mongodb://localhost:32769/hocc", {
+	mongoose.connect(process.env.MONGO_URL, {
 		useNewUrlParser: true, // New deprecation warnings
 	});
-	console.log(`MongoDB connected: mongodb://localhost:32769/hocc`); //change to config file
+	console.log(`MongoDB connected: mongodb://localhost:32769/jbmay1497`); //change to config file
 } catch (err) {
 	console.log(err);
 	process.exit(-1);
 }
 
 import lobby from "./models/lobby"
+import chess from "./models/chess"
 
 app.models = {
-	Lobby: lobby
+	Lobby: lobby,
+	Chess: chess
 };
 
 /*****************************************************************************************************/
 
 //import data controllers and routes
 import {lobby_funcs } from "./controllers/lobby";
+import {chess_funcs } from "./controllers/chess";
 let lobby_controller = lobby_funcs(app);
+let chess_controller = chess_funcs(app);
 app.controllers = {
-	Lobby: lobby_controller
+	Lobby: lobby_controller,
+	Chess: chess_controller
 };
 
 /*****************************************************************************************************/
@@ -107,6 +114,50 @@ io.on("connection", socket =>
 	else{
 		console.log("a user connected")
 	}
+
+	socket.on('createGame', (game_id, gametype, host, usernames) =>{
+		socket.handshake.session.reload(async ()=>{
+
+			const cur_game = socket.handshake.session.game;
+			if (cur_game) return;
+			//this to call controller function - kind of like redux
+			let game_data;
+			switch(gametype){
+				case "chess":
+					game_data = await app.controllers.Chess.createChess(game_id, host, usernames);
+			}
+			if (game_data && game_data.error) return;
+			console.log(`${host} started ${gametype} game ${game_id}`);
+			socket.handshake.session.game = gametype;
+			await socket.handshake.session.save();
+			io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('enterGame', gametype);
+		});
+	});
+
+	/*socket.on('createChess', (game_id, host, usernames) =>{
+		socket.handshake.session.reload(async ()=>{
+
+			const cur_game = socket.handshake.session.game;
+			if (cur_game) return;
+			//this to call controller function - kind of like redux
+			let game_data = await app.controllers.Chess.createChess(game_id, host, usernames);
+			if (game_data.error) return;
+			console.log(`${host} started chess game ${game_id}`);
+			socket.handshake.session.game = "chess";
+			await socket.handshake.session.save();
+			io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('enterChessGame');
+		});
+	});*/
+
+	socket.on('makeMove', async (game_id, from, to)=>{
+		if (game_id !== socket.handshake.session.lobby_id){
+			return;
+		}let new_board = await app.controllers.Chess.makeMove(game_id, from, to);
+		if (new_board.error){
+			return;
+		}
+		io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('updatedBoard', new_board);
+	});
 
 	socket.on('createLobby', (username, fn) => {
 		socket.handshake.session.reload(async ()=>{
@@ -168,6 +219,8 @@ io.on("connection", socket =>
 			fn(lobby);
 		});
 	});
+
+
 
 	socket.on('sendChatMessage', async message =>{
 		//should probably pass username and lobby id from chat to error check
