@@ -167,8 +167,6 @@
           font-size: 0.8em;
            margin: 0.25rem;
       }
-
-
 </style>
 
 <script context="module">
@@ -270,6 +268,7 @@
   }
 
   function createGame(gametype){
+    console.log(gametype);
     sendMessage({
       action: "createGame",
       gametype: gametype,
