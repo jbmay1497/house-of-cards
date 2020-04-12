@@ -1,5 +1,3 @@
-
-
 <style>
     button {
         padding:0.7em 1.4em;
@@ -15,9 +13,9 @@
         box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
         text-align:center;
         position:relative;
-        left: 87%;
+        left: 86%;
         height: 50px;
-        width: 130px;
+        width: 150px;
     }
 
     button:active {
@@ -33,11 +31,10 @@
 </style>
 
 <script context="module">
-
      export async function preload({ params }, session) {
-    //checks if the user enters the lobbies through the /enter route,
-    //or through the lobbys url
-    return {custom_id: params.custom_id};
+        //checks if the user enters the lobbies through the /enter route,
+        //or through the lobbys url
+        return {custom_id: params.custom_id};
     }
 </script>
 
@@ -53,7 +50,7 @@
     let initialSetup = (includeJokers = false) =>{
         let index = 0;
         ["spades", "clubs", "hearts", "diamonds"].forEach(suit => {
-            [2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "queen", "king", "ace"].forEach(
+            ["king", "queen", "jack", 10, 9, 8, 7, 6, 5, 4, 3, 2, "ace"].forEach(
                 value => {
                     finalDeck.push(
                         {rect: {x: 580, y: 160, w: 0, h: 0},
@@ -66,11 +63,11 @@
                 }
             );
         });
-        if (includeJokers) {
-                    // cards.push({ suit: 'black', value: 'joker'});
-                    // cards.push({ suit: 'red', value: 'joker'});
-                }
 
+        if (includeJokers) {
+            // cards.push({ suit: 'black', value: 'joker'});
+            // cards.push({ suit: 'red', value: 'joker'});
+        }
     };
 
     let shuffleCards = (includeJokers = false) => {
@@ -114,14 +111,12 @@
 </script>
 
 <div>
-<button on:click={resetDeck}>Reset Deck</button>
+    <button on:click={resetDeck}>Reset to Unshuffled Deck</button>
 </div>
 
 <div>
-<button on:click={shuffleCards}>Shuffle & <br>Reset Deck</button>
+    <button on:click={shuffleCards}>Reset & <br>Shuffle Deck</button>
 </div>
-
-
 
 {#each $card_pos as card}
     <Drag {card} {custom_id}/>

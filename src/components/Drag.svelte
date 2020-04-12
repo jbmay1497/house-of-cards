@@ -48,8 +48,6 @@
         }
     };
 
-
-
     const handleMouseDown = event => {
         oldX = card.rect.x;
         oldY = card.rect.y;
@@ -76,6 +74,7 @@
                 break;
         }
     };
+
     const handleMouseUp = event => {
         setState(states.STATIC);
     };
@@ -111,10 +110,8 @@
 
 <style>
     img {
-
         border-radius: 5px;
         height: 10vw;
-
     }
 
     div {
