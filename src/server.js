@@ -134,20 +134,19 @@ io.on("connection", socket =>
 		});
 	});
 
-	/*socket.on('createChess', (game_id, host, usernames) =>{
-		socket.handshake.session.reload(async ()=>{
+	socket.on("customCardUpdate", async(game_id, cur_card)=>{
+		if (game_id !== socket.handshake.session.lobby_id) {
+			return;
+		}
+		socket.to(`${socket.handshake.session.lobby_id}`).emit('updateCardPos', cur_card);
+	});
 
-			const cur_game = socket.handshake.session.game;
-			if (cur_game) return;
-			//this to call controller function - kind of like redux
-			let game_data = await app.controllers.Chess.createChess(game_id, host, usernames);
-			if (game_data.error) return;
-			console.log(`${host} started chess game ${game_id}`);
-			socket.handshake.session.game = "chess";
-			await socket.handshake.session.save();
-			io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('enterChessGame');
-		});
-	});*/
+	socket.on("resetDeck", async(game_id, deck)=>{
+		if (game_id !== socket.handshake.session.lobby_id) {
+			return;
+		}
+		socket.to(`${socket.handshake.session.lobby_id}`).emit('resetDeck', deck);
+	});
 
 	socket.on('makeMove', async (game_id, from, to)=>{
 		if (game_id !== socket.handshake.session.lobby_id){

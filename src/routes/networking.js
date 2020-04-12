@@ -3,7 +3,7 @@ const socket = io();
 import {updateLobby} from "./lobbies/stores.js";
 import {enterGame} from "./lobbies/[lobby_id].svelte";
 import {updateBoard} from "./game/chess/[chess_id].svelte";
-
+import {updateCardPos, resetDeck} from "./game/custom/stores";
 import {updateMessages} from "../components/Chat.svelte";
 
 
@@ -19,7 +19,9 @@ export const connect = () =>{
         //console.log(socket);
         socket.on("messageReceived", updateMessages);
         socket.on('enterGame', enterGame);
-        socket.on('updatedBoard', updateBoard)//something);
+        socket.on('updatedBoard', updateBoard);//something);
+        socket.on('updateCardPos', updateCardPos);
+        socket.on('resetDeck', resetDeck);
 
     });
 };
@@ -53,8 +55,12 @@ export const sendMessage = message =>{
             socket.emit(action, message.game_id, message.host, message.usernames);
             break;
         case "makeMove":
-            socket.emit(action, message.game_id, message.from, message.to)
+            socket.emit(action, message.game_id, message.from, message.to);
             break;
+        case "customCardUpdate":
+            socket.emit(action, message.game_id, message.cur_card);
+        case "resetDeck":
+            socket.emit(action, message.game_id, message.deck);
     }
 
 };

@@ -1,6 +1,7 @@
+
+
 <style>
     button {
-        display:inline-block;
         padding:0.7em 1.4em;
         margin:0 0.3em 0.3em 0;
         border-radius:0.15em;
@@ -31,52 +32,97 @@
     }
 </style>
 
+<script context="module">
+
+     export async function preload({ params }, session) {
+    //checks if the user enters the lobbies through the /enter route,
+    //or through the lobbys url
+    return {custom_id: params.custom_id};
+    }
+</script>
+
 <script>
-    import Draggable from "../../../components/Drag.svelte";
+    import Drag from "../../../components/Drag.svelte";
+    import {card_pos} from "./stores.js";
+    import {getContext} from 'svelte';
+    const sendMessage = getContext('sendMessage');
+    export let custom_id;
 
     let finalDeck = [];
 
-    let shuffleCards = (includeJokers = false) => {
-        /* Return an array of 52 cards (if jokers is false, 54 otherwise) */
-        let cards = [];
+    let initialSetup = (includeJokers = false) =>{
+        let index = 0;
         ["spades", "clubs", "hearts", "diamonds"].forEach(suit => {
-            ["ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "queen", "king"].forEach(
-                    value => {
-                        cards.push({ suit: suit, value: value });
-                    }
+            [2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "queen", "king", "ace"].forEach(
+                value => {
+                    finalDeck.push(
+                        {rect: {x: 580, y: 160, w: 0, h: 0},
+                        value: value,
+                        suit: suit,
+                        id: `${suit}:${value}`,
+                        index: index++,
+                        up: false,
+                        pic: "images/face_down.jpg"});
+                }
             );
         });
-        // Add in jokers here
         if (includeJokers) {
-            // cards.push({ suit: 'black', value: 'joker'});
-            // cards.push({ suit: 'red', value: 'joker'});
-        }
-        // Now shuffle
-        let deck = [];
-        while (cards.length > 0) {
-            // Find a random number between 0 and cards.length - 1
-            const index = Math.floor(Math.random() * cards.length);
-            deck.push(cards[index]);
-            cards.splice(index, 1);
-        }
+                    // cards.push({ suit: 'black', value: 'joker'});
+                    // cards.push({ suit: 'red', value: 'joker'});
+                }
 
-        finalDeck = [];
-
-        for (let i = 0; i < 52; i++) {
-            finalDeck.push({rect: {x: 580, y: 160, w: 0, h: 0},
-                value: deck[i].value,
-                suit: deck[i].suit,
-                id: `${deck[i].suit}:${deck[i].value}`,
-                up: false,
-                pic: "images/face_down.jpg"});
-        }
     };
 
-    shuffleCards();
+    let shuffleCards = (includeJokers = false) => {
+       let new_index = 0;
+        /* Return an array of 52 cards (if jokers is false, 54 otherwise) */
+
+        let deck = [];
+        while ($card_pos.length > 0) {
+            // Find a random number between 0 and cards.length - 1
+            const index = Math.floor(Math.random() * $card_pos.length);
+            $card_pos[index].rect = {x: 580, y: 160, w: 0, h: 0};
+            $card_pos[index].up = false;
+            $card_pos[index].pic = "images/face_down.jpg";
+            $card_pos[index].index = new_index++;
+            deck.push($card_pos[index]);
+            $card_pos.splice(index, 1);
+        }
+
+        $card_pos = deck;
+        sendMessage({
+        action: "resetDeck",
+        game_id: custom_id,
+        deck: deck
+        })
+    };
+
+    let resetDeck = (includeJokers = false) =>{
+        finalDeck = [];
+        initialSetup();
+        $card_pos = finalDeck;
+        sendMessage({
+        action: "resetDeck",
+        game_id: custom_id,
+        deck: finalDeck
+        })
+
+    };
+
+    initialSetup();
+    $card_pos = finalDeck;
 </script>
 
-<button on:click={shuffleCards}>Shuffle & <br>Reset Deck</button>
+<div>
+<button on:click={resetDeck}>Reset Deck</button>
+</div>
 
-{#each finalDeck as obj}
-    <Draggable {...obj}/>
+<div>
+<button on:click={shuffleCards}>Shuffle & <br>Reset Deck</button>
+</div>
+
+
+
+{#each $card_pos as card}
+    <Drag {card} {custom_id}/>
 {/each}
