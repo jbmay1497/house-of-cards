@@ -65,7 +65,7 @@ try {
 	mongoose.connect(process.env.MONGO_URL, {
 		useNewUrlParser: true, // New deprecation warnings
 	});
-	console.log(`MongoDB connected: mongodb://localhost:32769/jbmay1497`); //change to config file
+	console.log(`MongoDB connected: mongodb://localhost:32769/hocc`); //change to config file
 } catch (err) {
 	console.log(err);
 	process.exit(-1);
