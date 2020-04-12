@@ -3,14 +3,19 @@
 </svelte:head>
 
 <script>
-    export let rect = { x: 0, y: 0, w: 100, h: 100 };
+    import {getContext} from 'svelte';
+    const sendMessage = getContext('sendMessage');
+
+    export let card;
+    export let custom_id;
+    //let rect = card.rect;
     let borders = [];
     let el;
     let oldX;
     let oldY;
 
-    $: transform = `translate(${rect.x}px, ${rect.y}px)`;
-    $: style = `transform: ${transform}; width: ${rect.w}px; height: ${rect.h}px; cursor`;
+    $: transform = `translate(${card.rect.x}px, ${card.rect.y}px)`;
+    $: style = `transform: ${transform}; width: ${card.rect.w}px; height: ${card.rect.h}px; z-index: 0; cursor`;
 
     const states = {
         STATIC: 0,
@@ -26,10 +31,10 @@
             case states.DRAG:
                 document.addEventListener("mousemove", handleMouseMove);
                 document.addEventListener("mouseup", handleMouseUp);
-                temp.sx = rect.x;
-                temp.sy = rect.y;
-                temp.sw = rect.w;
-                temp.sh = rect.h;
+                temp.sx = card.rect.x;
+                temp.sy = card.rect.y;
+                temp.sw = card.rect.w;
+                temp.sh = card.rect.h;
                 temp.cx = event.clientX;
                 temp.cy = event.clientY;
                 temp.r = temp.sh / temp.sw;
@@ -43,9 +48,11 @@
         }
     };
 
+
+
     const handleMouseDown = event => {
-        oldX = rect.x;
-        oldY = rect.y;
+        oldX = card.rect.x;
+        oldY = card.rect.y;
         setState(states.DRAG);
     };
 
@@ -57,8 +64,13 @@
 
         switch (state) {
             case states.DRAG:
-                rect.x = temp.sx + xOffset;
-                rect.y = temp.sy + yOffset;
+                card.rect.x = temp.sx + xOffset;
+                card.rect.y = temp.sy + yOffset;
+                sendMessage({
+                action: "customCardUpdate",
+                game_id: custom_id,
+                cur_card:card
+                });
                 break;
             default:
                 break;
@@ -68,36 +80,46 @@
         setState(states.STATIC);
     };
 
-    export let value;
+    /*export let value;
     export let suit;
-    export const id = 'down:none';
-    export let up = false;
-    export let pic = "images/face_down.jpg";
+    export let id;
+    export let up;
+    export let pic;
+    */
 
     let handleClick = () => {
-        if (oldX === rect.x && oldY === rect.y && up) {
-            pic = "images/face_down.jpg";
-            up = false;
-        } else if (oldX === rect.x && oldY === rect.y && !up) {
-            pic = `images/${value}_of_${suit}.png`;
-            up = true;
+        console.log(card.index);
+        if (oldX === card.rect.x && oldY === card.rect.y && card.up) {
+            card.pic = "images/face_down.jpg";
+            card.up = false;
+        } else if (oldX === card.rect.x && oldY === card.rect.y && !card.up) {
+            card.pic = `images/${card.value}_of_${card.suit}.png`;
+            card.up = true;
         }
+        sendMessage({
+        action: "customCardUpdate",
+        game_id: custom_id,
+        cur_card:card
+        });
+
     };
 </script>
 
-<div bind:this={el} class="rect" style="{style}" on:mousedown={event => handleMouseDown(event)}>
-    <img on:click={handleClick} draggable="false" src={pic} alt="card"/>
+<div bind:this={el} class="rect" id ="cur-card" style="{style}" on:mousedown={event => handleMouseDown(event)}>
+    <img on:click={handleClick} draggable="false" src={card.pic} alt="card"/>
 </div>
 
 <style>
     img {
-        position: relative;
+
         border-radius: 5px;
         height: 10vw;
+
     }
 
     div {
-        text-align: center;
+     position: relative;
+     text-align: center;
     }
 
     .rect {
