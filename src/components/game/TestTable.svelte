@@ -3,6 +3,8 @@
   export let diameter;
   $: radius = (diameter/2)*0.9;
 
+  let players = [0,1,2,3,4,5,6,7];  //figure this out later
+
 </script>
 
 <style>
@@ -18,14 +20,9 @@
 
 <div class="table" style="width:{diameter}px; height:{diameter}px;">
   <div class="players" style="transform: translate({radius}px,{radius}px);">
-    <Player seat={0} rad={radius}/>
-    <Player seat={1} rad={radius}/>
-    <Player seat={2} rad={radius}/>
-    <Player seat={3} rad={radius}/>
-    <Player seat={4} rad={radius}/>
-    <Player seat={5} rad={radius}/>
-    <Player seat={6} rad={radius}/>
-    <Player seat={7} rad={radius}/>
+    {#each players as player}
+      <Player seat={player} rad={radius}/>
+    {/each}
   </div>
 </div>
 <a
