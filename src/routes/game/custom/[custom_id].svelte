@@ -44,13 +44,18 @@
     import {getContext} from 'svelte';
     const sendMessage = getContext('sendMessage');
     export let custom_id;
+    import { onMount } from 'svelte';
 
     let finalDeck = [];
+    let xSize;
+    let ySize;
 
-    let xSize = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-    xSize = xSize / 2.2;
-    let ySize = window.innerHeight|| document.documentElement.clientHeight|| document.body.clientHeight;
-    ySize = ySize / 6;
+    if (typeof window !== 'undefined') {
+        xSize = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        xSize = xSize / 2.2;
+        ySize = window.innerHeight|| document.documentElement.clientHeight|| document.body.clientHeight;
+        ySize = ySize / 6;
+    }
 
     let initialSetup = (includeJokers = false) =>{
         let index = 0;
