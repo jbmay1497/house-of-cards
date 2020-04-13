@@ -1,20 +1,21 @@
 <script>
   export let seat;
   export let rad;
-
-  let seated = false;
-  const sit = () => {
-    seated = true;
-  };
-  //once a player is seated, somehow send that back to the table so that all the other "sit here" buttons disappear
+  export let username = "Name";
+  export let num = 8;
+  $: offset = 360/num;
 </script>
 
+<style>
+  img{
+    width: 100px;
+  }
+</style>
+
 <div
-  style="transform: rotate({seat * 45}deg) translate({rad}px) rotate({seat * -45}deg);">
-  Player {seat}
-  {#if !seated}
-    <button on:click={() => sit()}>Sit here!</button>
-  {:else}
-    <div>Cards</div>
-  {/if}
+  style="transform: rotate({seat * offset}deg) translatey(-{rad}px) rotate({seat * -offset}deg);">
+  {username}
+  <div class="hand">
+    <img src="images/face_down.jpg" alt="card"/>
+  </div>
 </div>
