@@ -3,9 +3,10 @@
   export let diameter;
   $: radius = (diameter/2) * 0.9;
   $: smRad = radius * 0.9;
+  export let hands;
 
   //let players = ["Annie", "Bob", "Carl", "David", "Ethan", "Fred", "George", "Henry"];  //figure this out later
-  let players = ["Annie", "Bob", "Carl", "David", "Ethan"];
+  export let players;
   $: numPlayers = players.length;
 </script>
 
@@ -29,16 +30,8 @@
   <div class="players" style="transform: translate({radius}px,{radius}px);">
     {#each players as player, i}
       <div class="player">
-        <Player seat={i} rad={smRad} username={player} num={numPlayers}/>
+        <Player seat={i} rad={smRad} username={player} num={numPlayers} hand={hands[i]}/>
       </div>
     {/each}
   </div>
 </div>
-<!-- <a
-  href="https://css-tricks.com/snippets/sass/placing-items-circle/">
-  Here's this for how to do arbitrary elements around a circle.
-</a>
-<a
-  href="https://daveceddia.com/svelte-with-sass-in-vscode/">
-  And how to get scss in svelte bc the first link uses that.
-</a> -->
