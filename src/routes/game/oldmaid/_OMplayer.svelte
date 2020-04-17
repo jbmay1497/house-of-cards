@@ -7,7 +7,7 @@
     $: offset = 360/num;
     export let hand;
 
-    // TODO: format cards
+    // TODO: format cards - closer together, when hover make bigger
     // TODO: if not your hand, face down
 
     $: callPic = (i) => {

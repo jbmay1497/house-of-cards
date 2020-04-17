@@ -21,6 +21,8 @@
 <script>
     export let hand;
 
+    // TODO: format cards
+
     let callPic = (i) => {
         return `images/${hand[i].value}_of_${hand[i].suit}.png`
     }

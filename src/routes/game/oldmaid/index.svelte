@@ -5,7 +5,6 @@
   let format = true;
 
   // TODO: get list of actual users
-  // TODO: make card piles variable to number of players
 
   const toggle = () => {
     format = !format;
@@ -38,35 +37,22 @@
 
   let deck = shuffleCards();
 
-  let players = ["Annie", "Bob", "Carl", "David", "Ethan"];
+  let players = ["Annie", "Bob", "Carl"];
   $: numPlayers = players.length;
 
   let hands = [];
-  let annie = [];
-  let bob = [];
-  let carl = [];
-  let david = [];
-  let ethan = [];
-
-  for (let i = 0; i < deck.length; i++) {
-    if (i % 5 === 0) {
-      annie.push(deck[i]);
-    } else if (i % 5 === 1) {
-      bob.push(deck[i]);
-    } else if (i % 5 === 2) {
-      carl.push(deck[i]);
-    } else if (i % 5 === 3) {
-      david.push(deck[i]);
-    } else if (i % 5 === 4) {
-      ethan.push(deck[i]);
-    }
+  for (let i = 0; i < players.length; i++) {
+    hands[i] = [];
   }
 
-  hands.push(annie);
-  hands.push(bob);
-  hands.push(carl);
-  hands.push(david);
-  hands.push(ethan);
+  let cur = 0;
+  for (let i = 0; i < deck.length; i++) {
+    hands[cur].push(deck[i]);
+    cur++;
+    if (cur === hands.length) {
+      cur = 0;
+    }
+  }
 </script>
 
 <style>
