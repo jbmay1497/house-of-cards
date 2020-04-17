@@ -274,7 +274,9 @@
   let size = true;
 
   function createGame(gametype){
-
+    if (username !== host){
+        return;
+    }
     if (gametype === "chess" && $new_usernames.length !== 2){
         size = false;
         return;
