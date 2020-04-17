@@ -14,8 +14,8 @@
 
       let col = -1;
       let row = -1;
-      let from;
-      let to;
+      let from = null;
+      let to = null;
 
       //need to beef up later
       function clickSquare(r, c) {
@@ -24,12 +24,14 @@
               row = -1;
               col = -1;
               from = null;
-          } else if (board[r][c] !== ' ' && !from) {
+          } else if (!from &&  board[r][c] !== ' ') {
+              console.log("got here 1");
               row = r;
               col = c;
               from = [row, col]
 
-          }else{
+          }else if (from){
+              console.log("got here 2");
               to = [r, c];
               if (username === turn){
                  makeMove(from, to);
