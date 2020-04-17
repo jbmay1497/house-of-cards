@@ -15,7 +15,8 @@
 
     // TODO: sort cards within their own hand
     // TODO: when they pick a card, it's actually random
-    // TODO: hand mode - allow it to also choose duplicates out
+    // TODO: be able to erase duplicates even when not their turn
+    // TODO: only allow access when it's your deck
 
     let pair = [];
 
@@ -38,15 +39,19 @@
                 allDone = true;
                 turn = 0;
             }
-        } else if(done[event.detail.numPlayer] === false || (allDone && turn === event.detail.numPlayer)) {
+        } else if(event.detail.id === 'hand' && turn === 0 ||
+                done[event.detail.numPlayer] === false ||
+                (allDone && turn === event.detail.numPlayer)) {
             if (pair.length === 0) {
                 pair.push(event.detail.card);
             } else {
                 pair.push(event.detail.card);
 
                 if (pair[0].value === pair[1].value && pair[0].suit !== pair[1].suit) {
-                    hands[event.detail.numPlayer] = hands[event.detail.numPlayer].filter(x => x !== pair[0]);
-                    hands[event.detail.numPlayer] = hands[event.detail.numPlayer].filter(x => x !== pair[1]);
+                    let person = event.detail.id === 'hand' ? turn : event.detail.numPlayer;
+                    hands[person] = hands[person].filter(x => x !== pair[0]);
+                    hands[person] = hands[person].filter(x => x !== pair[1]);
+
                     numCards -= 2;
                     pair = [];
 
@@ -168,6 +173,6 @@
             <ModalGameOver bind:hidden={gameOver}/>
         </div>
     {:else}
-        <Hand hand={hands[0]}/>
+        <Hand hand={hands[0]} on:click={handleClick}/>
     {/if}
 </div>

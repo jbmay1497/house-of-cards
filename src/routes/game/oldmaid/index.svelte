@@ -37,7 +37,7 @@
 
   let deck = shuffleCards();
 
-  let players = ["Annie", "Bob", "Carl"];
+  let players = ["Annie", "Bob", "Carl", "David", "Ethan"];
   $: numPlayers = players.length;
 
   let hands = [];
