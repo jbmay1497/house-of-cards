@@ -172,8 +172,6 @@
 <script context="module">
   import { get } from 'svelte/store';
   export function enterGame(gametype){
-
-
     const { session } = stores();
     let session_data = (get(session));
     console.log(gametype);
@@ -230,6 +228,7 @@
   import { stores } from '@sapper/app';
   const { session } = stores();
   import ModalCustom from '../../components/ModalCustom.svelte';
+  import ModalNumPlayers from '../../components/ModalNumPlayers.svelte';
 
   //allows us to retrieve the lobbies from the module context
 
@@ -267,7 +266,26 @@
     document.body.removeChild(copyText);
   }
 
+  let size = true;
+
   function createGame(gametype){
+    if (gametype === 'oldmaid') {
+      if ($new_usernames.length < 2) {
+        size = false;
+        return;
+      }
+    } else if (gametype === 'solitare') {
+      if ($new_usernames.length !== 1) {
+        size = false;
+        return;
+      }
+    } else if (gametype === 'chess') {
+      if ($new_usernames.length !== 2) {
+        size = false;
+        return;
+      }
+    }
+
     console.log(gametype);
     sendMessage({
       action: "createGame",
@@ -317,7 +335,7 @@
 
   let handleClick = () => {
     custom = false;
-  }
+  };
 </script>
 
 <body>
@@ -348,7 +366,7 @@
           <button class="dropbtn">Play Existing Games</button>
           <div class="dropdown-content">
             <div class = "game-type" on:click = {()=> createGame("oldmaid")}>Old Maid</div>
-            <a  class = "game-type" href="game/solitare">Solitaire</a>
+            <div class = "game-type" on:click = {()=> createGame("solitare")}>Solitaire</div>
             <div class = "game-type" on:click = {()=> createGame("chess")}>Chess</div>
           </div>
         </div>
@@ -357,8 +375,12 @@
           <button class="dropbtn" on:click={handleClick}>Create Custom Game</button>
         </div>
         <div class:hidden ={custom}>
-           <ModalCustom bind:hidden = {custom}/>
+           <ModalCustom bind:hidden={custom}/>
          </div>
+
+        <div class:hidden ={size}>
+          <ModalNumPlayers bind:hidden={size}/>
+        </div>
 
         <p>Or click below to play with a virtual card deck!</p>
         <figure>
