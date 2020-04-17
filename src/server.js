@@ -125,6 +125,10 @@ io.on("connection", socket =>
 			switch(gametype){
 				case "chess":
 					game_data = await app.controllers.Chess.createChess(game_id, host, usernames);
+					break;
+				case "oldmaid":
+					game_data = "placeholder";
+					break;
 			}
 			if (game_data && game_data.error) return;
 			console.log(`${host} started ${gametype} game ${game_id}`);

@@ -1,7 +1,59 @@
+<script context="module">
+
+     export async function preload({ params }, session) {
+    //checks if the user enters the lobbies through the /enter route,
+    //or through the lobbys url
+    //console.log("preload called");
+    //console.log(session);
+
+    //checks if user is in a different lobby, then redirects them there
+    if (!session.lobby_id){
+         return this.redirect(302, `/`);
+    }else if (!session.game || session.game !== "oldmaid"){
+        return this.redirect(302, `lobbies/${session.lobby_id}`);
+    }else if (session.lobby_id !== params.oldmaid_id){
+        return this.redirect(302, `game/chess/${session.lobby_id}`);
+    }
+
+    //currently fetch lobby data, will fetch oldmaid data once the logic works
+    const res = await this.fetch(`api/lobby/${params.oldmaid_id}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const lobby_data = await res.json();
+    if (res.status === 200) {
+        let game_data = {
+            usernames: lobby_data.usernames
+        }
+      game_data.username = session.username;
+      return { oldmaid_game: game_data };
+    } else {
+      this.redirect(302, ``);
+    }
+  }
+</script>
+
 <script>
   import Switch from "../../../components/game/Switch.svelte";
   import Gameboard from "./_OMgameboard.svelte";
   import Chat from "../../../components/Chat.svelte";
+
+  export let oldmaid_game;
+
+  //current users username
+  let username = oldmaid_game.username;
+
+  //list of current usernames
+  let usernames = oldmaid_game.usernames;
+
+  console.log(username);
+   console.log(usernames);
+
+
   let format = true;
 
   // TODO: get list of actual users

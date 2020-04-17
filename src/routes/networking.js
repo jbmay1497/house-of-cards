@@ -51,9 +51,6 @@ export const sendMessage = message =>{
         case "createGame":
             socket.emit(action, message.game_id, message.gametype, message.host, message.usernames);
             break;
-        case "createChess":
-            socket.emit(action, message.game_id, message.host, message.usernames);
-            break;
         case "makeMove":
             socket.emit(action, message.game_id, message.from, message.to);
             break;
