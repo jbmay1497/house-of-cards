@@ -1,5 +1,6 @@
 "use strict";
 import {INITIAL_BOARD} from "../chess"
+import {validateMove} from "../chess"
 
 export const chess_funcs = app => ({
     createChess: async (game_id, host, usernames) => {
@@ -10,7 +11,9 @@ export const chess_funcs = app => ({
             white: host,
             black: usernames[1],
             board: INITIAL_BOARD,
-            turn: "white"
+            turn: host,
+            moveCount: 0,
+            moves: []
         };
         let chess_data = new app.models.Chess(chess_game);
         try {
@@ -26,15 +29,25 @@ export const chess_funcs = app => ({
         if (!game){
             return {error: "Game does not exist"};
         }
+        //setting cur_turn to a boolean makes it easier to validate moves
+        let cur_turn = game.white === game.turn;
         let cur_piece = game.board[from[0]][from[1]];
-        console.log(from);
-        console.log(to);
-        console.log(cur_piece);
-        game.board[from[0]][from[1]] = ' ';
-        game.board[to[0]][to[1]] = cur_piece;
-        game.markModified('board');
+        let updated;
+            [game.board, updated] = validateMove(game.board, from, to, game.moves, cur_turn);
+
+        if (updated){
+            game.markModified('board');
+            game.turn = game.turn === game.white ? game.black : game.white;
+            game.markModified('turn');
+            ++game.moveCount;
+            game.moves.push({
+                piece: cur_piece,
+                from: from,
+                to: to
+            });
+        }
         await game.save();
-        return game.board;
+        return {board: game.board, turn:game.turn};
     }
 
 });

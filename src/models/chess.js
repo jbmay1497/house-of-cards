@@ -3,6 +3,16 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+let Move = new Schema(
+    {
+            piece: String,
+            from: [],
+            to: []
+    },
+    { _id: false }
+);
+
+
 let Chess = new Schema(
     {
         _id: String,
@@ -11,7 +21,9 @@ let Chess = new Schema(
         white: String,
         black: String,
         board: [],
-        turn: String
+        turn: String,
+        moveCount: { type: Number, default: 0 },
+        moves: [Move]
 
     },
     {_id: false}

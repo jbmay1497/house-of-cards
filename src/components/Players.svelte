@@ -32,7 +32,6 @@
 
 <script>
 export let usernames;
-export let host;
 </script>
 
 <div class = "playerPanel">
