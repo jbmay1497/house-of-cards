@@ -56,9 +56,11 @@
     position: absolute;
     display: none;
     background-color: #f1f1f1;
-    max-width: 120px;
+    width: 100%;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 99;
+    border-radius: 20px;
+
   }
 
   /* Links inside the dropdown */
@@ -72,6 +74,7 @@
   /* Change color of dropdown links on hover */
   .dropdown-content .game-type:hover {
     background-color: #ddd;
+    border-radius: 20px;
   }
 
   /* Show the dropdown menu on hover */
@@ -172,6 +175,8 @@
 <script context="module">
   import { get } from 'svelte/store';
   export function enterGame(gametype){
+
+
     const { session } = stores();
     let session_data = (get(session));
     console.log(gametype);
@@ -269,23 +274,19 @@
   let size = true;
 
   function createGame(gametype){
-    if (gametype === 'oldmaid') {
-      if ($new_usernames.length < 2) {
-        size = false;
-        return;
-      }
-    } else if (gametype === 'solitare') {
-      if ($new_usernames.length !== 1) {
-        size = false;
-        return;
-      }
-    } else if (gametype === 'chess') {
-      if ($new_usernames.length !== 2) {
-        size = false;
-        return;
-      }
-    }
 
+    if (gametype === "chess" && $new_usernames.length !== 2){
+        size = false;
+        return;
+    }
+    if (gametype === "oldmaid" && $new_usernames.length < 2){
+        size = false;
+        return;
+     }
+    if (gametype === "solitaire" && $new_usernames.length !== 2){
+        size = false;
+        return;
+     }
     console.log(gametype);
     sendMessage({
       action: "createGame",
@@ -294,21 +295,7 @@
       host: host,
       usernames: $new_usernames
     });
-    // goto(`game/${gametype}/${lobby_id}`);
-    /*if (gametype === 'oldmaid'){
 
-    }else if (gametype === 'chess'){
-        sendMessage({
-          action: "createChess",
-          game_id: lobby_id,
-          host: host,
-          usernames: $new_usernames
-        });
-        goto(`game/chess/${lobby_id}`)
-    }else if(gametype === "custom"){
-        goto(`game/custom/${lobby_id}`)
-    }
-    */
   }
 
   function leaveLobby(){
@@ -335,7 +322,7 @@
 
   let handleClick = () => {
     custom = false;
-  };
+  }
 </script>
 
 <body>
@@ -345,7 +332,7 @@
 
   <div class = "{!joined ? 'hidden' : 'grid-container'}" >
     <div class="player-info">
-      <Players usernames = {$new_usernames} {host} />
+      <Players usernames = {$new_usernames} />
       <button class = "leaveBtn" on:click = {leaveLobby}>Leave Lobby</button>
     </div>
 
@@ -358,6 +345,7 @@
                     <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
               Copy Code</button>
            </div>
+        <div> Or, share the URL</div>
       </div>
 
       <div >
@@ -365,9 +353,9 @@
           <br>
           <button class="dropbtn">Play Existing Games</button>
           <div class="dropdown-content">
-            <div class = "game-type" on:click = {()=> createGame("oldmaid")}>Old Maid</div>
-            <div class = "game-type" on:click = {()=> createGame("solitare")}>Solitaire</div>
-            <div class = "game-type" on:click = {()=> createGame("chess")}>Chess</div>
+            <div class = "game-type" on:click = {()=> createGame("oldmaid")}>Old Maid (2-8 Players)</div>
+            <a  class = "game-type" href="game/solitare">Solitaire (1 Player)</a>
+            <div class = "game-type" on:click = {()=> createGame("chess")}>Chess (2 Players)</div>
           </div>
         </div>
 
@@ -381,7 +369,6 @@
         <div class:hidden ={size}>
           <ModalNumPlayers bind:hidden={size}/>
         </div>
-
         <p>Or click below to play with a virtual card deck!</p>
         <figure>
           <img

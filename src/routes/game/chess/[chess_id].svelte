@@ -2,9 +2,12 @@
      import { writable } from "svelte/store";
       import { get } from "svelte/store";
       const new_board = writable([]);
+      const cur_turn = writable("");
 
-      export function updateBoard(updated_board) {
-          new_board.set(updated_board);
+      export function updateBoard(updated_game) {
+          new_board.set(updated_game.board);
+          cur_turn.set(updated_game.turn);
+
         }
 
      export async function preload({ params }, session) {
@@ -34,9 +37,6 @@
     const game_data = await res.json();
     if (res.status === 200) {
       game_data.username = session.username;
-      console.log(game_data.black);
-
-
       return { chess_game: game_data };
     } else {
       this.redirect(302, ``);
@@ -52,9 +52,11 @@ let black = chess_game.black;
 let white = chess_game.white;
 let game_id = chess_game._id;
 let board = chess_game.board;
+let turn = chess_game.turn;
 import Board from "./_Board.svelte";
 
 $new_board = board;
+$cur_turn = turn;
 
 let rows = [0, 1, 2, 3, 4, 5, 6, 7];
 let cols = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -73,5 +75,7 @@ if (username === black){
         {rows}
         {cols}
         {game_id}
+        {username}
+        turn = {$cur_turn}
          />
 </div>

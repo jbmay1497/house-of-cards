@@ -1,11 +1,13 @@
 <script>
-    import Cell from "./_Cell.svelte"
+    import Square from "./_Square.svelte"
     import {getContext} from 'svelte';
     const sendMessage = getContext('sendMessage');
     export let board;
     export let rows;
     export let cols;
     export let game_id;
+    export let username;
+    export let turn;
 
      const ROW_LABELS = ['8', '7', '6', '5', '4', '3', '2', '1'];
      const COL_LABELS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
@@ -16,7 +18,7 @@
       let to;
 
       //need to beef up later
-      function clickCell(r, c) {
+      function clickSquare(r, c) {
 
           if (row === r && col === c) {
               row = -1;
@@ -29,7 +31,10 @@
 
           }else{
               to = [r, c];
-              makeMove(from, to);
+              if (username === turn){
+                 makeMove(from, to);
+              }
+
               from = null;
               to = null;
               row = -1;
@@ -62,9 +67,9 @@
         <tr>
             <th class:selected = {row === r}>{ROW_LABELS[r]}</th>
             {#each cols as c}
-            <Cell
+            <Square
                 value={board[r][c]}
-                on:click={() => clickCell(r, c)}
+                on:click={() => clickSquare(r, c)}
                 selected={col === c && row === r}
                 />
             {/each}

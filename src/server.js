@@ -151,11 +151,11 @@ io.on("connection", socket =>
 	socket.on('makeMove', async (game_id, from, to)=>{
 		if (game_id !== socket.handshake.session.lobby_id){
 			return;
-		}let new_board = await app.controllers.Chess.makeMove(game_id, from, to);
-		if (new_board.error){
+		}let updated_game = await app.controllers.Chess.makeMove(game_id, from, to);
+		if (updated_game.error){
 			return;
 		}
-		io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('updatedBoard', new_board);
+		io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('updatedBoard', updated_game);
 	});
 
 	socket.on('createLobby', (username, fn) => {
