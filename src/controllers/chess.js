@@ -1,5 +1,6 @@
 "use strict";
 import {INITIAL_BOARD} from "../chess"
+import {TEMP_BOARD} from "../chess"
 import {validateMove} from "../chess"
 import {checkForEndGame} from "../chess"
 
@@ -11,10 +12,12 @@ export const chess_funcs = app => ({
             host: host,
             white: host,
             black: usernames[1],
-            board: INITIAL_BOARD,
+            board: TEMP_BOARD,
             turn: host,
             moveCount: 0,
-            moves: []
+            moves: [],
+            finished: 0
+
         };
         let chess_data = new app.models.Chess(chess_game);
         try {
@@ -24,6 +27,33 @@ export const chess_funcs = app => ({
             return {error: "Chess games could not be created. Please try again"};
         }
     },
+
+    startNewChess: async (game_id, username)=> {
+        console.log(game_id);
+        let game = await app.models.Chess.findById(game_id);
+        if (username !== game.host) {
+            return {error: "only host can start new game"};
+        }
+        game.turn = game.host;
+        game.moves = [];
+        game.finished = 0;
+        game.board = INITIAL_BOARD;
+        game.moveCount = 0;
+        game.markModified('board');
+        game.markModified('turn');
+        await game.save();
+        return {board: game.board, turn:game.turn, finished: game.finished};;
+    },
+
+    stopChess: async(game_id) =>{
+        app.models.Chess.findByIdAndDelete(game_id, async function(err, deleted_lobby){
+            if (err){
+                return { error: `Game could not be deleted` };
+            }
+            return null;
+        })
+    },
+
 
     makeMove: async(game_id, from, to)=>{
         let game = await app.models.Chess.findById(game_id);
@@ -50,14 +80,17 @@ export const chess_funcs = app => ({
             let endGame = checkForEndGame(game.board, cur_turn, game.moves);
             if(endGame){
                 if (endGame[1] === "checkmate"){
-                    console.log("found checkmate");
+                    game.finished = 1;
+                    game.turn = game.turn === game.white ? game.black : game.white;
+                    game.markModified('turn');
                 }else if (endGame[1] === "stalemate"){
-                    console.log("found stalemate");
+                   game.finished = 2;
                 }
+
             }
         }
         await game.save();
-        return {board: game.board, turn:game.turn};
+        return {board: game.board, turn:game.turn, finished: game.finished};
     }
 
 });

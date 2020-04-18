@@ -91,7 +91,8 @@
     let enterLobby = lobby_id => {
         let s_new = {
             username: username,
-            lobby_id: lobby_id
+            lobby_id: lobby_id,
+            game: ''
         };
 
         session.set(s_new);
@@ -110,7 +111,7 @@
         <h1>Create a Lobby</h1>
         <div id = 'error-containerCreateRoom'></div>
         <div>
-            Name: <input type="text" name="name" bind:value = {username}><br>
+            Username: <input type="text" name="name" bind:value = {username}><br>
         </div>
         <button on:click ={returnToIndex}>Go Back</button>
         <button on:click = {createLobby}>Create</button>

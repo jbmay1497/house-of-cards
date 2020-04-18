@@ -1,21 +1,31 @@
 <script context="module">
-     import { writable } from "svelte/store";
-      import { get } from "svelte/store";
-      const new_board = writable([]);
-      const cur_turn = writable("");
+ import { stores } from '@sapper/app';
+ import { get } from 'svelte/store';
 
-      export function updateBoard(updated_game) {
-          new_board.set(updated_game.board);
-          cur_turn.set(updated_game.turn);
-
-        }
+export function leaveGame(){
+      const { session } = stores();
+      const sendMessage = getContext('sendMessage');
+      let session_data = (get(session));
+       let s_new = {
+            username: session_data.username,
+            lobby_id: session_data.lobby_id,
+            game: ""
+          };
+       session.set(s_new);
+       console.log(get(session));
+       sendMessage({
+           action: "updateSessionGame",
+           gametype: ""
+           });
+        goto(`lobbies/${session_data.lobby_id}`);
+}
 
      export async function preload({ params }, session) {
     //checks if the user enters the lobbies through the /enter route,
     //or through the lobbys url
     //console.log("preload called");
     //console.log(session);
-
+    console.log(session);
     //checks if user is in a different lobby, then redirects them there
     if (!session.lobby_id){
          return this.redirect(302, `/`);
@@ -45,7 +55,7 @@
 </script>
 
 <script>
-
+import ChessModalGameOver from "../../../components/chessModalGameOver.svelte"
 export let chess_game;
     let username = chess_game.username;
     let black = chess_game.black;
@@ -53,11 +63,22 @@ export let chess_game;
     let game_id = chess_game._id;
     let board = chess_game.board;
     let turn = chess_game.turn;
+    let finished = chess_game.finished;
+    let host = chess_game.host;
     import Board from "./_Board.svelte";
+    import {new_board} from "./stores.js"
+     import {cur_turn} from "./stores.js"
+      import {isFinished} from "./stores.js"
     import {goto} from "@sapper/app"
+    import {getContext} from 'svelte';
+    const sendMessage = getContext('sendMessage');
+
+
+
 
     $new_board = board;
     $cur_turn = turn;
+    $isFinished = finished;
 
     let rows = [0, 1, 2, 3, 4, 5, 6, 7];
     let cols = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -68,8 +89,13 @@ export let chess_game;
         cols = cols.reverse();
     }
 
-    let handleLeave = () => {
-        goto(`/`);
+    let StopGame = () => {
+        if (host === username){
+            sendMessage({
+            action: 'stopGame',
+            game_id: game_id
+            });
+        }
     }
 </script>
 
@@ -95,6 +121,13 @@ export let chess_game;
     }
 </style>
 
+<div class:hidden ={$isFinished}>
+        {#if $isFinished === 1}
+          <ChessModalGameOver {username} {game_id} winner = {$cur_turn} host = {host} bind:hidden={$isFinished}/>
+        {:else if $isFinished === 2}
+         <ChessModalGameOver {username}  {game_id} winner = {""} host = {host} bind:hidden={$isFinished}/>
+        {/if}
+</div>
 <div>
     <Board
         board={$new_board}
@@ -104,5 +137,7 @@ export let chess_game;
         {username}
         turn = {$cur_turn}
          />
-    <button on:click={handleLeave}>Leave Game</button>
+    {#if host === username}
+    <button on:click={StopGame}>Stop Game</button>
+    {/if}
 </div>

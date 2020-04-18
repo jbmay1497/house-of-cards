@@ -96,7 +96,8 @@
 
             let s_new = {
                 username: username,
-                lobby_id: lobby_id
+                lobby_id: lobby_id,
+                game: ''
             };
             session.set(s_new);
             goto(`lobbies/${lobby_id}`);

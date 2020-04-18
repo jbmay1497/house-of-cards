@@ -137,6 +137,31 @@ io.on("connection", socket =>
 			io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('enterGame', gametype);
 		});
 	});
+	//extend to handle oldmaid
+	socket.on('startNewGame', (game_id, username) =>{
+		console.log(game_id);
+		socket.handshake.session.reload(async()=>{
+			let updated_game = await app.controllers.Chess.startNewChess(game_id, username);
+			if (updated_game && updated_game.error) return;
+			io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('enterNewGame', updated_game);
+		})
+	});
+	socket.on('stopGame', game_id =>{
+		socket.handshake.session.reload(async()=>{
+			let updated_game = await app.controllers.Chess.stopChess(game_id);
+			if (updated_game && updated_game.error) return;
+			socket.handshake.session.game = "";
+			io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('leaveGame');
+		})
+	});
+
+
+	socket.on('updateSessionGame', gametype =>{
+		socket.handshake.session.reload(async () =>{
+			socket.handshake.session.game = gametype;
+			await socket.handshake.session.save();
+		})
+	});
 
 	socket.on("customCardUpdate", async(game_id, cur_card)=>{
 		if (game_id !== socket.handshake.session.lobby_id) {
@@ -235,6 +260,7 @@ io.on("connection", socket =>
 
 	socket.on('disconnect', () =>{
 		console.log(`${socket.handshake.session.username} disconnected`);
+		console.log(`${socket.handshake.session.game}`);
 		if (socket.handshake.session.lobby_id){
 			socket.leave(`${socket.handshake.session.lobby_id}`);
 		}

@@ -56,7 +56,12 @@
 <script context="module">
 	export async function preload(page, session) {
 		if (session.username && session.lobby_id){
-			this.redirect(302,`lobbies/${session.lobby_id}`)
+		    if (session.game){
+		        this.redirect(302,`game/${session.game}/${session.lobby_id}`)
+		    }else{
+		        this.redirect(302,`lobbies/${session.lobby_id}`)
+		    }
+
 		}
 	}
 </script>

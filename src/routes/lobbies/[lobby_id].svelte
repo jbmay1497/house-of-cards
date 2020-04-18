@@ -179,8 +179,7 @@
 
     const { session } = stores();
     let session_data = (get(session));
-    console.log(gametype);
-    console.log(session_data);
+    const sendMessage = getContext('sendMessage');
     let s_new = {
       username: session_data.username,
       lobby_id: session_data.lobby_id,
@@ -188,6 +187,10 @@
     };
     session.set(s_new);
     session_data= get(session);
+    sendMessage({
+    action: "updateSessionGame",
+    gametype: gametype
+    });
     goto(`game/${gametype}/${session_data.lobby_id}`);
   }
 
@@ -200,6 +203,10 @@
     //checks if user is in a different lobby, then redirects them there
     if (session.lobby_id && session.lobby_id !== params.lobby_id) {
       return this.redirect(302, `lobbies/${session.lobby_id}`);
+    }
+
+    else if (session.game){
+        return this.redirect(302, `game/${session.game}/${session.lobby_id}`);
     }
 
     //fetching lobbies data

@@ -23,7 +23,8 @@ let Chess = new Schema(
         board: [],
         turn: String,
         moveCount: { type: Number, default: 0 },
-        moves: [Move]
+        moves: [Move],
+        finished: Number
 
     },
     {_id: false}
