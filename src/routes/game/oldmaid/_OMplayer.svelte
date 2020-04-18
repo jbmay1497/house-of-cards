@@ -44,8 +44,7 @@
     let sort = () => {
         if (playerIndex === numPlayer) {
             dispatchSort('click', {
-                id: 'sort',
-                numPlayer: numPlayer
+                id: 'sort'
             });
         }
     };

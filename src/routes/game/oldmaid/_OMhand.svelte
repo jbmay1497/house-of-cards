@@ -17,6 +17,12 @@
     .hand .card:hover {
         transform: scale(1.5);
     }
+
+    button {
+        color: white;
+        border-radius: 4px;
+        background-color: green;
+    }
 </style>
 
 <script>
@@ -31,6 +37,14 @@
         });
     };
 
+    const dispatchSort = createEventDispatcher();
+
+    let sort = () => {
+        dispatchSort('click', {
+            id: 'sort'
+        });
+    };
+
     // TODO: format cards to overlap
 
     $: callPic = (i) => {
@@ -39,11 +53,8 @@
 </script>
 
 <h2>Hand style</h2>
-
+<button on:click={sort}>Sort Cards</button>
 <div class="grid-container">
-    <div class="grid-item">
-
-    </div>
     <div class="grid-item hand">
         {#each hand as card, i}
             <img class="card" src={callPic(i)} alt="card" on:click={handleClick(card)}/>
