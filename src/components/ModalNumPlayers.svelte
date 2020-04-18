@@ -62,6 +62,8 @@
 
 <script>
     export let hidden = false;
+    export let username;
+    export let host;
 
     let returnToIndex = ()=>{
         hidden = true;
@@ -70,7 +72,11 @@
 
 <div class="modal">
     <div class="modal-content">
-        <h1>Incorrect number of players for this game</h1>
+        {#if username !== host}
+            <h1>Host must pick the game</h1>
+        {:else}
+            <h1>Incorrect number of players for this game</h1>
+        {/if}
         <br>
         <button on:click ={returnToIndex}>Go Back</button>
     </div>

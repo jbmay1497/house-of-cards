@@ -234,7 +234,6 @@
   const { session } = stores();
   import ModalCustom from '../../components/ModalCustom.svelte';
   import ModalNumPlayers from '../../components/ModalNumPlayers.svelte';
-  import ModalHost from '../../components/ModalHost.svelte';
 
   //allows us to retrieve the lobbies from the module context
 
@@ -275,24 +274,24 @@
   let size = true;
   let isHost = true;
 
-  function createGame(gametype, user){
-    if (user !== host) {
-      isHost = false;
+  function createGame(gametype){
+    if (username !== host) {
+        size = false;
     } else if (gametype === "chess" && $new_usernames.length !== 2){
         size = false;
-    } else if (gametype === "oldmaid" && $new_usernames.length < 1){
+    } else if (gametype === "oldmaid" && $new_usernames.length < 2){
         size = false;
-     } else if (gametype === "solitaire" && $new_usernames.length !== 2){
+     } else if (gametype === "solitaire" && $new_usernames.length !== 1){
         size = false;
      } else {
-      console.log(gametype);
-      sendMessage({
-        action: "createGame",
-        gametype: gametype,
-        game_id: lobby_id,
-        host: host,
-        usernames: $new_usernames
-      });
+        console.log(gametype);
+        sendMessage({
+          action: "createGame",
+          gametype: gametype,
+          game_id: lobby_id,
+          host: host,
+          usernames: $new_usernames
+        });
     }
   }
 
@@ -351,9 +350,9 @@
           <br>
           <button class="dropbtn">Play Existing Games</button>
           <div class="dropdown-content">
-            <div class = "game-type" on:click = {()=> createGame("oldmaid", username)}>Old Maid (2-8 Players)</div>
+            <div class = "game-type" on:click = {()=> createGame("oldmaid")}>Old Maid (2-8 Players)</div>
             <a class = "game-type" href="game/solitare">Solitaire (1 Player)</a>
-            <div class = "game-type" on:click = {()=> createGame("chess", username)}>Chess (2 Players)</div>
+            <div class = "game-type" on:click = {()=> createGame("chess")}>Chess (2 Players)</div>
           </div>
         </div>
 
@@ -365,11 +364,7 @@
          </div>
 
         <div class:hidden ={size}>
-          <ModalNumPlayers bind:hidden={size}/>
-        </div>
-
-        <div class:hidden ={isHost}>
-          <ModalHost bind:hidden={isHost}/>
+          <ModalNumPlayers {username} {host} bind:hidden={size}/>
         </div>
 
         <p>Or click below to play with a virtual card deck!</p>
