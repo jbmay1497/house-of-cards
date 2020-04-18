@@ -7,6 +7,8 @@
     let width;
     export let players;
     export let hands;
+    export let curUser;
+
     $: turn = -1;
     $: numPlayers = players.length;
     $: diameter = width * 0.9;
@@ -25,7 +27,11 @@
         return clicked === true;
     };
 
-    let done = [false, false, false, false, false];
+    let done = [];
+
+    for (let i = 0; i < players.length; i++) {
+        done.push(false);
+    }
     let allDone = false;
 
     let numCards = 51;
@@ -165,7 +171,7 @@
                 {#each players as player, i}
                     <div class="player">
                         <Player seat={i} rad={smRad} numPlayer={i} username={player} num={numPlayers}
-                                hand={hands[i]} on:click={handleClick}/>
+                            {curUser} hand={hands[i]} on:click={handleClick}/>
                     </div>
                 {/each}
             </div>

@@ -78,8 +78,7 @@
   let deck = shuffleCards();
 
   //current users username
-  let username = oldmaid_game.username;
-  // TODO: change so that you can only move cards within your own hand
+  let curUser = oldmaid_game.username;
 
   let players = oldmaid_game.usernames;
   $: numPlayers = players.length;
@@ -141,7 +140,7 @@
 
 <div class="grid-container">
   <div class="grid-item">
-    <Gameboard {format} {hands} {players}/>
+    <Gameboard {format} {hands} {players} {curUser}/>
   </div>
   <div class="grid-item">
     <Switch on:toggle={() => toggle()} {format} />

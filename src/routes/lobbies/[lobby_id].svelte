@@ -281,9 +281,9 @@
         size = false;
     } else if (gametype === "oldmaid" && $new_usernames.length < 2){
         size = false;
-     } else if (gametype === "solitaire" && $new_usernames.length !== 1){
+    } else if (gametype === "solitaire" && $new_usernames.length !== 1){
         size = false;
-     } else {
+    } else {
         console.log(gametype);
         sendMessage({
           action: "createGame",
@@ -329,13 +329,13 @@
 
   <div class = "{!joined ? 'hidden' : 'grid-container'}" >
     <div class="player-info">
-      <Players usernames = {$new_usernames} />
+      <Players usernames = {$new_usernames} {username} />
       <button class = "leaveBtn" on:click = {leaveLobby}>Leave Lobby</button>
     </div>
 
     <div class="main-stuff">
       <h1>Game Lobby</h1>
-      <div>Welcome, <b>{username}</b>!</div>
+      <div>Welcome, <bx>{username}</bx>!</div>
       <div>Lobby Code: <b>{lobby_id}</b>&nbsp;
         <div class = "tooltip">
               <button id = 'copyBtn' on:click ={copyCode}>

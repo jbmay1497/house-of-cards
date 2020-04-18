@@ -6,10 +6,9 @@
     export let numPlayer;
     $: offset = 360/num;
     export let hand;
+    export let curUser;
 
     // TODO: format cards - closer together, when hover make bigger
-    // TODO: if not your hand, face down
-    // TODO: if empty hand, change name to shaded out or crossed out
 
     $: callPic = (i) => {
         return `images/${hand[i].value}_of_${hand[i].suit}.png`
@@ -59,16 +58,37 @@
     .hidden {
         display: none;
     }
+
+    .active {
+        color: black;
+    }
+
+    .inactive {
+        color: lightgray;
+    }
 </style>
 
 <div style="transform: rotate({seat * offset}deg) translatey(-{rad}px) rotate({seat * -offset}deg);">
-    {username}
-    <button class:hidden ={removedDuplicates} on:click={handleButton}>Removed all Duplicates</button>
+    {#if hand.length !== 0}
+        <div class="active">
+            {username}
+            <button class:hidden ={removedDuplicates} on:click={handleButton}>Removed all Duplicates</button>
+        </div>
+    {:else}
+        <div class="inactive">{username}</div>
+    {/if}
+
     <div class="hand">
         <div class="container">
-            {#each hand as card, i}
-                <img src={callPic(i)} alt="card" on:click={handleClick(card)}/>
-            {/each}
+            {#if username === curUser}
+                {#each hand as card, i}
+                    <img src={callPic(i)} alt="card" on:click={handleClick(card)}/>
+                {/each}
+            {:else}
+                {#each hand as card, i}
+                    <img src="images/face_down.jpg" alt="card" on:click={handleClick(card)}/>
+                {/each}
+            {/if}
         </div>
     </div>
 </div>

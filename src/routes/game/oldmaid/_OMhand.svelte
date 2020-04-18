@@ -30,7 +30,7 @@
         });
     };
 
-    // TODO: format cards
+    // TODO: format cards to overlap
 
     $: callPic = (i) => {
         return `images/${hand[i].value}_of_${hand[i].suit}.png`
