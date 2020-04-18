@@ -17,6 +17,7 @@
     // TODO: when they pick a card, it's actually random
     // TODO: be able to erase duplicates even when not their turn
     // TODO: only allow access when it's your deck
+    // TODO: change table background
 
     let pair = [];
 

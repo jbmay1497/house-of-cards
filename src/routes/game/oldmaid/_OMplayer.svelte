@@ -9,6 +9,7 @@
 
     // TODO: format cards - closer together, when hover make bigger
     // TODO: if not your hand, face down
+    // TODO: if empty hand, change name to shaded out or crossed out
 
     $: callPic = (i) => {
         return `images/${hand[i].value}_of_${hand[i].suit}.png`

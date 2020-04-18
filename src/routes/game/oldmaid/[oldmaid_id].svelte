@@ -1,5 +1,4 @@
 <script context="module">
-
      export async function preload({ params }, session) {
     //checks if the user enters the lobbies through the /enter route,
     //or through the lobbys url
@@ -28,7 +27,7 @@
     if (res.status === 200) {
         let game_data = {
             usernames: lobby_data.usernames
-        }
+        };
       game_data.username = session.username;
       return { oldmaid_game: game_data };
     } else {
@@ -41,22 +40,11 @@
   import Switch from "../../../components/game/Switch.svelte";
   import Gameboard from "./_OMgameboard.svelte";
   import Chat from "../../../components/Chat.svelte";
+  import {goto} from "@sapper/app"
 
   export let oldmaid_game;
 
-  //current users username
-  let username = oldmaid_game.username;
-
-  //list of current usernames
-  let usernames = oldmaid_game.usernames;
-
-  console.log(username);
-   console.log(usernames);
-
-
   let format = true;
-
-  // TODO: get list of actual users
 
   const toggle = () => {
     format = !format;
@@ -89,7 +77,11 @@
 
   let deck = shuffleCards();
 
-  let players = ["Annie", "Bob", "Carl", "David", "Ethan"];
+  //current users username
+  let username = oldmaid_game.username;
+  // TODO: change so that you can only move cards within your own hand
+
+  let players = oldmaid_game.usernames;
   $: numPlayers = players.length;
 
   let hands = [];
@@ -105,12 +97,41 @@
       cur = 0;
     }
   }
+
+  let handleLeave = () => {
+    goto(`/`);
+  }
 </script>
 
 <style>
   .grid-container {
     display: grid;
     grid-template-columns: auto 250px;
+  }
+
+  .grid-item {
+      position: relative;
+      top: 2%;
+  }
+
+  button {
+      padding:0.7em 1.4em;
+      margin:0 0.3em 0.3em 0;
+      border-radius:0.15em;
+      box-sizing: border-box;
+      text-decoration:none;
+      font-family:'Roboto',sans-serif;
+      text-transform:uppercase;
+      font-weight:400;
+      color:#FFFFFF;
+      background-color: green;
+      box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+      text-align:center;
+      position: absolute;
+      right: 7%;
+      top: 7%;
+      height: 50px;
+      width: 150px;
   }
 </style>
 
@@ -126,4 +147,5 @@
     <Switch on:toggle={() => toggle()} {format} />
     <Chat />
   </div>
+  <button on:click={handleLeave}>Leave Game</button>
 </div>
