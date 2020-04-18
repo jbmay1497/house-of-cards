@@ -13,6 +13,7 @@
         width: 120px;
         border-radius: 5px;
     }
+
     .hand .card:hover {
         transform: scale(1.5);
     }

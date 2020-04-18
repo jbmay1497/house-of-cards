@@ -15,12 +15,6 @@
     $: radius = (diameter / 2) * 0.9;
     $: smRad = radius * 0.9;
 
-    // TODO: sort cards within their own hand
-    // TODO: when they pick a card, it's actually random
-    // TODO: be able to erase duplicates even when not their turn
-    // TODO: only allow access when it's your deck
-    // TODO: change table background
-
     let pair = [];
 
     let allTrue = (clicked) => {
@@ -28,8 +22,12 @@
     };
 
     let done = [];
+    let playerIndex;
 
     for (let i = 0; i < players.length; i++) {
+        if (players[i] === curUser) {
+            playerIndex = i;
+        }
         done.push(false);
     }
     let allDone = false;
@@ -39,25 +37,50 @@
     $: skip = 1;
     let gameOver = true;
 
+    let sorted = () => {
+        let sortedDeck = [];
+        ["ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "queen", "king"].forEach(value => {
+            ["diamonds", "hearts", "clubs", "spades"].forEach(
+                    suit => {
+                        sortedDeck.push({suit: suit, value: value, id: `${suit}:${value}`});
+                    }
+            );
+        });
+        return sortedDeck;
+    };
+
+    let sort = () => {
+        let deck = sorted();
+        let temp = [];
+
+        for (let i = 0; i < deck.length; i ++) {
+            let tempCard = hands[playerIndex].filter(cardExists => cardExists.suit === deck[i].suit && cardExists.value === deck[i].value);
+            if (tempCard.length !== 0) {
+                temp.push(tempCard[0]);
+            }
+        }
+
+        return temp;
+    };
+
     let handleClick = (event) => {
-        if (event.detail.id === 'duplicates') {
+        if (event.detail.id === 'sort') {
+            hands[playerIndex] = sort();
+        } else if (event.detail.id === 'duplicates') {
             done[event.detail.numPlayer] = true;
             if (done.every(allTrue)) {
                 allDone = true;
                 turn = 0;
             }
-        } else if(event.detail.id === 'hand' && turn === 0 ||
-                done[event.detail.numPlayer] === false ||
-                (allDone && turn === event.detail.numPlayer)) {
+        } else if(event.detail.id === 'hand' || event.detail.numPlayer === playerIndex) {
             if (pair.length === 0) {
                 pair.push(event.detail.card);
             } else {
                 pair.push(event.detail.card);
 
                 if (pair[0].value === pair[1].value && pair[0].suit !== pair[1].suit) {
-                    let person = event.detail.id === 'hand' ? turn : event.detail.numPlayer;
-                    hands[person] = hands[person].filter(x => x !== pair[0]);
-                    hands[person] = hands[person].filter(x => x !== pair[1]);
+                    hands[playerIndex] = hands[playerIndex].filter(x => x !== pair[0]);
+                    hands[playerIndex] = hands[playerIndex].filter(x => x !== pair[1]);
 
                     numCards -= 2;
                     pair = [];
@@ -65,62 +88,30 @@
                     if (numCards === 1) {
                         gameOver = false;
                     }
-
-                    if (pickedCard) {
-                        let temp = turn;
-                        if (hands[temp].length === 0) {
-                            skip++;
-                            temp--;
-                            if (temp < 0) {
-                                temp = numPlayers - 1;
-                            }
-                        }
-
-                        turn++;
-                        if(turn === numPlayers) {
-                            turn = 0;
-                        }
-
-                        while(hands[turn].length === 0) {
-                            turn++;
-                            if(turn === numPlayers) {
-                                turn = 0;
-                            }
-                            skip++;
-                        }
-                    }
                 } else {
                     pair.shift();
                 }
             }
-       } else if (allDone && (turn === event.detail.numPlayer + skip ||
+       } else if (allDone && playerIndex === turn && (turn === event.detail.numPlayer + skip ||
                  (turn - skip < 0 && event.detail.numPlayer === numPlayers - skip + turn))) {
-            hands[event.detail.numPlayer] = hands[event.detail.numPlayer].filter(x => x !== event.detail.card);
-            hands[turn] = [...hands[turn], event.detail.card];
-            pickedCard = true;
-
-            let duplicate = false;
-            for (let i = 0; i < hands[turn].length; i++) {
-                if(event.detail.card.value === hands[turn][i].value && event.detail.card.suit !== hands[turn][i].suit) {
-                    duplicate = true;
-                }
-            }
+            let index = Math.floor(Math.random() * hands[event.detail.numPlayer].length);
+            let moveCard = hands[event.detail.numPlayer][index];
+            hands[turn] = [...hands[turn], moveCard];
+            hands[event.detail.numPlayer] = hands[event.detail.numPlayer].filter(x => x !== moveCard);
 
             skip = 1;
 
-            if (!duplicate) {
+            turn++;
+            if(turn === numPlayers) {
+                turn = 0;
+            }
+
+            while(hands[turn].length === 0) {
                 turn++;
                 if(turn === numPlayers) {
                     turn = 0;
                 }
-
-                while(hands[turn].length === 0) {
-                    turn++;
-                    if(turn === numPlayers) {
-                        turn = 0;
-                    }
-                    skip++;
-                }
+                skip++;
             }
         }
     };
@@ -133,11 +124,15 @@
     .game-area {
         padding: 5% 5%;
         min-width: 500px;
+        position: relative;
+        left: 2%;
     }
     .table {
         display: block;
-        background: #ddd;
+        background: linear-gradient(to right, #A37C4D 0%, #FFE4C4 25%, #FFE4C4 75%, #A37C4D 100%);
         border-radius: 40%;
+        border-style: solid;
+        border-color: #A37C4D;
     }
     .players{
         margin: auto;
@@ -148,21 +143,22 @@
         left:0;
     }
     .second {
-        top: 3%;
+        top: 4%;
     }
-    p {
+
+    h3 {
         position: absolute;
         top: 0;
-        left: 2%;
+        left: 0;
     }
 </style>
 
 <div class="game-area" bind:clientWidth={width}>
     {#if allDone}
-        <p>Current Player's Turn: <b>{players[turn]}</b></p>
-        <p class="second">Pick from <b>{turn - skip < 0 ? players[numPlayers - skip + turn] : players[turn - skip]}'s</b> deck</p>
+        <h3>Current Player's Turn: <b>{players[turn]}</b></h3>
+        <h3 class="second">Pick from <b>{turn - skip < 0 ? players[numPlayers - skip + turn] : players[turn - skip]}'s</b> deck</h3>
     {:else}
-        <p>Remove all duplicates from your hand</p>
+        <h3><b>Remove all duplicates from your hand</b></h3>
     {/if}
 
     {#if format}
@@ -171,7 +167,7 @@
                 {#each players as player, i}
                     <div class="player">
                         <Player seat={i} rad={smRad} numPlayer={i} username={player} num={numPlayers}
-                            {curUser} hand={hands[i]} on:click={handleClick}/>
+                            {playerIndex} {curUser} hand={hands[i]} on:click={handleClick}/>
                     </div>
                 {/each}
             </div>
@@ -180,6 +176,6 @@
             <ModalGameOver bind:hidden={gameOver}/>
         </div>
     {:else}
-        <Hand hand={hands[0]} on:click={handleClick}/>
+        <Hand hand={hands[playerIndex]} on:click={handleClick}/>
     {/if}
 </div>

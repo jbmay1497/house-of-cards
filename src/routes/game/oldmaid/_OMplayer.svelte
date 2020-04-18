@@ -7,6 +7,7 @@
     $: offset = 360/num;
     export let hand;
     export let curUser;
+    export let playerIndex;
 
     // TODO: format cards - closer together, when hover make bigger
 
@@ -29,12 +30,26 @@
 
     let removedDuplicates = false;
     let handleButton = () => {
-        dispatchDuplicates('click', {
-            id: 'duplicates',
-            numPlayer: numPlayer
-        });
-        removedDuplicates = true;
+        if (playerIndex === numPlayer) {
+            dispatchDuplicates('click', {
+                id: 'duplicates',
+                numPlayer: numPlayer
+            });
+            removedDuplicates = true;
+        }
     };
+
+    const dispatchSort = createEventDispatcher();
+
+    let sort = () => {
+        if (playerIndex === numPlayer) {
+            dispatchSort('click', {
+                id: 'sort',
+                numPlayer: numPlayer
+            });
+        }
+    };
+
 </script>
 
 <style>
@@ -73,6 +88,7 @@
         <div class="active">
             {username}
             <button class:hidden ={removedDuplicates} on:click={handleButton}>Removed all Duplicates</button>
+            <button on:click={sort}>Sort Cards</button>
         </div>
     {:else}
         <div class="inactive">{username}</div>
