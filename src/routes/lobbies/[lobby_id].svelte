@@ -230,6 +230,7 @@
   import {getContext} from 'svelte';
   const sendMessage = getContext('sendMessage');
   import {new_usernames} from "./stores.js";
+  import {cur_host} from "./stores.js";
   import { stores } from '@sapper/app';
   const { session } = stores();
   import ModalCustom from '../../components/ModalCustom.svelte';
@@ -248,6 +249,7 @@
   //set initial values for new_playerCount and new_usernames,
   //so they are not set to default values
   $new_usernames = usernames;
+  $cur_host = host;
 
   //handles joined event from the modal
   const Joined = event => {
@@ -272,10 +274,11 @@
   }
 
   let size = true;
-  let isHost = true;
 
   function createGame(gametype){
-    if (username !== host) {
+    if (username !== $cur_host) {
+        console.log(username);
+        console.log($cur_host);
         size = false;
     } else if (gametype === "chess" && $new_usernames.length !== 2){
         size = false;
@@ -289,7 +292,7 @@
           action: "createGame",
           gametype: gametype,
           game_id: lobby_id,
-          host: host,
+          host: $cur_host,
           usernames: $new_usernames
         });
     }
@@ -364,7 +367,7 @@
          </div>
 
         <div class:hidden ={size}>
-          <ModalNumPlayers {username} {host} bind:hidden={size}/>
+          <ModalNumPlayers {username} host = {$cur_host} bind:hidden={size}/>
         </div>
 
         <p>Or click below to play with a virtual card deck!</p>

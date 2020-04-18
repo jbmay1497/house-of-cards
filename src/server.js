@@ -213,7 +213,8 @@ io.on("connection", socket =>
 				if (lobby){
 					io.to(`${lobby_id}`).emit("userLeft",
 						{playerCount: lobby.playerCount,
-							usernames: lobby.usernames});
+							usernames: lobby.usernames,
+						host: lobby.host});
 				}
 				socket.handshake.session.username = "";
 				socket.handshake.session.lobby_id = "";
