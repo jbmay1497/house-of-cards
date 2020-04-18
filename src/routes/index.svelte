@@ -63,19 +63,19 @@
 
 <script>
 	import {goto} from "@sapper/app";
-	import ModalCreateRoom from '../components/ModalCreateRoom.svelte';
-	import ModalJoinRoom from '../components/ModalJoinRoom.svelte';
+	import ModalCreateLobby from '../components/ModalCreateLobby.svelte';
+	import ModalJoinLobby from '../components/ModalJoinLobby.svelte';
 	//import {getContext} from 'svelte';
     //const socket = getContext('socket');
 
-	let createRoom = true;
-	let joinRoom = true;
+	let createLobby = true;
+	let joinLobby = true;
 
 	function handleCreateClick() {
-		createRoom = false;
+		createLobby = false;
 	}
 	function handleJoinClick() {
-		joinRoom = false;
+		joinLobby = false;
 	}
 
 	//console.log(socket);
@@ -90,16 +90,16 @@
 	<h1>H O U S E</h1>
 	<h1>O F &nbsp; C A R D S</h1>
 
-	<div class:hidden ={createRoom}>
-		<ModalCreateRoom bind:hidden = {createRoom}/>
+	<div class:hidden ={createLobby}>
+		<ModalCreateLobby bind:hidden = {createLobby}/>
 	</div>
 
-	<div class:hidden ={joinRoom}>
-		<ModalJoinRoom bind:hidden = {joinRoom}/>
+	<div class:hidden ={joinLobby}>
+		<ModalJoinLobby bind:hidden = {joinLobby}/>
 	</div>
 
-	<div class:hidden ='{!(createRoom && joinRoom)}'>
-		<p><a href="/" class ="routes" on:click={handleCreateClick}> Create Game </a></p>
-		<a href="/" class ="routes" on:click={handleJoinClick}> Join Game </a>
+	<div class:hidden ='{!(createLobby && joinLobby)}'>
+		<p><a href="/" class ="routes" on:click={handleCreateClick}> Create Game Lobby </a></p>
+		<a href="/" class ="routes" on:click={handleJoinClick}> Join Game Lobby </a>
 	</div>
 </body>

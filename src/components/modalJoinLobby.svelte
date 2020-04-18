@@ -77,6 +77,7 @@
     export let hidden = false;
 
     let joinLobby = () =>{
+        console.log(`username is ${username}`);
         if (!username){
           document.getElementById('error-containerJoinRoom').innerHTML = "username cannot be blank";
         }else{

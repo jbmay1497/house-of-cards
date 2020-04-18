@@ -73,12 +73,19 @@
     let username;
 
      let joinLobby = () =>{
-        sendMessage({
-            action: "joinLobby",
-            username: username,
-            lobby_id: lobby_id,
-            enterLobby: enterLobby
-        })
+         console.log(`username is ${username}`);
+         if (!username){
+              document.getElementById('error-container').innerHTML = "Username cannot be blank";
+         }
+         else{
+             sendMessage({
+                 action: "joinLobby",
+                 username: username,
+                 lobby_id: lobby_id,
+                 enterLobby: enterLobby
+             })
+         }
+
      };
 
 
@@ -115,6 +122,6 @@
 <div id = "error-container"></div>
 <input type="text" name="username" bind:value = {username}>
 <button on:click ={returnToIndex}>Go Back</button>
-<button disabled = {!username} on:click={joinLobby}>Enter</button>
+<button on:click={joinLobby}>Enter</button>
 </div>
 </div>

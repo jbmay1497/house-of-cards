@@ -224,7 +224,7 @@
 
 <script>
   import { goto } from "@sapper/app";
-  import Modal from "../../components/Modal.svelte";
+  import ModalJoinLobbyFromURL from "../../components/ModalJoinLobbyFromURL.svelte";
   import Players from "../../components/Players.svelte";
   import Chat from "../../components/Chat.svelte";
   import {getContext} from 'svelte';
@@ -327,7 +327,7 @@
 
 <body>
   <div class:hidden={joined}>
-    <Modal on:join={Joined} {lobby_id}  />
+    <ModalJoinLobbyFromURL on:join={Joined} {lobby_id}  />
   </div>
 
   <div class = "{!joined ? 'hidden' : 'grid-container'}" >
