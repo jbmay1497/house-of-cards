@@ -1,6 +1,7 @@
 "use strict";
 import {INITIAL_BOARD} from "../chess"
 import {validateMove} from "../chess"
+import {checkForEndGame} from "../chess"
 
 export const chess_funcs = app => ({
     createChess: async (game_id, host, usernames) => {
@@ -45,6 +46,15 @@ export const chess_funcs = app => ({
                 from: from,
                 to: to
             });
+            cur_turn = !cur_turn;
+            let endGame = checkForEndGame(game.board, cur_turn, game.moves);
+            if(endGame){
+                if (endGame[1] === "checkmate"){
+                    console.log("found checkmate");
+                }else if (endGame[1] === "stalemate"){
+                    console.log("found stalemate");
+                }
+            }
         }
         await game.save();
         return {board: game.board, turn:game.turn};
