@@ -152,9 +152,17 @@ io.on("connection", socket =>
 			io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('updateGame', updated_game);
 		})
 	});
-	socket.on('stopGame', game_id =>{
+	socket.on('stopGame', (game_id, gametype) =>{
 		socket.handshake.session.reload(async()=>{
-			let updated_game = await app.controllers.Chess.stopChess(game_id);
+			let updated_game;
+			switch(gametype){
+				case "chess":
+					updated_game = await app.controllers.Chess.stopChess(game_id);
+					break;
+				case "oldmaid":
+					updated_game = await app.controllers.OldMaid.stopOldMaid(game_id);
+					break;
+			}
 			if (updated_game && updated_game.error) return;
 			socket.handshake.session.game = "";
 			await app.controllers.Lobby.toggleGame(game_id);
@@ -255,12 +263,30 @@ io.on("connection", socket =>
 	});
 
 
-
 	socket.on('sendChatMessage', async message =>{
 		//should probably pass username and lobby id from chat to error check
 		let username = socket.handshake.session.username;
 		let lobby_id = socket.handshake.session.lobby_id;
 		io.to(`${lobby_id}`).emit("messageReceived", `${username}: ${message}`)
+	});
+
+	socket.on('removeDuplicates', async(game_id, hand, playerIndex, done, allDone, turn) =>{
+		if (game_id !== socket.handshake.session.lobby_id){
+			return;
+		}
+		let updated_game = await app.controllers.OldMaid.removeDuplicates(game_id, hand, playerIndex, done, allDone,
+			turn);
+		io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('duplicatesRemoved', updated_game);
+	});
+
+	socket.on('moveCard', async(game_id, handTo, handFrom, toIndex, fromIndex,
+		turn, skip) =>{
+		if (game_id !== socket.handshake.session.lobby_id){
+			return;
+		}
+		let updated_game = await app.controllers.OldMaid.moveCard(game_id, handTo, handFrom, toIndex, fromIndex,
+			turn, skip);
+		socket.to(`${socket.handshake.session.lobby_id}`).emit('cardMoved', updated_game);
 	});
 
 	socket.on('disconnect', () =>{

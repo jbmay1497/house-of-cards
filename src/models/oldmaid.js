@@ -8,8 +8,13 @@ let OldMaid = new Schema(
         _id: String,
         usernames: [String],
         host: String,
-        activePlayerCount: {type: Number, default: 1},
-        hands: []
+        hands: [],
+        done: [],
+        allDone: Boolean,
+        turn: Number,
+        skip: Number,
+        numCards: Number,
+        gameOver: Boolean
 
     },
     {_id: false}

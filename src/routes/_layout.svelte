@@ -46,7 +46,7 @@
                 socket.emit(action, message.game_id, message.username);
                 break;
             case "stopGame":
-                socket.emit(action, message.game_id);
+                socket.emit(action, message.game_id, message.gametype);
                 break;
             case "updateSessionGame":
                 socket.emit(action, message.gametype);
@@ -60,6 +60,16 @@
             case "resetDeck":
                 socket.emit(action, message.game_id, message.deck);
                 break;
+            //for old maid duplicates
+            case "removeDuplicates":
+                socket.emit(action, message.game_id, message.hand, message.playerIndex, message.done,
+                message.allDone, message.turn);
+                break;
+
+            //move a card in oldmaid to another hand
+            case "moveCard":
+                socket.emit(action, message.game_id, message.handTo, message.handFrom,
+                message.toIndex, message.fromIndex, message.turn, message.skip)
         }
 
     };
