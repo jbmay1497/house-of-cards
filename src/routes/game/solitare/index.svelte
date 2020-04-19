@@ -1,4 +1,8 @@
 <style>
+    .hidden {
+        display: none;
+    }
+
     .grid-container {
         display: grid;
         grid-template-columns: auto 250px;
