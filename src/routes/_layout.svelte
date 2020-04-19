@@ -69,8 +69,6 @@
 </script>
 
 <style>
-
-
 	div {
 		position: absolute;
 		top: 0;
