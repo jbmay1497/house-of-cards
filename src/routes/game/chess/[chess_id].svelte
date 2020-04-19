@@ -1,8 +1,7 @@
 <script context="module">
- import { stores } from '@sapper/app';
- import { get } from 'svelte/store';
 
-export function leaveGame(){
+
+/*export function leaveGame(){
       const { session } = stores();
       const sendMessage = getContext('sendMessage');
       let session_data = (get(session));
@@ -18,7 +17,7 @@ export function leaveGame(){
            gametype: ""
            });
         goto(`lobbies/${session_data.lobby_id}`);
-}
+}*/
 
      export async function preload({ params }, session) {
     //checks if the user enters the lobbies through the /enter route,
@@ -56,6 +55,16 @@ export function leaveGame(){
 
 <script>
 import ChessModalGameOver from "../../../components/chessModalGameOver.svelte"
+import Board from "./_Board.svelte";
+import {goto} from "@sapper/app"
+import {getContext} from 'svelte';
+const sendMessage = getContext('sendMessage');
+const socket = getContext('socket');
+import { onDestroy } from 'svelte';
+ import { stores } from '@sapper/app';
+const { session } = stores();
+ import { get } from 'svelte/store';
+
 export let chess_game;
     let username = chess_game.username;
     let black = chess_game.black;
@@ -65,20 +74,6 @@ export let chess_game;
     let turn = chess_game.turn;
     let finished = chess_game.finished;
     let host = chess_game.host;
-    import Board from "./_Board.svelte";
-    import {new_board} from "./stores.js"
-     import {cur_turn} from "./stores.js"
-      import {isFinished} from "./stores.js"
-    import {goto} from "@sapper/app"
-    import {getContext} from 'svelte';
-    const sendMessage = getContext('sendMessage');
-
-
-
-
-    $new_board = board;
-    $cur_turn = turn;
-    $isFinished = finished;
 
     let rows = [0, 1, 2, 3, 4, 5, 6, 7];
     let cols = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -89,6 +84,17 @@ export let chess_game;
         cols = cols.reverse();
     }
 
+
+    function updateGame(updated_game) {
+    board = updated_game.board;
+    turn = updated_game.turn;
+    finished = updated_game.finished;
+    }
+
+
+    socket.on('updateGame', updateGame);
+
+
     let StopGame = () => {
         if (host === username){
             sendMessage({
@@ -96,7 +102,31 @@ export let chess_game;
             game_id: game_id
             });
         }
+    };
+
+
+    function leaveGame(){
+
+       let session_data = (get(session));
+       let s_new = {
+            username: session_data.username,
+            lobby_id: session_data.lobby_id,
+            game: ""
+          };
+       session.set(s_new);
+       sendMessage({
+           action: "updateSessionGame",
+           gametype: ""
+           });
+        goto(`lobbies/${session_data.lobby_id}`);
     }
+
+    socket.on('leaveGame', leaveGame);
+
+    onDestroy(() =>{
+        socket.off('updateGame');
+        socket.off('leaveGame');
+    })
 </script>
 
 <style>
@@ -121,21 +151,21 @@ export let chess_game;
     }
 </style>
 
-<div class:hidden ={$isFinished}>
-        {#if $isFinished === 1}
-          <ChessModalGameOver {username} {game_id} winner = {$cur_turn} host = {host} bind:hidden={$isFinished}/>
-        {:else if $isFinished === 2}
-         <ChessModalGameOver {username}  {game_id} winner = {""} host = {host} bind:hidden={$isFinished}/>
+<div class:hidden ={finished}>
+        {#if finished === 1}
+          <ChessModalGameOver {username} {game_id} winner = {turn} host = {host} bind:hidden={finished}/>
+        {:else if finished === 2}
+         <ChessModalGameOver {username}  {game_id} winner = {""} host = {host} bind:hidden={finished}/>
         {/if}
 </div>
 <div>
     <Board
-        board={$new_board}
+        {board}
         {rows}
         {cols}
         {game_id}
         {username}
-        turn = {$cur_turn}
+        turn = {turn}
          />
     {#if host === username}
     <button on:click={StopGame}>Stop Game</button>

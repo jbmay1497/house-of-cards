@@ -92,24 +92,16 @@
   }
 </style>
 
-<script context="module">
-  import { writable } from "svelte/store";
-  import { get } from "svelte/store";
-  const new_messages = writable([]);
-
-  export function updateMessages(new_message) {
-    new_messages.set([...get(new_messages), new_message]);
-    console.log(`new messages is: ${get(new_messages)}`);
-  }
-</script>
-
 <script>
 
   import {getContext} from 'svelte';
   const sendMessage = getContext('sendMessage');
+  const socket = getContext('socket');
   import { beforeUpdate, afterUpdate } from "svelte";
+  import { onDestroy } from 'svelte';
 
   let message = "";
+  let messages = [];
 
   let sendChatMessage = e =>{
       if (message){
@@ -127,6 +119,11 @@
 
   };
 
+  function updateMessages(message){
+       messages = [...messages, message];
+  }
+
+  socket.on('messageReceived', updateMessages);
   let opened = false;
   let hidden = true;
 
@@ -155,6 +152,10 @@
     if (autoscroll) ul.scrollTo(0, ul.scrollHeight);
   });
 
+  onDestroy(()=>{
+      socket.off("messageReceived");
+  })
+
 </script>
 
 
@@ -165,7 +166,7 @@
   <div class="expanded chat-window ">
     <div class:hidden class="chats">
       <ul class="messages" bind:this={ul}>
-        {#each $new_messages as message}
+        {#each messages as message}
           <li>{message}</li>
         {/each}
       </ul>

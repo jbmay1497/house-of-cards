@@ -42,7 +42,7 @@ export const chess_funcs = app => ({
         game.markModified('board');
         game.markModified('turn');
         await game.save();
-        return {board: game.board, turn:game.turn, finished: game.finished};;
+        return {board: game.board, turn:game.turn, finished: game.finished};
     },
 
     stopChess: async(game_id) =>{

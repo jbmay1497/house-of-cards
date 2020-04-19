@@ -173,26 +173,21 @@
 </style>
 
 <script context="module">
-  import { get } from 'svelte/store';
-  export function enterGame(gametype){
+ /* export function enterGame(gametype){
 
 
-    const { session } = stores();
-    let session_data = (get(session));
+   // const { session } = stores();
+   // let session_data = (get(session));
     const sendMessage = getContext('sendMessage');
-    let s_new = {
+   /* let s_new = {
       username: session_data.username,
       lobby_id: session_data.lobby_id,
       game: gametype
-    };
-    session.set(s_new);
-    session_data= get(session);
-    sendMessage({
-    action: "updateSessionGame",
-    gametype: gametype
-    });
-    goto(`game/${gametype}/${session_data.lobby_id}`);
-  }
+    };on.set(s_new);
+   //session_data= get(session);
+
+    //goto(`game/${gametype}/${session_data.lobby_id}`);
+  }*/
 
   export async function preload({ params }, session) {
     //checks if the user enters the lobbies through the /enter route,
@@ -236,10 +231,11 @@
   import Chat from "../../components/Chat.svelte";
   import {getContext} from 'svelte';
   const sendMessage = getContext('sendMessage');
-  import {new_usernames} from "./stores.js";
-  import {cur_host} from "./stores.js";
+   const socket = getContext('socket');
   import { stores } from '@sapper/app';
   const { session } = stores();
+   import { get } from 'svelte/store';
+    import { onDestroy } from 'svelte';
   import ModalCustom from '../../components/ModalCustom.svelte';
   import ModalNumPlayers from '../../components/ModalNumPlayers.svelte';
 
@@ -255,8 +251,6 @@
 
   //set initial values for new_playerCount and new_usernames,
   //so they are not set to default values
-  $new_usernames = usernames;
-  $cur_host = host;
 
   //handles joined event from the modal
   const Joined = event => {
@@ -280,18 +274,20 @@
     document.body.removeChild(copyText);
   }
 
+
+
   let size = true;
 
   function createGame(gametype){
-    if (username !== $cur_host) {
+    if (username !== host) {
         console.log(username);
-        console.log($cur_host);
+        console.log(host);
         size = false;
-    } else if (gametype === "chess" && $new_usernames.length !== 2){
+    } else if (gametype === "chess" && usernames.length !== 2){
         size = false;
-    } else if (gametype === "oldmaid" && $new_usernames.length < 2){
+    } else if (gametype === "oldmaid" && usernames.length < 2){
         size = false;
-    } else if (gametype === "solitaire" && $new_usernames.length !== 1){
+    } else if (gametype === "solitaire" && usernames.length !== 1){
         size = false;
     } else {
         console.log(gametype);
@@ -299,11 +295,39 @@
           action: "createGame",
           gametype: gametype,
           game_id: lobby_id,
-          host: $cur_host,
-          usernames: $new_usernames
+          host: host,
+          usernames: usernames
         });
     }
   }
+
+  function enterGame(gametype){
+
+     let session_data = (get(session));
+     let s_new = {
+        username: session_data.username,
+        lobby_id: session_data.lobby_id,
+        game: gametype
+      };
+    session.set(s_new);
+     session_data= get(session);
+      sendMessage({
+      action: "updateSessionGame",
+      gametype: gametype
+      });
+      goto(`game/${gametype}/${session_data.lobby_id}`);
+  }
+
+  socket.on('enterGame', enterGame);
+
+  function updateLobby(data){
+      console.log(data);
+
+              usernames = data.usernames;
+             host = data.host ? data.host : host;
+  }
+
+  socket.on('usersChanged',updateLobby);
 
   function leaveLobby(){
     sendMessage({
@@ -312,6 +336,7 @@
       lobby_id: lobby_id,
       exitLobby: exitLobby
     });
+
   }
 
   function exitLobby(lobby){
@@ -321,15 +346,21 @@
         lobby_id: ''
       };
       session.set(s_new);
+
       goto(`/`);
     }//do we need an else?
   }
+
+  onDestroy(() => {
+      socket.off('usersChanged');
+       socket.off('enterGame');
+  });
 
   let custom = true;
 
   let handleClick = () => {
     custom = false;
-  }
+  };
 </script>
 
 <body>
@@ -339,7 +370,7 @@
 
   <div class = "{!joined ? 'hidden' : 'grid-container'}" >
     <div class="player-info">
-      <Players usernames = {$new_usernames} {username} />
+      <Players usernames = {usernames} {username} />
       <button class = "leaveBtn" on:click = {leaveLobby}>Leave Lobby</button>
     </div>
 
@@ -374,7 +405,7 @@
          </div>
 
         <div class:hidden ={size}>
-          <ModalNumPlayers {username} host = {$cur_host} bind:hidden={size}/>
+          <ModalNumPlayers {username} {host} bind:hidden={size}/>
         </div>
 
         <p>Or click below to play with a virtual card deck!</p>

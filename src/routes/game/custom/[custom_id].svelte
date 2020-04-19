@@ -40,11 +40,12 @@
 
 <script>
     import Drag from "../../../components/Drag.svelte";
-    import {card_pos} from "./stores.js";
     import {getContext} from 'svelte';
     const sendMessage = getContext('sendMessage');
+    const socket = getContext('socket');
     export let custom_id;
     import { onMount } from 'svelte';
+    import { onDestroy } from 'svelte';
 
     let finalDeck = [];
     let xSize;
@@ -85,18 +86,18 @@
         /* Return an array of 52 cards (if jokers is false, 54 otherwise) */
 
         let deck = [];
-        while ($card_pos.length > 0) {
+        while (finalDeck.length > 0) {
             // Find a random number between 0 and cards.length - 1
-            const index = Math.floor(Math.random() * $card_pos.length);
-            $card_pos[index].rect = {x: xSize, y: ySize, w: 0, h: 0};
-            $card_pos[index].up = false;
-            $card_pos[index].pic = "images/face_down.jpg";
-            $card_pos[index].index = new_index++;
-            deck.push($card_pos[index]);
-            $card_pos.splice(index, 1);
+            const index = Math.floor(Math.random() * finalDeck.length);
+            finalDeck[index].rect = {x: xSize, y: ySize, w: 0, h: 0};
+            finalDeck[index].up = false;
+            finalDeck[index].pic = "images/face_down.jpg";
+            finalDeck[index].index = new_index++;
+            deck.push(finalDeck[index]);
+            finalDeck.splice(index, 1);
         }
 
-        $card_pos = deck;
+        finalDeck = deck;
         sendMessage({
         action: "resetDeck",
         game_id: custom_id,
@@ -107,7 +108,7 @@
     let resetDeck = (includeJokers = false) =>{
         finalDeck = [];
         initialSetup();
-        $card_pos = finalDeck;
+        finalDeck = finalDeck;
         sendMessage({
         action: "resetDeck",
         game_id: custom_id,
@@ -115,8 +116,25 @@
         })
     };
 
+
+  function updateCardPos(cur_card) {
+
+    finalDeck[cur_card.index] = cur_card;  }
+
+    function deckReset(deck){
+       finalDeck = deck;
+   }
+
+   socket.on('updateCardPos', updateCardPos);
+   socket.on('deckReset', deckReset);
+
     initialSetup();
-    $card_pos = finalDeck;
+
+    onDestroy(()=>{
+        socket.off('updateCardPos');
+        socket.off('deckReset');
+    })
+
 </script>
 
 <div>
@@ -127,6 +145,6 @@
     <button on:click={shuffleCards}>Reset & <br>Shuffle Deck</button>
 </div>
 
-{#each $card_pos as card}
+{#each finalDeck as card}
     <Drag {card} {custom_id}/>
 {/each}

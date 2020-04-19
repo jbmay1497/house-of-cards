@@ -143,7 +143,7 @@ io.on("connection", socket =>
 		socket.handshake.session.reload(async()=>{
 			let updated_game = await app.controllers.Chess.startNewChess(game_id, username);
 			if (updated_game && updated_game.error) return;
-			io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('enterNewGame', updated_game);
+			io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('updateGame', updated_game);
 		})
 	});
 	socket.on('stopGame', game_id =>{
@@ -174,7 +174,7 @@ io.on("connection", socket =>
 		if (game_id !== socket.handshake.session.lobby_id) {
 			return;
 		}
-		socket.to(`${socket.handshake.session.lobby_id}`).emit('resetDeck', deck);
+		socket.to(`${socket.handshake.session.lobby_id}`).emit('deckReset', deck);
 	});
 
 	socket.on('makeMove', async (game_id, from, to)=>{
@@ -184,7 +184,7 @@ io.on("connection", socket =>
 		if (updated_game.error){
 			return;
 		}
-		io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('updatedBoard', updated_game);
+		io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('updateGame', updated_game);
 	});
 
 	socket.on('createLobby', (username, fn) => {
@@ -217,9 +217,8 @@ io.on("connection", socket =>
 			let lobby = await app.controllers.Lobby.joinLobby(lobby_id, username);
 			if (!lobby.error){
 				socket.join(`${lobby_id}`);
-				io.to(`${lobby_id}`).emit("userJoined",
-					{playerCount: lobby.playerCount,
-						usernames: lobby.usernames});
+				io.to(`${lobby_id}`).emit("usersChanged",
+					{usernames: lobby.usernames});
 				socket.handshake.session.username = username;
 				socket.handshake.session.lobby_id = lobby_id;
 				socket.handshake.session.save();
@@ -236,9 +235,8 @@ io.on("connection", socket =>
 				socket.leave(`${lobby_id}`);
 				//change to userLeft
 				if (lobby){
-					io.to(`${lobby_id}`).emit("userLeft",
-						{playerCount: lobby.playerCount,
-							usernames: lobby.usernames,
+					io.to(`${lobby_id}`).emit("usersChanged",
+						{usernames: lobby.usernames,
 						host: lobby.host});
 				}
 				socket.handshake.session.username = "";
