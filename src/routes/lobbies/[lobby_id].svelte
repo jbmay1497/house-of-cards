@@ -274,9 +274,15 @@
     document.body.removeChild(copyText);
   }
 
-
-
   let size = true;
+
+  function solitaire() {
+      if (usernames.length !== 1) {
+          size = false;
+      } else {
+          goto(`/game/solitare`);
+      }
+  }
 
   function createGame(gametype){
     if (username !== host) {
@@ -392,7 +398,7 @@
           <button class="dropbtn">Play Existing Games</button>
           <div class="dropdown-content">
             <div class = "game-type" on:click = {()=> createGame("oldmaid")}>Old Maid (2-8 Players)</div>
-            <a class = "game-type" href="game/solitare">Solitaire (1 Player)</a>
+            <div class = "game-type" on:click = {solitaire}>Solitaire (1 Player)</div>
             <div class = "game-type" on:click = {()=> createGame("chess")}>Chess (2 Players)</div>
           </div>
         </div>
