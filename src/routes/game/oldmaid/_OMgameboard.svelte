@@ -36,7 +36,6 @@
         return clicked;
     };
 
-
     let playerIndex;
 
     for (let i = 0; i < players.length; i++) {
@@ -146,10 +145,6 @@
             allDone: allDone,
             turn: turn
             });
-
-
-
-
         } else if (allDone && playerIndex === turn && (turn === event.detail.numPlayer + skip ||
                 (turn - skip < 0 && event.detail.numPlayer === numPlayers - skip + turn))) {
             let index = Math.floor(Math.random() * hands[event.detail.numPlayer].length);
@@ -160,7 +155,6 @@
 
             let tempMoveTo = removeDuplicates(hands[turn]);
             let originalTurn = turn;
-
 
             setTimeout(async ()=>{
                 console.log("entered settimout");
@@ -175,7 +169,6 @@
                 }
                 console.log(hands[originalTurn]);
             }, 1000);
-
 
             skip = 1;
 
@@ -202,19 +195,13 @@
                 turn: turn,
                 skip: skip
             });
-
-
         }
     };
-
-
 
     onDestroy(() =>{
         socket.off('duplicatesRemoved');
         socket.off('cardMoved');
     })
-
-
 </script>
 
 <style>
@@ -240,7 +227,7 @@
         left:0;
     }
     .second {
-        top: 4%;
+        top: 10%;
     }
 
     .turn {
@@ -256,7 +243,7 @@
 <div class="game-area" bind:clientWidth={width}>
     {#if allDone}
         <div class = "turn">Current Player's Turn: <b>{players[turn]}</b></div>
-        <div class="second turn">Pick from <b>{turn - skip < 0 ? players[numPlayers - skip + turn] : players[turn - skip]}'s</b> deck</div>
+        <div class="turn second">Pick from <b>{turn - skip < 0 ? players[numPlayers - skip + turn] : players[turn - skip]}'s</b> deck</div>
     {:else}
         <div class = "turn">Remove all duplicates from your hand</div>
     {/if}
@@ -275,7 +262,6 @@
         <div>
             {#if gameOver}
                 <ModalGameOver {game_id} {host} username = {curUser} {loser}/>
-
             {/if}
          </div>
 

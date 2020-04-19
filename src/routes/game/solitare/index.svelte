@@ -66,7 +66,7 @@
     import Chat from "../../../components/Chat.svelte";
     import Pile from "./_pile.svelte";
     import {goto} from "@sapper/app"
-    import ModalGameOver from '../../../components/ModalGameOver.svelte';
+    import ModalGameOver from '../../../components/solitaireGameOver.svelte';
 
     let shuffleCards = () => {
         /* Return an array of 52 cards (if jokers is false, 54 otherwise) */
