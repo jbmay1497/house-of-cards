@@ -37,6 +37,7 @@
   import Switch from "../../../components/game/Switch.svelte";
   import Gameboard from "./_OMgameboard.svelte";
   import Chat from "../../../components/Chat.svelte";
+   import ModalExplainRules from '../../../components/ModalExplainRules.svelte';
   import {goto} from "@sapper/app";
   import {getContext} from 'svelte';
   const sendMessage = getContext('sendMessage');
@@ -56,11 +57,17 @@
     let game_id = oldmaid_game._id;
     let turn = oldmaid_game.turn;
     let skip= oldmaid_game.skip;
+    let dontExplainRules = true;
+
 
       let players = oldmaid_game.usernames;
       $: numPlayers = players.length;
 
   let format = true;
+
+  function showRules(){
+      dontExplainRules = false;
+  }
 
   const toggle = () => {
     format = !format;
@@ -102,6 +109,9 @@
 </script>
 
 <style>
+ .hidden {
+    display: none;
+  }
   .grid-container {
     display: grid;
     grid-template-columns: auto 250px;
@@ -125,17 +135,38 @@
       background-color: green;
       box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
       text-align:center;
-      position: absolute;
       right: 7%;
       top: 7%;
       height: 50px;
       width: 150px;
+  }
+
+  .button-container{
+    padding:0.7em 1.4em;
+        margin:0 0.3em 0.3em 0;
+        border-radius:0.15em;
+        box-sizing: border-box;
+        text-decoration:none;
+        font-family:'Roboto',sans-serif;
+        text-transform:uppercase;
+        font-weight:400;
+        text-align:center;
+        position: absolute;
+        right: 7%;
+        top: 7%;
+        height: 50px;
+        width: 150px;
   }
 </style>
 
 <svelte:head>
   <title>Playing</title>
 </svelte:head>
+<div>
+     <div class:hidden ={dontExplainRules}>
+       <ModalExplainRules  bind:hidden={dontExplainRules}/>
+     </div>
+</div>
 
 <div class="grid-container">
   <div class="grid-item">
@@ -145,7 +176,12 @@
     <Switch on:toggle={() => toggle()} {format} />
     <Chat />
   </div>
+
+     <div class= "button-container">
      {#if host === curUser}
-  <button on:click={StopGame}>Back to Lobby</button>
-  {/if}
+      <button on:click={StopGame}>Back to Lobby</button>
+      {/if}
+       <button on:click={showRules}>Show Game Rules</button>
+      </div>
+
 </div>

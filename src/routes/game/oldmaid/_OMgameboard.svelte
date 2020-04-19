@@ -2,6 +2,7 @@
     import Player from './_OMplayer.svelte';
     import Hand from './_OMhand.svelte';
     import ModalGameOver from '../../../components/ModalGameOver.svelte';
+
     import {goto} from "@sapper/app";
     import {getContext} from 'svelte';
     const sendMessage = getContext('sendMessage');
@@ -217,9 +218,6 @@
 </script>
 
 <style>
-    .hidden {
-        display: none;
-    }
     .game-area {
         padding: 5% 5%;
         min-width: 500px;
@@ -280,6 +278,7 @@
 
             {/if}
          </div>
+
     {:else}
         <Hand hand={hands[playerIndex]} on:click={handleClick}/>
     {/if}
