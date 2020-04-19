@@ -63,23 +63,15 @@
 </style>
 
 <script>
+    import {getContext} from 'svelte';
+    const sendMessage = getContext('sendMessage');
+
     export let username;
     export let game_id;
-
-    export let hidden = 0;
     export let winner;
-
     export let host;
 
-
-     import {getContext} from 'svelte';
-     const sendMessage = getContext('sendMessage');
-
     let winnerNameDisplayed = winner === username ? "You" : winner;
-
-    let returnToIndex = ()=>{
-        hidden = true;
-    };
 
     //could probably change action to handle any game
     let startNewGame = (game_id, username) => {
@@ -94,7 +86,8 @@
         if (host === username){
             sendMessage({
             action: 'stopGame',
-            game_id: game_id
+            game_id: game_id,
+            gametype: "chess"
             });
         }
     }

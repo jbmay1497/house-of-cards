@@ -62,18 +62,33 @@
 
 <script>
     import {goto} from "@sapper/app"
-    export let hidden = false;
+     import {getContext} from 'svelte';
+     const sendMessage = getContext('sendMessage');
+    export let host;
+    export let username;
+    export let loser;
+    export let game_id;
+    console.log(`loser is ${loser}`);
+    let loserNameDisplayed = loser === username ? "You" : loser;
 
-    let returnToIndex = ()=>{
-        hidden = true;
-        goto(`/`);
-    };
+    let stopGame = () => {
+            if (host === username){
+                sendMessage({
+                action: 'stopGame',
+                game_id: game_id,
+                gametype: "chess"
+                });
+            }
+        }
 </script>
 
 <div class="modal">
     <div class="modal-content">
-        <h1>Game Over</h1>
-        <br>
-        <button on:click ={returnToIndex}>Go Back to Lobby</button>
+        <h1>{loserNameDisplayed} Lost the Game!</h1>
+        {#if username === host}
+        <button on:click ={stopGame}>Go Back to Lobby</button>
+        {:else}
+        <h1> Waiting for action from host</h1>
+        {/if}
     </div>
 </div>
