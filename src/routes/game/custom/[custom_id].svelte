@@ -34,7 +34,34 @@
      export async function preload({ params }, session) {
         //checks if the user enters the lobbies through the /enter route,
         //or through the lobbys url
-        return {custom_id: params.custom_id};
+
+        if (!session.lobby_id){
+                 return this.redirect(302, `/`);
+            }else if (!session.game || session.game !== "custom"){
+                return this.redirect(302, `lobbies/${session.lobby_id}`);
+            }else if (session.lobby_id !== params.custom_id){
+                return this.redirect(302, `game/custom/${session.lobby_id}`);
+            }
+
+        //to get host name
+        const res = await this.fetch(`api/lobby/${params.custom_id}`, {
+              method: "GET",
+              credentials: "include",
+              headers: {
+                "Content-Type": "application/json"
+              }
+        });
+
+        const data = await res.json();
+        if (res.status === 200) {
+            let custom_game =
+            {custom_id: params.custom_id,
+            username: session.username,
+            host: data.host};
+            return {custom_game:custom_game};
+        }else {
+          this.redirect(302, ``);
+        }
     }
 </script>
 
@@ -43,9 +70,17 @@
     import {getContext} from 'svelte';
     const sendMessage = getContext('sendMessage');
     const socket = getContext('socket');
-    export let custom_id;
     import { onMount } from 'svelte';
+     import { stores } from '@sapper/app';
+    const { session } = stores();
+     import { get } from 'svelte/store';
     import { onDestroy } from 'svelte';
+    import {goto} from "@sapper/app"
+
+    export let custom_game;
+    let custom_id = custom_game.custom_id;
+    let username = custom_game.username;
+    let host = custom_game.host;
 
     let finalDeck = [];
     let xSize;
@@ -61,7 +96,7 @@
     let initialSetup = (includeJokers = false) =>{
         let index = 0;
         ["spades", "clubs", "hearts", "diamonds"].forEach(suit => {
-            ["king", "queen", "jack", 10, 9, 8, 7, 6, 5, 4, 3, 2, "ace"].forEach(
+            ["ace", "king", "queen", "jack", 10, 9, 8, 7, 6, 5, 4, 3, 2].forEach(
                 value => {
                     finalDeck.push(
                         {rect: {x: xSize, y: ySize, w: 0, h: 0},
@@ -121,10 +156,36 @@
 
     finalDeck[cur_card.index] = cur_card;  }
 
-    function deckReset(deck){
+  function deckReset(deck){
        finalDeck = deck;
    }
+  function leaveGame(){
 
+      let session_data = (get(session));
+      let s_new = {
+           username: session_data.username,
+           lobby_id: session_data.lobby_id,
+           game: ""
+         };
+      session.set(s_new);
+      sendMessage({
+          action: "updateSessionGame",
+          gametype: ""
+          });
+       goto(`lobbies/${session_data.lobby_id}`);
+   }
+
+  let StopGame = () => {
+       if (host === username){
+           sendMessage({
+           action: 'stopGame',
+           game_id: custom_id
+           });
+       }
+  };
+
+
+   socket.on('leaveGame', leaveGame);
    socket.on('updateCardPos', updateCardPos);
    socket.on('deckReset', deckReset);
 
@@ -133,6 +194,7 @@
     onDestroy(()=>{
         socket.off('updateCardPos');
         socket.off('deckReset');
+        socket.off('leaevGame')
     })
 
 </script>
@@ -144,6 +206,11 @@
 <div>
     <button on:click={shuffleCards}>Reset & <br>Shuffle Deck</button>
 </div>
+{#if username === host}
+<div>
+    <button on:click={StopGame}>Back to Lobby</button>
+</div>
+{/if}
 
 {#each finalDeck as card}
     <Drag {card} {custom_id}/>

@@ -81,14 +81,14 @@
         hidden = true;
     };
 
-    //could probably change actioon to handle any game
+    //could probably change action to handle any game
     let startNewGame = (game_id, username) => {
         sendMessage({
         action:"startNewGame",
         game_id: game_id,
         username:username
         })
-    }
+    };
 
     let stopGame = () => {
         if (host === username){

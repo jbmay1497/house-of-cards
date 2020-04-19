@@ -1,39 +1,36 @@
 <script context="module">
      export async function preload({ params }, session) {
-    //checks if the user enters the lobbies through the /enter route,
-    //or through the lobbys url
-    //console.log("preload called");
-    //console.log(session);
+        //checks if the user enters the lobbies through the /enter route,
+        //or through the lobbys url
+        //console.log("preload called");
+        //console.log(session);
+        console.log(session);
+        //checks if user is in a different lobby, then redirects them there
+        if (!session.lobby_id){
+             return this.redirect(302, `/`);
+        }else if (!session.game || session.game !== "oldmaid"){
+            return this.redirect(302, `lobbies/${session.lobby_id}`);
+        }else if (session.lobby_id !== params.oldmaid_id){
+            return this.redirect(302, `game/oldmaid/${session.lobby_id}`);
+        }
 
-    //checks if user is in a different lobby, then redirects them there
-    if (!session.lobby_id){
-         return this.redirect(302, `/`);
-    }else if (!session.game || session.game !== "oldmaid"){
-        return this.redirect(302, `lobbies/${session.lobby_id}`);
-    }else if (session.lobby_id !== params.oldmaid_id){
-        return this.redirect(302, `game/chess/${session.lobby_id}`);
-    }
+        //fetching lobbies data
+        const res = await this.fetch(`api/games/oldmaid/${params.oldmaid_id}`, {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
 
-    //currently fetch lobby data, will fetch oldmaid data once the logic works
-    const res = await this.fetch(`api/lobby/${params.oldmaid_id}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json"
+        const game_data = await res.json();
+        if (res.status === 200) {
+          game_data.username = session.username;
+          return { oldmaid_game: game_data };
+        } else {
+          this.redirect(302, ``);
+        }
       }
-    });
-
-    const lobby_data = await res.json();
-    if (res.status === 200) {
-        let game_data = {
-            usernames: lobby_data.usernames
-        };
-      game_data.username = session.username;
-      return { oldmaid_game: game_data };
-    } else {
-      this.redirect(302, ``);
-    }
-  }
 </script>
 
 <script>
@@ -44,14 +41,21 @@
 
   export let oldmaid_game;
 
+    let hands = oldmaid_game.hands;
+    let host = oldmaid_game.host;
+    let curUser = oldmaid_game.username;
+
+      let players = oldmaid_game.usernames;
+      $: numPlayers = players.length;
+
   let format = true;
 
   const toggle = () => {
     format = !format;
   };
 
-  let shuffleCards = () => {
-    /* Return an array of 52 cards (if jokers is false, 54 otherwise) */
+  /*let shuffleCards = () => {
+    /Return an array of 52 cards (if jokers is false, 54 otherwise)
     let cards = [];
     ["spades", "clubs", "hearts", "diamonds"].forEach(suit => {
       ["ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "king"].forEach(
@@ -73,18 +77,15 @@
       cards.splice(index, 1);
     }
     return deck;
-  };
+  };*/
 
-  let deck = shuffleCards();
+  //let deck = shuffleCards();
 
   //current users username
-  let curUser = oldmaid_game.username;
 
-  let players = oldmaid_game.usernames;
-  $: numPlayers = players.length;
 
-  let hands = [];
-  for (let i = 0; i < players.length; i++) {
+
+  /*for (let i = 0; i < players.length; i++) {
     hands[i] = [];
   }
 
@@ -99,7 +100,7 @@
 
   let handleLeave = () => {
     goto(`/`);
-  }
+  }*/
 </script>
 
 <style>
@@ -146,5 +147,5 @@
     <Switch on:toggle={() => toggle()} {format} />
     <Chat />
   </div>
-  <button on:click={handleLeave}>Leave Game</button>
+  <button>Leave Game</button>
 </div>

@@ -39,7 +39,7 @@
 
     let sorted = () => {
         let sortedDeck = [];
-        ["ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "queen", "king"].forEach(value => {
+        [2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "queen", "king", "ace"].forEach(value => {
             ["diamonds", "hearts", "clubs", "spades"].forEach(
                     suit => {
                         sortedDeck.push({suit: suit, value: value, id: `${suit}:${value}`});

@@ -73,10 +73,12 @@ try {
 
 import lobby from "./models/lobby"
 import chess from "./models/chess"
+import oldmaid from "./models/oldmaid"
 
 app.models = {
 	Lobby: lobby,
-	Chess: chess
+	Chess: chess,
+	OldMaid: oldmaid
 };
 
 /*****************************************************************************************************/
@@ -84,11 +86,14 @@ app.models = {
 //import data controllers and routes
 import {lobby_funcs } from "./controllers/lobby";
 import {chess_funcs } from "./controllers/chess";
+import {oldmaid_funcs } from "./controllers/oldmaid";
 let lobby_controller = lobby_funcs(app);
 let chess_controller = chess_funcs(app);
+let oldmaid_controller = oldmaid_funcs(app);
 app.controllers = {
 	Lobby: lobby_controller,
-	Chess: chess_controller
+	Chess: chess_controller,
+	OldMaid: oldmaid_controller
 };
 
 /*****************************************************************************************************/
@@ -127,13 +132,14 @@ io.on("connection", socket =>
 					game_data = await app.controllers.Chess.createChess(game_id, host, usernames);
 					break;
 				case "oldmaid":
-					game_data = "placeholder";
+					game_data = await app.controllers.OldMaid.createOldMaid(game_id, host, usernames);
 					break;
 			}
 			if (game_data && game_data.error) return;
 			console.log(`${host} started ${gametype} game ${game_id}`);
 			socket.handshake.session.game = gametype;
 			await socket.handshake.session.save();
+			await app.controllers.Lobby.toggleGame(game_id);
 			io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('enterGame', gametype);
 		});
 	});
@@ -151,6 +157,7 @@ io.on("connection", socket =>
 			let updated_game = await app.controllers.Chess.stopChess(game_id);
 			if (updated_game && updated_game.error) return;
 			socket.handshake.session.game = "";
+			await app.controllers.Lobby.toggleGame(game_id);
 			io.sockets.in(`${socket.handshake.session.lobby_id}`).emit('leaveGame');
 		})
 	});

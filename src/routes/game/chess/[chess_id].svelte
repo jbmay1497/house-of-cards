@@ -1,24 +1,5 @@
 <script context="module">
 
-
-/*export function leaveGame(){
-      const { session } = stores();
-      const sendMessage = getContext('sendMessage');
-      let session_data = (get(session));
-       let s_new = {
-            username: session_data.username,
-            lobby_id: session_data.lobby_id,
-            game: ""
-          };
-       session.set(s_new);
-       console.log(get(session));
-       sendMessage({
-           action: "updateSessionGame",
-           gametype: ""
-           });
-        goto(`lobbies/${session_data.lobby_id}`);
-}*/
-
      export async function preload({ params }, session) {
     //checks if the user enters the lobbies through the /enter route,
     //or through the lobbys url
@@ -56,7 +37,7 @@
 <script>
 import ChessModalGameOver from "../../../components/chessModalGameOver.svelte"
 import Board from "./_Board.svelte";
-import {goto} from "@sapper/app"
+import {goto} from "@sapper/app";
 import {getContext} from 'svelte';
 const sendMessage = getContext('sendMessage');
 const socket = getContext('socket');
@@ -104,6 +85,14 @@ export let chess_game;
         }
     };
 
+    let startNewGame = (game_id, username) => {
+        sendMessage({
+        action:"startNewGame",
+        game_id: game_id,
+        username:username
+        })
+    };
+
 
     function leaveGame(){
 
@@ -143,9 +132,9 @@ export let chess_game;
         background-color: green;
         box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
         text-align:center;
-        position: absolute;
+        position: relative;
         right: 2%;
-        top: 0;
+        top: 2%;
         height: 50px;
         width: 150px;
     }
@@ -159,6 +148,10 @@ export let chess_game;
         {/if}
 </div>
 <div>
+   {#if host === username}
+<button on:click={StopGame}>Back to Lobby</button>
+<button on:click={() => startNewGame(game_id, username)}>Start New Game</button>
+    {/if}
     <Board
         {board}
         {rows}
@@ -167,7 +160,4 @@ export let chess_game;
         {username}
         turn = {turn}
          />
-    {#if host === username}
-    <button on:click={StopGame}>Stop Game</button>
-    {/if}
 </div>

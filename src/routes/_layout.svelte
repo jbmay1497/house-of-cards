@@ -1,18 +1,15 @@
 <script>
-	import Nav from '../components/Nav.svelte';
-	export let segment;
 	import {setContext} from 'svelte';
-
-
     import io from "socket.io-client";
     let socket = io();
-
 
 	const connect = () =>{
         socket.on('connect', () => {
             console.log('Connected to server!');
         });
     };
+	export let segment;
+	segment = true;
 
 	connect();
 
@@ -92,8 +89,6 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto:100,400&display=swap" rel="stylesheet">
 </svelte:head>
 <div>
-	<Nav {segment}/>
-
 	<main>
 		<slot></slot>
 	</main>

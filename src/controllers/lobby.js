@@ -6,7 +6,8 @@ export const lobby_funcs = app => ({
             _id: lobby_id,
             usernames: [username],
             host: username,
-            playerCount: 1
+            playerCount: 1,
+            gameStarted: false
         };
         let lobby_data = new app.models.Lobby(lobby);
         try {
@@ -35,6 +36,9 @@ export const lobby_funcs = app => ({
         }
         else if (lobby.usernames.includes(username)){
             return {error: `The username ${username} is taken. Please enter another name`};
+        }
+        else if (lobby.gameStarted){
+            return {error: `The lobby is currently in a game. Please wait until it is finished.`};
         }
         else{
             lobby.usernames.push(username);
@@ -76,6 +80,12 @@ export const lobby_funcs = app => ({
             }
         }
 
+    },
+
+    toggleGame: async (lobby_id)=>{
+        let lobby = await app.models.Lobby.findById(lobby_id);
+        lobby.gameStarted = !lobby.gameStarted;
+        await lobby.save();
     }
 });
 

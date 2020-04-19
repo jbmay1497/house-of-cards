@@ -3,17 +3,17 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-let Lobby = new Schema(
+let OldMaid = new Schema(
     {
         _id: String,
         usernames: [String],
         host: String,
-        playerCount: {type: Number, default: 1},
-        gameStarted: Boolean
+        activePlayerCount: {type: Number, default: 1},
+        hands: []
 
     },
     {_id: false}
 );
 
-const lobby = mongoose.model("Lobby", Lobby);
-module.exports = lobby;
+const oldmaid = mongoose.model("OldMaid", OldMaid);
+module.exports = oldmaid;
