@@ -2,14 +2,28 @@
     import Player from './_OMplayer.svelte';
     import Hand from './_OMhand.svelte';
     import ModalGameOver from '../../../components/ModalGameOver.svelte';
+    import {goto} from "@sapper/app";
+    import {getContext} from 'svelte';
+    const sendMessage = getContext('sendMessage');
+    const socket = getContext('socket');
+    import { onDestroy } from 'svelte';
+     import { stores } from '@sapper/app';
+    const { session } = stores();
+     import { get } from 'svelte/store';
 
     export let format = true;
     let width;
     export let players;
     export let hands;
     export let curUser;
+    export let host;
+    export let game_id;
+    export let done;
+    export let allDone;
+    export let turn;
+    export let skip;
+    let loser = "";
 
-    $: turn = -1;
     $: numPlayers = players.length;
     $: diameter = width * 0.9;
     $: radius = (diameter / 2) * 0.9;
@@ -18,24 +32,22 @@
     let pair = [];
 
     let allTrue = (clicked) => {
-        return clicked === true;
+        return clicked;
     };
 
-    let done = [];
+
     let playerIndex;
 
     for (let i = 0; i < players.length; i++) {
         if (players[i] === curUser) {
             playerIndex = i;
         }
-        done.push(false);
     }
-    let allDone = false;
 
     let numCards = 51;
     let pickedCard = false;
-    $: skip = 1;
-    let gameOver = true;
+
+    let gameOver = false;
 
     let sorted = () => {
         let sortedDeck = [];
@@ -54,7 +66,8 @@
         let temp = [];
 
         for (let i = 0; i < deck.length; i ++) {
-            let tempCard = hands[playerIndex].filter(cardExists => cardExists.suit === deck[i].suit && cardExists.value === deck[i].value);
+            let tempCard = hands[playerIndex].filter(cardExists => cardExists.suit === deck[i].suit
+            && cardExists.value === deck[i].value);
             if (tempCard.length !== 0) {
                 temp.push(tempCard[0]);
             }
@@ -63,41 +76,105 @@
         return temp;
     };
 
+
+    //made remove duplicates button automatically remove duplicates
+    let removeDuplicates = hand =>{
+        console.log(hand);
+        let temp = [];
+        for (let i = 0; i < hand.length; ++i){
+            if(temp.length && temp[temp.length-1].value === hand[i].value){
+                temp.pop();
+            }
+            else{
+                temp.push(hand[i]);
+            }
+        }
+        return temp;
+    };
+
+    let duplicatesRemoved = updated_game =>{
+
+        hands[updated_game.playerIndex] = updated_game.hand;
+        done = updated_game.done;
+        allDone = updated_game.allDone;
+        turn= updated_game.turn;
+        numCards = updated_game.numCards;
+
+    };
+
+    let cardMoved = updated_game => {
+        console.log("cardMoved");
+        hands[updated_game.toIndex] = updated_game.handTo;
+        hands[updated_game.fromIndex] = updated_game.handFrom;
+        turn = updated_game.turn;
+        skip = updated_game.skip;
+        numCards = updated_game.numCards;
+        if (updated_game.gameOver){
+            loser  = updated_game.loser;
+        }
+        gameOver = updated_game.gameOver;
+
+
+    };
+
+    //for when a player removes duplicates
+    socket.on('duplicatesRemoved', duplicatesRemoved);
+    //for when a player moves a card from one hand to the other
+    socket.on('cardMoved', cardMoved);
+
+
+    hands[playerIndex] = sort();
+
     let handleClick = (event) => {
+
+        //for sort, at any time
         if (event.detail.id === 'sort') {
             hands[playerIndex] = sort();
+            //for starting game after everyone removed their own duplicate
         } else if (event.detail.id === 'duplicates') {
             done[event.detail.numPlayer] = true;
-            if (done.every(allTrue)) {
-                allDone = true;
-                turn = 0;
-            }
-        } else if(event.detail.id === 'hand' || event.detail.numPlayer === playerIndex) {
-            if (pair.length === 0) {
-                pair.push(event.detail.card);
-            } else {
-                pair.push(event.detail.card);
+            hands[event.detail.numPlayer] = removeDuplicates(hands[event.detail.numPlayer]);
+            allDone = done.every(allTrue);
+            turn = allDone ? 0 : -1;
+            sendMessage({
+            action:"removeDuplicates",
+            game_id: game_id,
+            hand: hands[event.detail.numPlayer],
+            playerIndex: playerIndex,
+            done: done,
+            allDone: allDone,
+            turn: turn
+            });
 
-                if (pair[0].value === pair[1].value && pair[0].suit !== pair[1].suit) {
-                    hands[playerIndex] = hands[playerIndex].filter(x => x !== pair[0]);
-                    hands[playerIndex] = hands[playerIndex].filter(x => x !== pair[1]);
 
-                    numCards -= 2;
-                    pair = [];
 
-                    if (numCards === 1) {
-                        gameOver = false;
-                    }
-                } else {
-                    pair.shift();
-                }
-            }
-       } else if (allDone && playerIndex === turn && (turn === event.detail.numPlayer + skip ||
-                 (turn - skip < 0 && event.detail.numPlayer === numPlayers - skip + turn))) {
+
+        } else if (allDone && playerIndex === turn && (turn === event.detail.numPlayer + skip ||
+                (turn - skip < 0 && event.detail.numPlayer === numPlayers - skip + turn))) {
             let index = Math.floor(Math.random() * hands[event.detail.numPlayer].length);
             let moveCard = hands[event.detail.numPlayer][index];
             hands[turn] = [...hands[turn], moveCard];
+             hands[turn] = sort();
             hands[event.detail.numPlayer] = hands[event.detail.numPlayer].filter(x => x !== moveCard);
+
+            let tempMoveTo = removeDuplicates(hands[turn]);
+            let originalTurn = turn;
+
+
+            setTimeout(async ()=>{
+                console.log("entered settimout");
+                let temp = await removeDuplicates(hands[originalTurn]);
+                if (temp.length !== hands[originalTurn].length){
+                    numCards -=2;
+                }
+                hands[originalTurn] = temp;
+                if (numCards === 1){
+                    loser = curUser;
+                    gameOver = true;
+                }
+                console.log(hands[originalTurn]);
+            }, 1000);
+
 
             skip = 1;
 
@@ -113,8 +190,30 @@
                 }
                 skip++;
             }
+
+            sendMessage({
+                action:"moveCard",
+                game_id: game_id,
+                handTo: tempMoveTo,
+                handFrom:hands[event.detail.numPlayer],
+                toIndex: originalTurn,
+                fromIndex: event.detail.numPlayer,
+                turn: turn,
+                skip: skip
+            });
+
+
         }
     };
+
+
+
+    onDestroy(() =>{
+        socket.off('duplicatesRemoved');
+        socket.off('cardMoved');
+    })
+
+
 </script>
 
 <style>
@@ -129,10 +228,10 @@
     }
     .table {
         display: block;
-        background: linear-gradient(to right, #A37C4D 0%, #FFE4C4 25%, #FFE4C4 75%, #A37C4D 100%);
+        background:black;
         border-radius: 40%;
         border-style: solid;
-        border-color: #A37C4D;
+        border-color: white;
     }
     .players{
         margin: auto;
@@ -146,19 +245,22 @@
         top: 4%;
     }
 
-    h3 {
+    .turn {
+        font-family: "Roboto", serif;
+        font-weight: 100;
         position: absolute;
         top: 0;
         left: 0;
+        color: black
     }
 </style>
 
 <div class="game-area" bind:clientWidth={width}>
     {#if allDone}
-        <h3>Current Player's Turn: <b>{players[turn]}</b></h3>
-        <h3 class="second">Pick from <b>{turn - skip < 0 ? players[numPlayers - skip + turn] : players[turn - skip]}'s</b> deck</h3>
+        <div class = "turn">Current Player's Turn: <b>{players[turn]}</b></div>
+        <div class="second turn">Pick from <b>{turn - skip < 0 ? players[numPlayers - skip + turn] : players[turn - skip]}'s</b> deck</div>
     {:else}
-        <h3><b>Remove all duplicates from your hand</b></h3>
+        <div class = "turn">Remove all duplicates from your hand</div>
     {/if}
 
     {#if format}
@@ -172,10 +274,14 @@
                 {/each}
             </div>
         </div>
-        <div class:hidden ={gameOver}>
-            <ModalGameOver bind:hidden={gameOver}/>
-        </div>
+        <div>
+            {#if gameOver}
+                <ModalGameOver {game_id} {host} username = {curUser} {loser}/>
+
+            {/if}
+         </div>
     {:else}
         <Hand hand={hands[playerIndex]} on:click={handleClick}/>
     {/if}
+
 </div>

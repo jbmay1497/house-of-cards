@@ -80,7 +80,8 @@ export let chess_game;
         if (host === username){
             sendMessage({
             action: 'stopGame',
-            game_id: game_id
+            game_id: game_id,
+            gametype: "chess"
             });
         }
     };
@@ -140,12 +141,12 @@ export let chess_game;
     }
 </style>
 
-<div class:hidden ={finished}>
-        {#if finished === 1}
-          <ChessModalGameOver {username} {game_id} winner = {turn} host = {host} bind:hidden={finished}/>
-        {:else if finished === 2}
-         <ChessModalGameOver {username}  {game_id} winner = {""} host = {host} bind:hidden={finished}/>
-        {/if}
+<div>
+    {#if finished === 1}
+      <ChessModalGameOver {username} {game_id} winner = {turn} host = {host} />
+    {:else if finished === 2}
+     <ChessModalGameOver {username}  {game_id} winner = {""} host = {host} />
+    {/if}
 </div>
 <div>
    {#if host === username}

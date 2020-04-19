@@ -12,7 +12,7 @@ export const chess_funcs = app => ({
             host: host,
             white: host,
             black: usernames[1],
-            board: TEMP_BOARD,
+            board: INITIAL_BOARD,
             turn: host,
             moveCount: 0,
             moves: [],
@@ -46,7 +46,7 @@ export const chess_funcs = app => ({
     },
 
     stopChess: async(game_id) =>{
-        app.models.Chess.findByIdAndDelete(game_id, async function(err, deleted_lobby){
+        app.models.Chess.findByIdAndDelete(game_id, async function(err, deleted_game){
             if (err){
                 return { error: `Game could not be deleted` };
             }

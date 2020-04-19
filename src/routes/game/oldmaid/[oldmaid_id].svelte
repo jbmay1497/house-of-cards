@@ -37,13 +37,25 @@
   import Switch from "../../../components/game/Switch.svelte";
   import Gameboard from "./_OMgameboard.svelte";
   import Chat from "../../../components/Chat.svelte";
-  import {goto} from "@sapper/app"
+  import {goto} from "@sapper/app";
+  import {getContext} from 'svelte';
+  const sendMessage = getContext('sendMessage');
+  const socket = getContext('socket');
+  import { onDestroy } from 'svelte';
+   import { stores } from '@sapper/app';
+  const { session } = stores();
+   import { get } from 'svelte/store';
 
   export let oldmaid_game;
 
     let hands = oldmaid_game.hands;
     let host = oldmaid_game.host;
     let curUser = oldmaid_game.username;
+    let done = oldmaid_game.done;
+    let allDone = oldmaid_game.allDone;
+    let game_id = oldmaid_game._id;
+    let turn = oldmaid_game.turn;
+    let skip= oldmaid_game.skip;
 
       let players = oldmaid_game.usernames;
       $: numPlayers = players.length;
@@ -54,53 +66,39 @@
     format = !format;
   };
 
-  /*let shuffleCards = () => {
-    /Return an array of 52 cards (if jokers is false, 54 otherwise)
-    let cards = [];
-    ["spades", "clubs", "hearts", "diamonds"].forEach(suit => {
-      ["ace", 2, 3, 4, 5, 6, 7, 8, 9, 10, "jack", "king"].forEach(
-              value => {
-                cards.push({ suit: suit, value: value, id: `${suit}:${value}` });
-              }
-      );
-    });
-    // leave out one queen
-    cards.push({ suit: 'diamonds', value: 'queen', id: 'diamonds:queen' });
-    cards.push({ suit: 'clubs', value: 'queen', id: 'clubs:queen' });
-    cards.push({ suit: 'spades', value: 'queen', id: 'spades:queen' });
-    // Now shuffle
-    let deck = [];
-    while (cards.length > 0) {
-      // Find a random number between 0 and cards.length - 1
-      const index = Math.floor(Math.random() * cards.length);
-      deck.push(cards[index]);
-      cards.splice(index, 1);
-    }
-    return deck;
-  };*/
+  let StopGame = () => {
+      if (host === curUser){
+          sendMessage({
+          action: 'stopGame',
+          game_id: game_id,
+          gametype: "oldmaid"
+          });
+      }
+  };
 
-  //let deck = shuffleCards();
+  function leaveGame(){
 
-  //current users username
-
-
-
-  /*for (let i = 0; i < players.length; i++) {
-    hands[i] = [];
+     let session_data = (get(session));
+     let s_new = {
+          username: session_data.username,
+          lobby_id: session_data.lobby_id,
+          game: ""
+        };
+     session.set(s_new);
+     sendMessage({
+         action: "updateSessionGame",
+         gametype: ""
+         });
+      goto(`lobbies/${session_data.lobby_id}`);
   }
 
-  let cur = 0;
-  for (let i = 0; i < deck.length; i++) {
-    hands[cur].push(deck[i]);
-    cur++;
-    if (cur === hands.length) {
-      cur = 0;
-    }
-  }
+  socket.on('leaveGame', leaveGame);
 
-  let handleLeave = () => {
-    goto(`/`);
-  }*/
+   onDestroy(() =>{
+          socket.off('leaveGame');
+      })
+
+
 </script>
 
 <style>
@@ -141,11 +139,13 @@
 
 <div class="grid-container">
   <div class="grid-item">
-    <Gameboard {format} {hands} {players} {curUser}/>
+    <Gameboard {format} {hands} {players} {curUser} {host} {done} {allDone} {game_id} {turn} {skip}/>
   </div>
   <div class="grid-item">
     <Switch on:toggle={() => toggle()} {format} />
     <Chat />
   </div>
-  <button>Leave Game</button>
+     {#if host === curUser}
+  <button on:click={StopGame}>Back to Lobby</button>
+  {/if}
 </div>

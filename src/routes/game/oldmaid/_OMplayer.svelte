@@ -77,25 +77,30 @@
         color: black;
     }
 
+    #username{
+    color: white;
+    }
+
     .inactive {
         color: lightgray;
     }
 </style>
 
 <div style="transform: rotate({seat * offset}deg) translatey(-{rad}px) rotate({seat * -offset}deg);">
-    {#if hand.length !== 0}
-        <div class="active">
-            {username}
-            <button class:hidden ={removedDuplicates} on:click={handleButton}>Removed all Duplicates</button>
-            <button on:click={sort}>Sort Cards</button>
-        </div>
-    {:else}
-        <div class="inactive">{username}</div>
-    {/if}
 
     <div class="hand">
         <div class="container">
             {#if username === curUser}
+                {#if hand.length !== 0}
+                    <div class="active" id ="username">
+                        {username}
+                        <button class:hidden ={removedDuplicates} on:click={handleButton}>Remove all Duplicates</button>
+
+                    </div>
+                {:else}
+                    <div class="inactive">{username}</div>
+                {/if}
+
                 {#each hand as card, i}
                     <img src={callPic(i)} alt="card" on:click={handleClick(card)}/>
                 {/each}
