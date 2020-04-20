@@ -173,26 +173,11 @@
 </style>
 
 <script context="module">
- /* export function enterGame(gametype){
-
-
-   // const { session } = stores();
-   // let session_data = (get(session));
-    const sendMessage = getContext('sendMessage');
-   /* let s_new = {
-      username: session_data.username,
-      lobby_id: session_data.lobby_id,
-      game: gametype
-    };on.set(s_new);
-   //session_data= get(session);
-
-    //goto(`game/${gametype}/${session_data.lobby_id}`);
-  }*/
 
   export async function preload({ params }, session) {
     //checks if the user enters the lobbies through the /enter route,
     //or through the lobbys url
-    console.log("preload called");
+
     let joined = !!(session.lobby_id && session.username);
 
     //checks if user is in a different lobby, then redirects them there
@@ -219,6 +204,9 @@
       data.username = joined ? session.username : "";
       return { lobby: data };
     } else {
+        session.lobby_id = "";
+        session.username = "";
+        session.game = "";
       this.redirect(302, ``);
     }
   }
@@ -286,8 +274,6 @@
 
   function createGame(gametype){
     if (username !== host) {
-        console.log(username);
-        console.log(host);
         size = false;
     } else if (gametype === "chess" && usernames.length !== 2){
         size = false;
@@ -296,7 +282,7 @@
     } else if (gametype === "solitaire" && usernames.length !== 1){
         size = false;
     } else {
-        console.log(gametype);
+
         sendMessage({
           action: "createGame",
           gametype: gametype,
@@ -327,10 +313,8 @@
   socket.on('enterGame', enterGame);
 
   function updateLobby(data){
-      console.log(data);
-
-              usernames = data.usernames;
-             host = data.host ? data.host : host;
+     usernames = data.usernames;
+     host = data.host ? data.host : host;
   }
 
   socket.on('usersChanged',updateLobby);

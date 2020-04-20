@@ -80,7 +80,6 @@
 
     //made remove duplicates button automatically remove duplicates
     let removeDuplicates = hand =>{
-        console.log(hand);
         let temp = [];
         for (let i = 0; i < hand.length; ++i){
             if(temp.length && temp[temp.length-1].value === hand[i].value){
@@ -104,7 +103,6 @@
     };
 
     let cardMoved = updated_game => {
-        console.log("cardMoved");
         hands[updated_game.toIndex] = updated_game.handTo;
         hands[updated_game.fromIndex] = updated_game.handFrom;
         turn = updated_game.turn;
@@ -158,7 +156,6 @@
             let originalTurn = turn;
 
             setTimeout(async ()=>{
-                console.log("entered settimout");
                 let temp = await removeDuplicates(hands[originalTurn]);
                 if (temp.length !== hands[originalTurn].length){
                     numCards -=2;
@@ -168,8 +165,7 @@
                     loser = curUser;
                     gameOver = true;
                 }
-                console.log(hands[originalTurn]);
-            }, 1000);
+            }, 1200);
 
             skip = 1;
 

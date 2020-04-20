@@ -3,9 +3,7 @@
      export async function preload({ params }, session) {
     //checks if the user enters the lobbies through the /enter route,
     //or through the lobbys url
-    //console.log("preload called");
-    //console.log(session);
-    console.log(session);
+
     //checks if user is in a different lobby, then redirects them there
     if (!session.lobby_id){
          return this.redirect(302, `/`);
