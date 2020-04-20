@@ -224,7 +224,7 @@
         margin: auto;
         position: absolute;
         top: 10%;
-        left: 0;
+        left: 5%;
     }
 
     .player{
