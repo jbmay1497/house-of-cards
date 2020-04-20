@@ -33,14 +33,6 @@
         flex-grow: 2;
     }
 
-    h2 {
-        text-align: center;
-        padding: 1.5%;
-        font-family: 'Roboto',serif ;
-        color: white;
-        font-weight: bold;
-    }
-
     button {
         padding:0.7em 1.4em;
         margin:0 0.3em 0.3em 0;
@@ -62,11 +54,38 @@
     }
 </style>
 
+<script context="module">
+
+     export async function preload({ params }, session) {
+    //checks if the user enters the lobbies through the /enter route,
+    //or through the lobbys url
+
+    //checks if user is in a different lobby, then redirects them there
+    if (!session.lobby_id){
+         return this.redirect(302, `/`);
+    }else if (!session.game || session.game !== "solitaire"){
+        return this.redirect(302, `lobbies/${session.lobby_id}`);
+    }else if (session.lobby_id !== params.solitaire_id){
+        return this.redirect(302, `game/solitaire/${session.lobby_id}`);
+    }
+    return {game_id: session.lobby_id}
+
+  }
+</script>
+
 <script>
+    export let game_id;
     import Chat from "../../../components/Chat.svelte";
     import Pile from "./_pile.svelte";
-    import {goto} from "@sapper/app"
     import ModalGameOver from '../../../components/solitaireGameOver.svelte';
+    import {goto} from "@sapper/app"
+    import {getContext} from 'svelte';
+    const sendMessage = getContext('sendMessage');
+    const socket = getContext('socket');
+     import { stores } from '@sapper/app';
+    const { session } = stores();
+     import { get } from 'svelte/store';
+     import { onDestroy } from 'svelte';
 
     let shuffleCards = () => {
         /* Return an array of 52 cards (if jokers is false, 54 otherwise) */
@@ -322,17 +341,42 @@
             }
         }
     };
+    let StopGame = () => {
+        sendMessage({
+        action: 'stopGame',
+        game_id: game_id,
+        gametype: "solitaire"
+        });
 
-    let leaveGame = () => {
-        goto(`/`);
+    };
+
+    function leaveGame(){
+
+           let session_data = (get(session));
+           let s_new = {
+                username: session_data.username,
+                lobby_id: session_data.lobby_id,
+                game: ""
+              };
+           session.set(s_new);
+           sendMessage({
+               action: "updateSessionGame",
+               gametype: ""
+               });
+            goto(`lobbies/${session_data.lobby_id}`);
     }
+
+    socket.on('leaveGame', leaveGame);
+
+    onDestroy(() =>{
+        socket.off('leaveGame');
+    })
 </script>
 
 <svelte:head>
     <title>Playing Solitiare</title>
 </svelte:head>
 
-<h2>Solitaire</h2>
 <div class="grid-container">
     <div class="GameBase">
         <div class="CardRow">
@@ -355,10 +399,10 @@
         </div>
     </div>
     <div class:hidden ={gameOver}>
-        <ModalGameOver bind:hidden={gameOver}/>
+        <ModalGameOver {game_id} />
     </div>
 </div>
-<button on:click={leaveGame}>Leave Game</button>
+<button on:click={StopGame}>Leave Game</button>
 <div class="grid-item">
     <Chat />
 </div>

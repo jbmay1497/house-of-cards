@@ -73,7 +73,6 @@ export const oldmaid_funcs = app =>({
             for (let i = 0; i < game.hands.length; ++i){
                 if (game.hands[i].length === 1){
                     loser = game.usernames[i];
-                    console.log(loser);
                 }
 
             }

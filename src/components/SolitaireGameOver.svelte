@@ -56,17 +56,23 @@
 
 <script>
     import {goto} from "@sapper/app"
-    export let hidden = false;
-    let returnToIndex = ()=>{
-        hidden = true;
-        goto(`/`);
+    import {getContext} from 'svelte';
+    const sendMessage = getContext('sendMessage');
+    export let game_id;
+    let StopGame = () => {
+        sendMessage({
+        action: 'stopGame',
+        game_id: game_id,
+        gametype: "solitaire"
+        });
+
     };
 </script>
 
 <div class="modal">
     <div class="modal-content">
-        <h1>Game Over</h1>
+        <h1>You Won!</h1>
         <br>
-        <button on:click ={returnToIndex}>Go Back to Lobby</button>
+        <button on:click ={StopGame}>Go Back to Lobby</button>
     </div>
 </div>

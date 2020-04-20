@@ -29,7 +29,6 @@ export const chess_funcs = app => ({
     },
 
     startNewChess: async (game_id, username)=> {
-        console.log(game_id);
         let game = await app.models.Chess.findById(game_id);
         if (username !== game.host) {
             return {error: "only host can start new game"};

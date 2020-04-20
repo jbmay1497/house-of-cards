@@ -72,14 +72,14 @@
     let loserNameDisplayed = loser === username ? "You" : loser;
 
     let stopGame = () => {
-            if (host === username){
-                sendMessage({
-                action: 'stopGame',
-                game_id: game_id,
-                gametype: "oldmaid"
-                });
-            }
+        if (host === username){
+            sendMessage({
+            action: 'stopGame',
+            game_id: game_id,
+            gametype: "oldmaid"
+            });
         }
+    }
 </script>
 
 <div class="modal">

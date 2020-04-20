@@ -62,7 +62,6 @@ export const lobby_funcs = app => ({
         else{
             if (lobby.playerCount > 1){
                 lobby.usernames.shift();
-                console.log(lobby.usernames);
                 lobby.host = lobby.usernames[0];
                 lobby.playerCount --;
                 await lobby.save();
