@@ -233,20 +233,29 @@
     .turn {
         font-family: "Roboto", serif;
         font-weight: 100;
-        position: absolute;
-        top: 0;
-        left: 0;
-        color: black
+
+    }
+    .message-container{
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: black
     }
 </style>
 
 <div class="game-area" bind:clientWidth={width}>
-    {#if allDone}
+ {#if allDone}
+    <div class="message-container">
         <div class = "turn">Current Player's Turn: <b>{players[turn]}</b></div>
         <div class="turn second">Pick from <b>{turn - skip < 0 ? players[numPlayers - skip + turn] : players[turn - skip]}'s</b> deck</div>
-    {:else}
-        <div class = "turn">Remove all duplicates from your hand</div>
-    {/if}
+      </div>
+ {:else}
+     <div class="message-container">
+           <div class = "turn">Remove all duplicates from your hand</div>
+     </div>
+  {/if}
+
+
 
     {#if format}
         <div class="table" style="width:{diameter}px; height:{diameter}px;">
