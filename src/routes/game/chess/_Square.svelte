@@ -10,7 +10,7 @@
         vertical-align: middle;
         width: 4ex;
         height: 4ex;
-        font-size: 300%;
+        font-size: 240%;
         border: 4px solid transparent;
         transition: all .4s ease-out;
     }

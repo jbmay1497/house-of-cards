@@ -1,4 +1,4 @@
-<script context="module">
+<script context="module" xmlns="http://www.w3.org/1999/html">
 
      export async function preload({ params }, session) {
     //checks if the user enters the lobbies through the /enter route,
@@ -65,9 +65,18 @@ export let chess_game;
 
 
     function updateGame(updated_game) {
-    board = updated_game.board;
-    turn = updated_game.turn;
-    finished = updated_game.finished;
+        board = updated_game.board;
+        turn = updated_game.turn;
+        finished = updated_game.finished;
+        let white_turn_square = document.getElementById("white-turn");
+        let black_turn_square = document.getElementById("black-turn");
+        if (turn === white){
+            white_turn_square.style["background-color"] = "white";
+            black_turn_square.style["background-color"] = "gray";
+        }else{
+            white_turn_square.style["background-color"] = "gray";
+            black_turn_square.style["background-color"] = "black";
+        }
     }
 
 
@@ -153,15 +162,29 @@ export let chess_game;
           height: 50px;
           width: 150px;
       }
-      .grid-container {
-          display: grid;
-          grid-template-columns: auto 250px;
-        }
 
-        .grid-item {
-            position: relative;
-            top: 2%;
+    .turn-container{
+     text-align: center;
+     margin-top: 1%;
+    }
+
+    td {
+        width: 4ex;
+        height: 4ex;
+        font-size: 200%;
+        border: 4px solid transparent;
+         display: inline-block;
+    }
+    tr{
+     display: inline-block;
+    }
+
+     tr:nth-child(odd) > td:nth-child(odd), tr:nth-child(even) > td:nth-child(even) {
+            background-color: white;
         }
+      tr:nth-child(odd) > td:nth-child(even), tr:nth-child(even) > td:nth-child(odd) {
+            background-color: gray;
+      }
 </style>
 
 <div>
@@ -178,9 +201,16 @@ export let chess_game;
             <button on:click={() => startNewGame(game_id, username)}>Start New Game</button>
         </div>
     {/if}
+    <div class = "turn-container">
+        <tr>
+            <td id="white-turn"> </td>
+            <td id="black-turn"> </td>
+        </tr>
+    </div>
+
 </div>
-    <div class = "grid-container">
-        <div class = "grid-item">
+    <!--<div class = "grid-container">-->
+
             <Board
                 {board}
                 {rows}
@@ -189,5 +219,5 @@ export let chess_game;
                 {username}
                 turn = {turn}
                  />
-         </div>
-    </div>
+
+   <!-- </div>-->
