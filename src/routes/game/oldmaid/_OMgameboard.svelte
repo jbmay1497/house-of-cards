@@ -26,8 +26,9 @@
     let loser = "";
 
     $: numPlayers = players.length;
+
     $: diameter = width * 0.9;
-    $: radius = (diameter / 2) * 0.9;
+    $: radius = players.length < 4 ? (diameter / 2) * 0.6 : (diameter / 2) * 0.9;
     $: smRad = radius * 0.9;
 
     let pair = [];
@@ -209,8 +210,8 @@
         padding: 5% 5%;
         min-width: 500px;
         position: relative;
-        left: 2%;
     }
+
     .table {
         display: block;
         background:black;
@@ -218,44 +219,48 @@
         border-style: solid;
         border-color: white;
     }
+
     .players{
         margin: auto;
+        position: absolute;
+        top: 10%;
+        left: 0;
     }
+
     .player{
         position: absolute;
         top: 0;
         left:0;
     }
+
     .second {
         top: 10%;
     }
 
     .turn {
         font-family: "Roboto", serif;
-        font-weight: 100;
-
+        font-weight: 300;
     }
+
     .message-container{
-            position: absolute;
-            top: 0;
-            left: 0;
-            color: black
+        position: absolute;
+        top: 2%;
+        left: 2%;
+        color: black;
     }
 </style>
 
 <div class="game-area" bind:clientWidth={width}>
- {#if allDone}
-    <div class="message-container">
-        <div class = "turn">Current Player's Turn: <b>{players[turn]}</b></div>
-        <div class="turn second">Pick from <b>{turn - skip < 0 ? players[numPlayers - skip + turn] : players[turn - skip]}'s</b> deck</div>
-      </div>
- {:else}
-     <div class="message-container">
-           <div class = "turn">Remove all duplicates from your hand</div>
-     </div>
-  {/if}
-
-
+    {#if allDone}
+        <div class="message-container">
+            <div class = "turn">Current Player's Turn: <b>{players[turn]}</b></div>
+            <div class="turn second">Pick from <b>{turn - skip < 0 ? players[numPlayers - skip + turn] : players[turn - skip]}'s</b> deck</div>
+        </div>
+    {:else}
+        <div class="message-container">
+            <div class = "turn">Remove all duplicates from your hand</div>
+        </div>
+    {/if}
 
     {#if format}
         <div class="table" style="width:{diameter}px; height:{diameter}px;">
