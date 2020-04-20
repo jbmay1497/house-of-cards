@@ -120,25 +120,50 @@ export let chess_game;
 </script>
 
 <style>
-    button {
+
+    .button-container{
         padding:0.7em 1.4em;
-        margin:0 0.3em 0.3em 0;
-        border-radius:0.15em;
-        box-sizing: border-box;
-        text-decoration:none;
-        font-family:'Roboto',sans-serif;
-        text-transform:uppercase;
-        font-weight:400;
-        color:#FFFFFF;
-        background-color: green;
-        box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
-        text-align:center;
-        position: relative;
-        right: 2%;
-        top: 2%;
-        height: 50px;
-        width: 150px;
-    }
+            margin:0 0.3em 0.3em 0;
+            border-radius:0.15em;
+            box-sizing: border-box;
+            text-decoration:none;
+            font-family:'Roboto',sans-serif;
+            text-transform:uppercase;
+            font-weight:400;
+            text-align:center;
+            position: absolute;
+            right: 7%;
+            top: 7%;
+            height: 50px;
+            width: 150px;
+      }
+    button {
+          padding:0.7em 1.4em;
+          margin:0 0.3em 0.3em 0;
+          border-radius:0.15em;
+          box-sizing: border-box;
+          text-decoration:none;
+          font-family:'Roboto',sans-serif;
+          text-transform:uppercase;
+          font-weight:400;
+          color:#FFFFFF;
+          background-color: green;
+          box-shadow:inset 0 -0.6em 0 -0.35em rgba(0,0,0,0.17);
+          text-align:center;
+          right: 15%;
+          top: 15%;
+          height: 50px;
+          width: 150px;
+      }
+      .grid-container {
+          display: grid;
+          grid-template-columns: auto 250px;
+        }
+
+        .grid-item {
+            position: relative;
+            top: 2%;
+        }
 </style>
 
 <div>
@@ -149,16 +174,22 @@ export let chess_game;
     {/if}
 </div>
 <div>
-   {#if host === username}
-<button on:click={StopGame}>Back to Lobby</button>
-<button on:click={() => startNewGame(game_id, username)}>Start New Game</button>
+    {#if host === username}
+        <div class = "button-container">
+            <button on:click={StopGame}>Back to Lobby</button>
+            <button on:click={() => startNewGame(game_id, username)}>Start New Game</button>
+        </div>
     {/if}
-    <Board
-        {board}
-        {rows}
-        {cols}
-        {game_id}
-        {username}
-        turn = {turn}
-         />
 </div>
+    <div class = "grid-container">
+        <div class = "grid-item">
+            <Board
+                {board}
+                {rows}
+                {cols}
+                {game_id}
+                {username}
+                turn = {turn}
+                 />
+         </div>
+    </div>

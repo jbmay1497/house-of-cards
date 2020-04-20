@@ -78,14 +78,18 @@
     let createLobby = () =>{
         if (!username){
           document.getElementById('error-containerCreateRoom').innerHTML = "username cannot be blank";
+        } else if (username.length > 15){
+            document.getElementById('error-container').innerHTML =
+            "Username cannot be longer than 15 characters";
+            username = "";
         }else{
            sendMessage({
                action: "createLobby",
                username: username,
                enterLobby: enterLobby
            })
-        }
 
+        }
     };
 
     let enterLobby = lobby_id => {

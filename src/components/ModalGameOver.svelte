@@ -76,7 +76,7 @@
                 sendMessage({
                 action: 'stopGame',
                 game_id: game_id,
-                gametype: "chess"
+                gametype: "oldmaid"
                 });
             }
         }
