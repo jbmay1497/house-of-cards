@@ -2,6 +2,9 @@
     .grid-container {
         display: grid;
         grid-template-rows: 300px auto;
+        position: absolute;
+        left: 5%;
+        top: 10%;
     }
 
     .hand {
@@ -22,6 +25,10 @@
         color: white;
         border-radius: 4px;
         background-color: green;
+    }
+
+    img {
+        position: absolute;
     }
 </style>
 
@@ -57,7 +64,7 @@
 <div class="grid-container">
     <div class="grid-item hand">
         {#each hand as card, i}
-            <img class="card" src={callPic(i)} alt="card" on:click={handleClick(card)}/>
+            <img class="card" src={callPic(i)} alt="card" on:click={handleClick(card)} style="left: {i * 6}%"/>
         {/each}
     </div>
 </div>

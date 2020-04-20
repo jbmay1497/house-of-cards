@@ -45,23 +45,22 @@
   import { onDestroy } from 'svelte';
    import { stores } from '@sapper/app';
   const { session } = stores();
-   import { get } from 'svelte/store';
+  import { get } from 'svelte/store';
 
   export let oldmaid_game;
 
-    let hands = oldmaid_game.hands;
-    let host = oldmaid_game.host;
-    let curUser = oldmaid_game.username;
-    let done = oldmaid_game.done;
-    let allDone = oldmaid_game.allDone;
-    let game_id = oldmaid_game._id;
-    let turn = oldmaid_game.turn;
-    let skip= oldmaid_game.skip;
-    let dontExplainRules = true;
+  let hands = oldmaid_game.hands;
+  let host = oldmaid_game.host;
+  let curUser = oldmaid_game.username;
+  let done = oldmaid_game.done;
+  let allDone = oldmaid_game.allDone;
+  let game_id = oldmaid_game._id;
+  let turn = oldmaid_game.turn;
+  let skip= oldmaid_game.skip;
+  let dontExplainRules = true;
 
-
-      let players = oldmaid_game.usernames;
-      $: numPlayers = players.length;
+  let players = oldmaid_game.usernames;
+  $: numPlayers = players.length;
 
   let format = true;
 

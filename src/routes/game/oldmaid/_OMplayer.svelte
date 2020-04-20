@@ -54,13 +54,13 @@
 <style>
     .container {
         position: absolute;
-        width: 300px;
+        width: 350px;
         height: 50px;
     }
 
     img{
         width: 25%;
-        position: relative;
+        position: absolute;
     }
 
     button {
@@ -73,12 +73,9 @@
         display: none;
     }
 
-    .active {
-        color: black;
-    }
-
     #username{
-    color: white;
+        color: white;
+        text-align: center;
     }
 
     .inactive {
@@ -87,26 +84,27 @@
 </style>
 
 <div style="transform: rotate({seat * offset}deg) translatey(-{rad}px) rotate({seat * -offset}deg);">
-
     <div class="hand">
         <div class="container">
             {#if username === curUser}
                 {#if hand.length !== 0}
-                    <div class="active" id ="username">
+                    <div id ="username">
                         {username}
                         <button class:hidden ={removedDuplicates} on:click={handleButton}>Remove all Duplicates</button>
-
                     </div>
                 {:else}
                     <div class="inactive">{username}</div>
                 {/if}
 
                 {#each hand as card, i}
-                    <img src={callPic(i)} alt="card" on:click={handleClick(card)}/>
+                    <img src={callPic(i)} alt="card" on:click={handleClick(card)} style="left: {i * 6}%"/>
                 {/each}
             {:else}
+                <div id="username">
+                    {username}
+                </div>
                 {#each hand as card, i}
-                    <img src="images/face_down.jpg" alt="card" on:click={handleClick(card)}/>
+                    <img src="images/face_down.jpg" alt="card" on:click={handleClick(card)} style="left: {i * 6}%"/>
                 {/each}
             {/if}
         </div>
