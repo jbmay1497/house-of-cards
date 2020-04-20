@@ -290,8 +290,7 @@ io.on("connection", socket =>
 	});
 
 	socket.on('disconnect', () =>{
-		console.log(`${socket.handshake.session.username} disconnected`);
-		console.log(`${socket.handshake.session.game}`);
+		console.log(`${socket.handshake.session.username ? socket.handshake.session.username : "user"} disconnected`);
 		if (socket.handshake.session.lobby_id){
 			socket.leave(`${socket.handshake.session.lobby_id}`);
 		}
