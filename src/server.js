@@ -16,6 +16,7 @@ let express = require("express"),
 
 
 const { PORT, NODE_ENV } = process.env;
+console.log(process.env);
 const dev = NODE_ENV === 'development';
 
 //turn into function once db is set up
@@ -182,7 +183,8 @@ io.on("connection", socket =>
 		if (game_id !== socket.handshake.session.lobby_id) {
 			return;
 		}
-		socket.to(`${socket.handshake.session.lobby_id}`).emit('updateCardPos', cur_card);
+		io.to(`${socket.handshake.session.lobby_id}`).emit('updateCardPos', cur_card);
+		//socket.emit('updateCardOrder', cur_card);
 	});
 
 	socket.on("resetDeck", async(game_id, deck)=>{
