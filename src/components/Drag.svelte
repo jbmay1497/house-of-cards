@@ -15,7 +15,7 @@
     let oldY;
 
     $: transform = `translate(${card.rect.x}px, ${card.rect.y}px)`;
-    $: style = `transform: ${transform}; width: ${card.rect.w}px; height: ${card.rect.h}px; z-index: 0; cursor`;
+    $: style = `transform: ${transform}; width: ${card.rect.w}px; height: ${card.rect.h}px; cursor`;
 
     const states = {
         STATIC: 0,
@@ -33,8 +33,6 @@
                 document.addEventListener("mouseup", handleMouseUp);
                 temp.sx = card.rect.x;
                 temp.sy = card.rect.y;
-                temp.sw = card.rect.w;
-                temp.sh = card.rect.h;
                 temp.cx = event.clientX;
                 temp.cy = event.clientY;
                 temp.r = temp.sh / temp.sw;
@@ -87,7 +85,7 @@
     */
 
     let handleClick = () => {
-        console.log(card.index);
+        //console.log(card.index);
         if (oldX === card.rect.x && oldY === card.rect.y && card.up) {
             card.pic = "images/face_down.jpg";
             card.up = false;

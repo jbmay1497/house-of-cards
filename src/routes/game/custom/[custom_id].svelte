@@ -93,9 +93,9 @@
         ySize = ySize / 6;
     }
 
-    let initialSetup = (includeJokers = false) =>{
+    let initialSetup = async (includeJokers = false) =>{
         let index = 0;
-        ["spades", "clubs", "hearts", "diamonds"].forEach(suit => {
+       await ["spades", "clubs", "hearts", "diamonds"].forEach(suit => {
             ["ace", "king", "queen", "jack", 10, 9, 8, 7, 6, 5, 4, 3, 2].forEach(
                 value => {
                     finalDeck.push(
@@ -106,9 +106,11 @@
                         index: index++,
                         up: false,
                         pic: "images/face_down.jpg"});
+
                 }
             );
         });
+
 
         if (includeJokers) {
             // cards.push({ suit: 'black', value: 'joker'});
@@ -116,20 +118,20 @@
         }
     };
 
-    let shuffleCards = (includeJokers = false) => {
+    let shuffleCards = async (includeJokers = false) => {
        let new_index = 0;
         /* Return an array of 52 cards (if jokers is false, 54 otherwise) */
 
         let deck = [];
         while (finalDeck.length > 0) {
             // Find a random number between 0 and cards.length - 1
-            const index = Math.floor(Math.random() * finalDeck.length);
+            const index = await Math.floor(Math.random() * finalDeck.length);
             finalDeck[index].rect = {x: xSize, y: ySize, w: 0, h: 0};
             finalDeck[index].up = false;
             finalDeck[index].pic = "images/face_down.jpg";
             finalDeck[index].index = new_index++;
-            deck.push(finalDeck[index]);
-            finalDeck.splice(index, 1);
+            await deck.push(finalDeck[index]);
+            await finalDeck.splice(index, 1);
         }
 
         finalDeck = deck;
@@ -141,6 +143,7 @@
     };
 
     let resetDeck = (includeJokers = false) =>{
+        console.log('got to reset deck');
         finalDeck = [];
         initialSetup();
         finalDeck = finalDeck;
@@ -152,9 +155,18 @@
     };
 
 
-  function updateCardPos(cur_card) {
-
-    finalDeck[cur_card.index] = cur_card;  }
+  async function updateCardPos(cur_card) {
+      if (cur_card.index !== 51){
+          await finalDeck.splice(cur_card.index, 1);
+          await finalDeck.push(cur_card)
+          for (let i = cur_card.index; i < finalDeck.length; i++){
+              finalDeck[i].index =  i;
+          }
+      }else{
+          finalDeck[cur_card.index] = cur_card;
+      }
+      finalDeck = finalDeck;
+  }
 
   function deckReset(deck){
        finalDeck = deck;
@@ -187,6 +199,7 @@
 
    socket.on('leaveGame', leaveGame);
    socket.on('updateCardPos', updateCardPos);
+   //socket.on('updateCardOrder', updateCardOrder);
    socket.on('deckReset', deckReset);
 
     initialSetup();
@@ -194,7 +207,8 @@
     onDestroy(()=>{
         socket.off('updateCardPos');
         socket.off('deckReset');
-        socket.off('leaevGame')
+        socket.off('leaveGame');
+        socket.off('updateCardOrder');
     })
 
 </script>
@@ -212,6 +226,6 @@
 </div>
 {/if}
 
-{#each finalDeck as card}
+{#each finalDeck as card (card.id)}
     <Drag {card} {custom_id}/>
 {/each}
