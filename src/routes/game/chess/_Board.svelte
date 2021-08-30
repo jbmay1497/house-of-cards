@@ -25,13 +25,11 @@
               col = -1;
               from = null;
           } else if (!from &&  board[r][c] !== ' ') {
-              console.log("got here 1");
               row = r;
               col = c;
               from = [row, col]
 
           }else if (from){
-              console.log("got here 2");
               to = [r, c];
               if (username === turn){
                  makeMove(from, to);
@@ -71,6 +69,8 @@
             {#each cols as c}
             <Square
                 value={board[r][c]}
+                on:drop={()=>clickSquare(r, c)}
+                on:message={() => clickSquare(r, c)}
                 on:click={() => clickSquare(r, c)}
                 selected={col === c && row === r}
                 />

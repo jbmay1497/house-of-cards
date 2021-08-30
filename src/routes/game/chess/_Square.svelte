@@ -1,9 +1,35 @@
 <script>
     export let value;
     export let selected;
+    import { createEventDispatcher } from 'svelte';
+    const dispatch = createEventDispatcher();
+
+
+    function start(e) {
+
+        	dispatch('message', {
+        			text: 'checkMove'
+        		});
+        	}
+
+    function drop(e) {
+        e.preventDefault();
+    	dispatch('message', {
+    			text: 'checkMove'
+    		});
+    	}
 </script>
 
-<td class:selected on:click>{value}</td>
+<td
+ondragover="return false"
+on:dragenter={()=>"return false"}
+on:drop
+class:selected on:click>
+
+<div draggable = {true}
+on:dragstart|stopPropagation={e => start(e)}>
+{value}
+</div></td>
 <style>
     td {
         text-align: center;
